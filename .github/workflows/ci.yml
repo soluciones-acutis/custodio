@@ -1,0 +1,45 @@
+# Integración continua de Custodio.
+# Corre las cuatro revisiones en cada PR y en cada push a main. Cada revisión es un job separado para que el PR muestre exactamente cuál falló 
+# y para que la protección de main pueda exigir las cuatro.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  revision:
+    name: ${{ matrix.nombre }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - nombre: Tipos
+            script: typecheck
+          - nombre: Lint y formato
+            script: lint
+          - nombre: Pruebas
+            script: test
+          - nombre: Arquitectura
+            script: arquitectura
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run ${{ matrix.script }}
