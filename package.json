@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . && prettier --check .",
     "formatear": "eslint . --fix && prettier --write .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "arquitectura": "depcruise src --config .dependency-cruiser.cjs",
+    "verificar": "npm run typecheck && npm run lint && npm test && npm run arquitectura"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
