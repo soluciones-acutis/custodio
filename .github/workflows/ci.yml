@@ -1,5 +1,5 @@
 # Integración continua de Custodio.
-# Corre las cuatro revisiones en cada PR y en cada push a main. Cada revisión es un job separado para que el PR muestre exactamente cuál falló 
+# Corre las cuatro revisiones en cada PR y en cada push a main. Cada revisión es un job separado para que el PR muestre exactamente cuál falló
 # y para que la protección de main pueda exigir las cuatro.
 name: CI
 
