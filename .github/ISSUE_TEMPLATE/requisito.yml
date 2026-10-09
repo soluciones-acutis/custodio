@@ -1,0 +1,87 @@
+name: Requisito
+description: Un requisito del documento técnico (DSL-xx, SRV-xx o RNF-xx) planificado en su semana.
+title: '[DSL-00] '
+labels: [requisito]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Un issue por requisito, con su hito semanal en GitHub Projects.
+        El PR que lo implemente lo cierra con `Closes #<número>`.
+
+  - type: input
+    id: identificador
+    attributes:
+      label: Identificador
+      description: Tal como aparece en las secciones 5 a 7 del documento técnico.
+      placeholder: DSL-07
+    validations:
+      required: true
+
+  - type: dropdown
+    id: prioridad
+    attributes:
+      label: Prioridad (MoSCoW)
+      options:
+        - DEBE
+        - DEBERÍA
+        - PODRÍA
+    validations:
+      required: true
+
+  - type: dropdown
+    id: semana
+    attributes:
+      label: Semana
+      options:
+        - S1 · Inmersión y cimientos
+        - S2 · Diseño del lenguaje
+        - S3 · Analizador
+        - S4 · Semántica, vocabulario de negocio y plan
+        - S5 · Núcleo de ejecución hexagonal
+        - S6 · Servicio web y persistencia
+        - S7 · Independencia de herramienta e informes
+        - S8 · Historias reales y endurecimiento
+        - S9 · Cierre y entrega
+    validations:
+      required: true
+
+  - type: dropdown
+    id: modulos
+    attributes:
+      label: Módulos afectados
+      multiple: true
+      options:
+        - lenguaje
+        - historias
+        - ejecuciones
+        - ambientes
+        - informes
+        - compartido
+        - arranque
+        - CI y repositorio
+        - documentación
+
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Qué pide el requisito
+      description: En lenguaje simple, con la cita del documento si ayuda.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      description: Cómo se sabrá que está cumplido. Se marcan a medida que se cumplen.
+      value: |
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: notas
+    attributes:
+      label: Notas de diseño
+      description: Dudas, alternativas o ADR relacionados (opcional).
