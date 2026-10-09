@@ -1,0 +1,31 @@
+name: Idea para el futuro
+description: Una mejora fuera del alcance de la semana; se anota aquí en vez de agrandar el PR actual.
+title: 'Idea: '
+labels: [futuro]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Las ideas nuevas no entran al PR de la semana: se registran aquí y se
+        discuten en una reunión de los martes (documento técnico, sección 14).
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: La idea
+    validations:
+      required: true
+
+  - type: textarea
+    id: por-que
+    attributes:
+      label: Por qué valdría la pena
+      description: Qué problema resuelve y a quién le sirve.
+    validations:
+      required: true
+
+  - type: input
+    id: requisitos
+    attributes:
+      label: Requisitos relacionados
+      placeholder: DSL-18, SRV-16
