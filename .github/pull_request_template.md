@@ -8,7 +8,7 @@ Resumen en 3 a 5 líneas, en lenguaje simple.
 
 - [ ]
 
-### Decisiones de diseño
+### Descripción general
 
 Enlace a `docs/diseno/semana-NN.md` y a los ADR nuevos o modificados.
 
@@ -24,6 +24,3 @@ Capturas, salida de consola o video (<= 3 min).
 
 ### Pendientes y riesgos
 Lo que no alcanzó y por qué; issues creados.
-
-### Checklist
-- [ ]
