@@ -4,8 +4,9 @@
  *
  * Cada regla de la sección 8 se escribe como una o más reglas prohibidas cuyo
  * nombre empieza con su número (`r1-…` a `r6-…`), para que un error en CI se
- * pueda rastrear directo a la regla que se rompió. Al final van algunas reglas
- * de limpieza general.
+ * pueda rastrear directo a la regla que se rompió. La regla 7 (`r7-…`) no está
+ * en la sección 8: es una decisión del ADR-002. Al final van algunas reglas de
+ * limpieza general.
  */
 
 /**
@@ -42,11 +43,12 @@ module.exports = {
     {
       name: 'r1-dominio-sin-capas-externas',
       comment:
-        'Regla 1 (dominio puro): */dominio no importa infraestructura ni la capa de aplicación; ' +
-        'las dependencias apuntan hacia el dominio, nunca desde él.',
+        'Regla 1 (dominio puro): */dominio no importa la infraestructura, la capa de aplicación ' +
+        'ni la API pública de su propio módulo; las dependencias apuntan hacia el dominio, nunca ' +
+        'desde él. (Lo de otros módulos lo cubre la regla 7.)',
       severity: 'error',
-      from: { path: DOMINIO },
-      to: { path: [INFRAESTRUCTURA, APLICACION] },
+      from: { path: '^src/([^/]+)/dominio/' },
+      to: { path: '^src/$1/(aplicacion/|infraestructura/|index\\.ts$)' },
     },
     {
       name: 'r1-dominio-sin-librerias-de-es',
@@ -86,7 +88,7 @@ module.exports = {
         'Regla 3 (infraestructura implementa): ningún módulo importa la infraestructura de otro ' +
         'módulo. Solo arranque/ conecta adaptadores de distintos módulos.',
       severity: 'error',
-      // dominio y aplicación ya quedan cubiertos por las reglas 1 y 2.
+      // dominio y aplicación ya quedan cubiertos por las reglas 7 y 2.
       from: { path: '^src/([^/]+)/', pathNot: [ARRANQUE, DOMINIO, APLICACION] },
       to: { path: INFRAESTRUCTURA, pathNot: '^src/$1/infraestructura/' },
     },
@@ -98,7 +100,8 @@ module.exports = {
         'Regla 4 (módulos por su puerta): un módulo usa a otro solo a través de su API pública, ' +
         'src/<modulo>/index.ts.',
       severity: 'error',
-      from: { path: '^src/([^/]+)/', pathNot: ARRANQUE },
+      // Los dominios son más estrictos (regla 7): ni siquiera pueden usar el index.ts de otro.
+      from: { path: '^src/([^/]+)/', pathNot: [ARRANQUE, DOMINIO] },
       // Los cruces hacia infraestructura y arranque ya los informan las reglas 1, 2, 3 y 5.
       to: { path: DENTRO_DE_SRC, pathNot: ['^src/$1/', API_PUBLICA, INFRAESTRUCTURA, ARRANQUE] },
     },
@@ -151,6 +154,20 @@ module.exports = {
       severity: 'error',
       from: { path: '^src/lenguaje/' },
       to: { path: DENTRO_DE_SRC, pathNot: '^src/(lenguaje|compartido)/' },
+    },
+
+    // Dominios aislados (ADR-002)
+    {
+      name: 'r7-dominios-aislados',
+      comment:
+        'Regla 7 (dominios aislados, ADR-002): el dominio de un módulo no importa nada de otro ' +
+        'módulo, ni siquiera su index.ts; solo su propio dominio y compartido/index.ts. Los ' +
+        'módulos colaboran en la capa de aplicación. Si dos dominios necesitan lo mismo: ' +
+        'referenciar por id, duplicar un tipo pequeño o, si es un tipo base, llevarlo a compartido.',
+      severity: 'error',
+      from: { path: '^src/([^/]+)/dominio/' },
+      // Las capas del propio módulo las cubre la regla 1, y arranque la regla 5.
+      to: { path: DENTRO_DE_SRC, pathNot: ['^src/$1/', '^src/compartido/index\\.ts$', ARRANQUE] },
     },
 
     // Limpieza general

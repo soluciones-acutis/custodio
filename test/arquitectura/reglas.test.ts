@@ -6,7 +6,7 @@
  * respeta la arquitectura y, para cada regla, se le agrega un archivo que la
  * rompe. La prueba exige que dependency-cruiser informe exactamente esa regla.
  */
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { cruise, type ICruiseOptions } from 'dependency-cruiser';
@@ -15,24 +15,35 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 type Archivos = Record<string, string>;
 
-// Un src/ que respeta las seis reglas y usa los caminos permitidos.
+// Un src/ que respeta las reglas y usa los caminos permitidos (ADR-002):
+// el puerto lo declara la aplicación, el dominio solo usa compartido y los
+// módulos colaboran en la capa de aplicación por el index.ts del otro.
 const ARQUITECTURA_LIMPIA: Archivos = {
   'src/compartido/index.ts': `export type Id = string;`,
   'src/lenguaje/index.ts': `
     import type { Id } from '../compartido/index.ts';
     export interface Plan { historia: Id }`,
-  'src/ejecuciones/dominio/motor-de-navegador.ts': `
-    import type { Plan } from '../../lenguaje/index.ts';
+  'src/ejecuciones/dominio/ejecucion.ts': `
+    import type { Id } from '../../compartido/index.ts';
+    export interface Ejecucion { id: Id; historia: Id }`,
+  'src/ejecuciones/aplicacion/puertos/motor-de-navegador.ts': `
+    import type { Plan } from '../../../lenguaje/index.ts';
     export interface MotorDeNavegador { ejecutar(plan: Plan): Promise<void> }`,
   'src/ejecuciones/aplicacion/ejecutar-plan.ts': `
-    import type { MotorDeNavegador } from '../dominio/motor-de-navegador.ts';
+    import type { Ejecucion } from '../dominio/ejecucion.ts';
+    import type { MotorDeNavegador } from './puertos/motor-de-navegador.ts';
     import type { Plan } from '../../lenguaje/index.ts';
-    export const ejecutarPlan = (motor: MotorDeNavegador, plan: Plan) => motor.ejecutar(plan);`,
+    export const ejecutarPlan = async (motor: MotorDeNavegador, plan: Plan): Promise<Ejecucion> => {
+      await motor.ejecutar(plan);
+      return { id: '1', historia: plan.historia };
+    };`,
   'src/ejecuciones/infraestructura/motores/simulado/motor-simulado.ts': `
-    import type { MotorDeNavegador } from '../../../dominio/motor-de-navegador.ts';
+    import type { MotorDeNavegador } from '../../../aplicacion/puertos/motor-de-navegador.ts';
     export const motorSimulado: MotorDeNavegador = { ejecutar: async () => {} };`,
   'src/ejecuciones/index.ts': `export { ejecutarPlan } from './aplicacion/ejecutar-plan.ts';`,
-  'src/historias/dominio/historia.ts': `export interface Historia { id: string }`,
+  'src/historias/dominio/historia.ts': `
+    import type { Id } from '../../compartido/index.ts';
+    export interface Historia { id: Id }`,
   'src/historias/aplicacion/registrar-historia.ts': `
     import type { Historia } from '../dominio/historia.ts';
     import { ejecutarPlan } from '../../ejecuciones/index.ts';
@@ -110,13 +121,6 @@ const VIOLACIONES: Caso[] = [
     reglasEsperadas: ['r4-modulos-por-su-puerta'],
   },
   {
-    descripcion: 'un dominio entra al dominio de otro módulo sin pasar por su index.ts',
-    archivos: {
-      'src/historias/dominio/malo.ts': `import '../../ejecuciones/dominio/motor-de-navegador.ts';`,
-    },
-    reglasEsperadas: ['r4-modulos-por-su-puerta'],
-  },
-  {
     descripcion: 'arranque usa un caso de uso sin pasar por el index.ts del módulo',
     archivos: {
       'src/arranque/http/malo.ts': `import '../../ejecuciones/aplicacion/ejecutar-plan.ts';`,
@@ -149,6 +153,39 @@ const VIOLACIONES: Caso[] = [
     archivos: { 'src/lenguaje/malo.ts': `import '../ejecuciones/index.ts';` },
     reglasEsperadas: ['r6-lenguaje-independiente'],
   },
+  // Regla 7: dominios aislados (ADR-002)
+  {
+    descripcion: 'el dominio de un módulo importa el dominio de otro',
+    archivos: {
+      'src/historias/dominio/malo.ts': `import '../../ejecuciones/dominio/ejecucion.ts';`,
+    },
+    reglasEsperadas: ['r7-dominios-aislados'],
+  },
+  {
+    descripcion: 'el dominio de un módulo usa la API pública de otro',
+    archivos: { 'src/historias/dominio/malo.ts': `import '../../ejecuciones/index.ts';` },
+    reglasEsperadas: ['r7-dominios-aislados'],
+  },
+  {
+    descripcion: 'el dominio importa los tipos del plan desde lenguaje',
+    archivos: {
+      'src/ejecuciones/dominio/malo.ts': `import type { Plan } from '../../lenguaje/index.ts';`,
+    },
+    reglasEsperadas: ['r7-dominios-aislados'],
+  },
+  {
+    descripcion: 'el dominio entra a compartido sin pasar por su index.ts',
+    archivos: {
+      'src/compartido/reloj.ts': `export interface Reloj { ahora(): Date }`,
+      'src/historias/dominio/malo.ts': `import type { Reloj } from '../../compartido/reloj.ts';`,
+    },
+    reglasEsperadas: ['r7-dominios-aislados'],
+  },
+  {
+    descripcion: 'el dominio importa la API pública de su propio módulo',
+    archivos: { 'src/ejecuciones/dominio/malo.ts': `import '../index.ts';` },
+    reglasEsperadas: ['r1-dominio-sin-capas-externas'],
+  },
   // Higiene general
   {
     descripcion: 'compartido depende de otro módulo',
@@ -179,7 +216,9 @@ beforeAll(async () => {
 
 // Arma un src/ temporal con los archivos dados y devuelve las reglas violadas.
 async function reglasVioladas(archivos: Archivos): Promise<string[]> {
-  const raiz = await mkdtemp(join(tmpdir(), 'custodio-arquitectura-'));
+  // realpath: en macOS tmpdir() es un enlace simbólico (/var → /private/var) y
+  // dependency-cruiser trabaja con la ruta real; sin esto las rutas no calzan con ^src/.
+  const raiz = await realpath(await mkdtemp(join(tmpdir(), 'custodio-arquitectura-')));
   try {
     for (const [ruta, contenido] of Object.entries(archivos)) {
       await mkdir(dirname(join(raiz, ruta)), { recursive: true });
