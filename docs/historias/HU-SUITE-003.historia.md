@@ -1,5 +1,5 @@
 ---
-dsl: 1.0
+dsl: v1.0
 id: HU-SUITE-003
 producto: suite-parroquial
 titulo: El párroco invita a una persona al equipo con su rol y revoca la invitación que ya no corresponde

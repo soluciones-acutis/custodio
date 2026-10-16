@@ -1,5 +1,5 @@
 ---
-dsl: 1.0
+dsl: v1.0
 id: HU-SUITE-001
 producto: suite-parroquial
 titulo: La secretaría entra al panel con su contraseña y el código de su app de autenticación

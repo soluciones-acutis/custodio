@@ -1,5 +1,5 @@
 ---
-dsl: 1.0
+dsl: v1.0
 id: HU-SUITE-006
 producto: suite-parroquial
 titulo: La inscripción de un menor en catequesis solo se activa con el consentimiento firmado del apoderado

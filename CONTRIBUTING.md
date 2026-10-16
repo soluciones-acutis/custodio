@@ -10,7 +10,7 @@ que hay que respetar por ser un repositorio público.
 - Instalar las dependencias exactas del `package-lock.json`:
 
 ```bash
-npm install
+npm ci
 ```
 
 - Leer los ADR en [`docs/adr/`](docs/adr/), sobre todo el
@@ -22,8 +22,8 @@ npm install
    `SRV-xx`, `RNF-xx`) es un issue con su semana. Las ideas que no son de la
    semana actual van a un issue con la plantilla *Idea para el futuro* (etiqueta
    `futuro`), no al PR en curso.
-2. **Una rama por semana**, con el formato `semana-NN/tema`, por ejemplo
-   `semana-03/analizador`. Si el trabajo es grande, son preferibles varios PR
+2. **Una rama por semana**, con el formato `semanaNN/tema`, por ejemplo
+   `semana03/analizador`. Si el trabajo es grande, son preferibles varios PR
    pequeños en la semana a uno enorme.
 3. **Commits convencionales en español**:
 
@@ -65,8 +65,8 @@ npm run verificar
 
 Custodio usa **arquitectura hexagonal organizada por propósito**. Al abrir
 `src/` debe "gritar" el dominio (`lenguaje`, `historias`, `ejecuciones`…), no
-detalles técnicos. Las seis reglas de la sección 8 del documento técnico se
-verifican en CI y una violación rompe el build:
+detalles técnicos. Las seis reglas de la sección 8 del documento técnico, más
+una regla propia del ADR-002, se verifican en CI y una violación rompe el build:
 
 1. `*/dominio` no importa infraestructura ni librerías de E/S (Fastify, `pg`, Playwright, `node:fs`…).
 2. `*/aplicacion` depende solo de su dominio y de los puertos que ella misma declara.
@@ -74,10 +74,15 @@ verifican en CI y una violación rompe el build:
 4. Un módulo usa a otro solo por su API pública: `src/<modulo>/index.ts`.
 5. Solo `src/arranque/` conoce implementaciones concretas y las inyecta.
 6. `src/lenguaje/` son funciones puras, sin E/S.
+7. **Dominios aislados:** el dominio de un módulo no importa nada de otro módulo
+   (ni su `index.ts`); solo su propio dominio y `src/compartido/index.ts`. Los
+   módulos colaboran en la capa de aplicación.
 
 Si `npm run arquitectura` falla, el mensaje dice qué regla se rompió (`r1-…` a
-`r6-…`) y entre qué archivos. La explicación de cada regla está en
-[`.dependency-cruiser.cjs`](.dependency-cruiser.cjs) y en el ADR-002.
+`r7-…`) y entre qué archivos. La explicación de cada regla está en
+[`.dependency-cruiser.cjs`](.dependency-cruiser.cjs) y en el
+[ADR-002](docs/adr/ADR-002-arquitectura.md), que también explica qué hacer
+cuando dos dominios necesitan lo mismo y qué puede ir en `compartido/`.
 
 **Librerías en el núcleo.** El dominio, la aplicación, `lenguaje` y `compartido`
 no pueden importar paquetes externos. Si se necesita una librería pura, sin E/S

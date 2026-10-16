@@ -1,5 +1,5 @@
 ---
-dsl: 1.0
+dsl: v1.0
 id: HU-SUITE-004
 producto: suite-parroquial
 titulo: Una persona pide una misa desde el sitio y la secretaría la anota en el libro de intenciones

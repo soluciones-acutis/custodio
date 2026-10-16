@@ -1,5 +1,5 @@
 ---
-dsl: 1.0
+dsl: v1.0
 id: HU-SUITE-005
 producto: suite-parroquial
 titulo: La secretaría anota una partida de bautismo y emite un certificado que se puede verificar en el sitio
