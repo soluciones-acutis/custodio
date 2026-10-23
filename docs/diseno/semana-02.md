@@ -343,7 +343,7 @@ La palabra `ELIMINAR` en mayúsculas no es una fase del lenguaje. En v0.1 las li
 ### 10.2 Lista de tareas
 
 **Historias**
-- [ ] Subir las historias de usuario 007 a 012 en `docs/historias/`.
+- [X] Subir las historias de usuario 007 a 012 en `docs/historias/`.
 - [ ] Actualizar las 12 historias a `dsl: 0.1.0` y a las frases base de la sección 3.2. Las limpiezas pasan a ser frases normales, en vez de `ELIMINAR`.
 - [ ] Completar el inventario de frases (sección 9) con las historias 007 a 012.
 
@@ -364,7 +364,6 @@ La palabra `ELIMINAR` en mayúsculas no es una fase del lenguaje. En v0.1 las li
 - [ ] Las 12 historias como casos válidos en `test/lenguaje/casos/validos/`, o referenciadas desde `docs/historias/`.
 
 **Revisión del diseño v1**
-- [ ] Responder la revisión. Aclarar que existía el vocabulario con 6 frases definidas y 10 pendientes, y el validador de prueba, que no llegaron con el Word.
 - [ ] Correcciones de redacción del diseño v1:
   - §8.1, la frase cortada;
   - §9.1, el último párrafo;
