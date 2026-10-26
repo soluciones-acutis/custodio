@@ -1,11 +1,12 @@
 ---
-dsl: 1.0
+dsl: 0.1.0
 id: HU-SUITE-010
 producto: suite-parroquial
 titulo: El encargado del sitio escribe una noticia en borrador y la publica en la portada
 actor: Administrador del sitio web
 criticidad: media
 etiquetas: [sitio, noticias, publicacion]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
@@ -36,4 +37,4 @@ etiquetas: [sitio, noticias, publicacion]
 - Y veo el texto "Te esperamos este domingo en el patio de la parroquia"
 
 ## Limpieza
-- ELIMINAR las noticias con prefijo "${PREFIJO}"
+- elimino las noticias con prefijo "${PREFIJO}"

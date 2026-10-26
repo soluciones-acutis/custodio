@@ -1,11 +1,12 @@
 ---
-dsl: 1.0
+dsl: 0.1.0
 id: HU-SUITE-008
 producto: suite-parroquial
 titulo: La contadora contrata a una persona y cierra el mes con su liquidación de sueldo
 actor: Contadora
 criticidad: alta
 etiquetas: [remuneraciones, liquidaciones, cierre-de-mes]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
@@ -49,5 +50,5 @@ etiquetas: [remuneraciones, liquidaciones, cierre-de-mes]
 - Y no veo el botón "Reabrir"
 
 ## Limpieza
-- ELIMINAR las liquidaciones, contratos y trabajadores con prefijo "${PREFIJO}"
-- REABRIR el mes "${MES_PRUEBA}" si quedó cerrado
+- elimino las liquidaciones, contratos y trabajadores con prefijo "${PREFIJO}"
+- reabro el mes "${MES_PRUEBA}" si quedó cerrado

@@ -1,11 +1,12 @@
 ---
-dsl: 1.0
+dsl: 0.1.0
 id: HU-SUITE-009
 producto: suite-parroquial
 titulo: La secretaría rinde la colecta con su arqueo y tres firmantes, y la contadora la aprueba
 actor: Secretaria parroquial
 criticidad: alta
 etiquetas: [rendiciones, colecta, contabilidad]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
@@ -39,4 +40,4 @@ etiquetas: [rendiciones, colecta, contabilidad]
 - Y el asiento de "${PREFIJO}Colecta misa domingo" carga "Colectas por depositar" contra "Ingresos colectas"
 
 ## Limpieza
-- ELIMINAR las rendiciones y comprobantes con prefijo "${PREFIJO}"
+- elimino las rendiciones y comprobantes con prefijo "${PREFIJO}"

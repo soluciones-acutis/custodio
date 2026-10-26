@@ -1,11 +1,12 @@
 ---
-dsl: 1.0
+dsl: 0.1.0
 id: HU-SUITE-011
 producto: suite-parroquial
 titulo: Un fiel pide oración a su comunidad desde Orar y la secretaría la revisa antes de publicarla
 actor: Fiel
 criticidad: media
 etiquetas: [orar, peticiones-de-oracion, moderacion]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
@@ -31,7 +32,7 @@ etiquetas: [orar, peticiones-de-oracion, moderacion]
 - Y visito el sitio de la parroquia "${PARROQUIA}"
 - Y navego a "Orar > Peticiones de oración"
 - ENTONCES veo el texto "${PREFIJO}Por la salud de mi abuela"
-- Y veo el texto "Alguien de la comunidad" en la petición "${PREFIJO}Por la salud de mi abuela"
+- Y veo el texto "Alguien de la comunidad" en la fila de "${PREFIJO}Por la salud de mi abuela"
 - Y no veo el texto "${NOMBRE_fiel}"
 
 ## Escenario: el encargado del sitio no ve las peticiones de oración
@@ -41,4 +42,4 @@ etiquetas: [orar, peticiones-de-oracion, moderacion]
 - Y no veo el texto "Peticiones de oración"
 
 ## Limpieza
-- ELIMINAR las peticiones de oración con prefijo "${PREFIJO}"
+- elimino las peticiones de oración con prefijo "${PREFIJO}"

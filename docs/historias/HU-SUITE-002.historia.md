@@ -1,11 +1,12 @@
 ---
-dsl: v1.0
+dsl: 0.1.0
 id: HU-SUITE-002
 producto: suite-parroquial
 titulo: Cada persona del equipo ve en el panel solo los módulos de su rol
 actor: Párroco
 criticidad: alta
 etiquetas: [acceso, roles, proteccion-datos]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia

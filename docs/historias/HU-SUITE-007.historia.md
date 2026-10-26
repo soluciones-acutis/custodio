@@ -1,11 +1,12 @@
 ---
-dsl: 1.0
+dsl: 0.1.0
 id: HU-SUITE-007
 producto: suite-parroquial
 titulo: La catequista pasa lista en el encuentro y lo deja como realizado
 actor: Catequista
 criticidad: media
 etiquetas: [catequesis, asistencia]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
@@ -23,8 +24,8 @@ etiquetas: [catequesis, asistencia]
 - Y marco la casilla "Encuentro por realizar"
 - Y presiono el botón "Guardar la lista"
 - ENTONCES veo el texto "Encuentro realizado"
-- Y la asistencia de "${PREFIJO}Sofía Rojas" quedó como presente en el encuentro
 - Y no veo el texto "sin guardar"
+- Y la asistencia de "${PREFIJO}Sofía Rojas" quedó como presente en el encuentro
 
 ## Escenario: la catequista solo ve los cursos donde la nombraron
 - CUANDO navego a "Catequesis > Mis cursos y el pase de lista"
@@ -32,5 +33,5 @@ etiquetas: [catequesis, asistencia]
 - Y no veo el texto "${CURSO_OTRA_CATEQUISTA}"
 
 ## Limpieza
-- ELIMINAR la asistencia registrada para "${PREFIJO}Sofía Rojas" y dejar el encuentro como por realizar
-- ELIMINAR las inscripciones y fichas con prefijo "${PREFIJO}"
+- elimino la asistencia registrada para "${PREFIJO}Sofía Rojas" y dejo el encuentro como por realizar
+- elimino las inscripciones y fichas con prefijo "${PREFIJO}"

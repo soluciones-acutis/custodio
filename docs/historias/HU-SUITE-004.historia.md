@@ -1,11 +1,12 @@
 ---
-dsl: v1.0
+dsl: 0.1.0
 id: HU-SUITE-004
 producto: suite-parroquial
 titulo: Una persona pide una misa desde el sitio y la secretaría la anota en el libro de intenciones
 actor: Fiel
 criticidad: alta
 etiquetas: [misas, formulario-publico, libro-de-caja]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
@@ -37,9 +38,9 @@ etiquetas: [misas, formulario-publico, libro-de-caja]
 - Y navego a "Misas y ofrendas"
 - ENTONCES veo el texto "${PREFIJO}Por el eterno descanso de Juan" en "Próximas misas con intención"
 - Y veo el texto "${PREFIJO}Marta" en "Respondidas hace poco"
-- Y el libro de caja muestra un ingreso de "5.000" por la misa de "${PREFIJO}Marta"
 - Y no veo el texto "${PREFIJO}Marta" en "Esperando respuesta"
+- Y el libro de caja muestra un ingreso de "5.000" por la misa de "${PREFIJO}Marta"
 
 ## Limpieza
-- ELIMINAR las peticiones de misa con prefijo "${PREFIJO}"
-- ELIMINAR las misas del libro de intenciones con prefijo "${PREFIJO}" y sus ingresos en el libro de caja
+- elimino las peticiones de misa con prefijo "${PREFIJO}"
+- elimino las misas del libro de intenciones con prefijo "${PREFIJO}" y sus ingresos en el libro de caja
