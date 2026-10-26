@@ -1,0 +1,391 @@
+{
+  "ast": "0.1.0",
+  "archivo": "docs/historias/HU-SUITE-006.historia.md",
+  "historias": [
+    {
+      "dsl": "0.1.0",
+      "id": "HU-SUITE-006",
+      "producto": "suite-parroquial",
+      "titulo": "La inscripción de un menor en catequesis solo se activa con el consentimiento firmado del apoderado",
+      "actor": "Secretaria parroquial",
+      "criticidad": "alta",
+      "etiquetas": ["catequesis", "menores", "consentimiento", "ley-21719"],
+      "vocabularios": ["acutis-suite"],
+      "narrativa": {
+        "como": "secretaria de la parroquia",
+        "origen": {
+          "linea": 13,
+          "columna": 1
+        },
+        "quiero": "inscribir a un niño en el mesón y activar su inscripción cuando el apoderado entrega el consentimiento firmado",
+        "para": "cumplir la Ley 21.719 y que solo participen en catequesis los menores autorizados por su familia"
+      },
+      "antecedentes": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+            "argumentos": {
+              "rol": "secretaria",
+              "parroquia": "${PARROQUIA}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 18,
+            "columna": 3
+          }
+        }
+      ],
+      "escenarios": [
+        {
+          "nombre": "la inscripción de un menor queda preinscrita sin consentimiento",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "menu",
+                "ruta": ["Catequesis", "Inscribir"]
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 21,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "elijo el curso \"{curso}\" en el asistente de inscripción",
+                "argumentos": {
+                  "curso": "${CURSO_CATEQUESIS}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 22,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "inscribo a \"{persona}\" con una ficha nueva",
+                "argumentos": {
+                  "persona": "${PREFIJO}Sofía Rojas"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 23,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "agrego como apoderada a \"{persona}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Ana Rojas"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 24,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Inscribir"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 25,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Preinscrita"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 26,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "ver",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Imprimir el consentimiento"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 27,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "\"{persona}\" no aparece en el pase de lista del curso \"{curso}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Sofía Rojas",
+                  "curso": "${CURSO_CATEQUESIS}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 28,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 20,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "registrar el consentimiento activa la inscripción",
+          "pasos": [
+            {
+              "fase": "dado",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "existe la inscripción preinscrita de \"{persona}\" con apoderada \"{apoderado}\" en el curso \"{curso}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Sofía Rojas",
+                  "apoderado": "${PREFIJO}Ana Rojas",
+                  "curso": "${CURSO_CATEQUESIS}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 31,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "menu",
+                "ruta": ["Catequesis", "Inscripciones"]
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 32,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "seleccionar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Curso"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${CURSO_CATEQUESIS}"
+              },
+              "origen": {
+                "linea": 33,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Registrar consentimiento y activar"
+              },
+              "ambito": {
+                "por": "fila",
+                "texto": "${PREFIJO}Sofía Rojas",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 34,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "seleccionar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Quién firmó"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${PREFIJO}Ana Rojas"
+              },
+              "origen": {
+                "linea": 35,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "seleccionar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Relación"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "Madre"
+              },
+              "origen": {
+                "linea": 36,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Fecha de la firma"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "fecha",
+                "fecha": "hoy",
+                "formato": "DD-MM-AAAA"
+              },
+              "origen": {
+                "linea": 37,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Registrar el consentimiento y activar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 38,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Activa"
+              },
+              "ambito": {
+                "por": "fila",
+                "texto": "${PREFIJO}Sofía Rojas",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 39,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "\"{persona}\" aparece en el pase de lista del curso \"{curso}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Sofía Rojas",
+                  "curso": "${CURSO_CATEQUESIS}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 40,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 30,
+            "columna": 1
+          }
+        }
+      ],
+      "limpieza": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "elimino las inscripciones, consentimientos y fichas con prefijo \"{prefijo}\"",
+            "argumentos": {
+              "prefijo": "${PREFIJO}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 43,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 1,
+        "columna": 1
+      }
+    }
+  ]
+}

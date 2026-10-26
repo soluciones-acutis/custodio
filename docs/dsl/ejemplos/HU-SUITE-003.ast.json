@@ -1,0 +1,411 @@
+{
+  "ast": "0.1.0",
+  "archivo": "docs/historias/HU-SUITE-003.historia.md",
+  "historias": [
+    {
+      "dsl": "0.1.0",
+      "id": "HU-SUITE-003",
+      "producto": "suite-parroquial",
+      "titulo": "El párroco invita a una persona al equipo con su rol y revoca la invitación que ya no corresponde",
+      "actor": "Párroco",
+      "criticidad": "alta",
+      "etiquetas": ["acceso", "equipo", "mi-parroquia"],
+      "vocabularios": ["acutis-suite"],
+      "narrativa": {
+        "como": "párroco",
+        "origen": {
+          "linea": 13,
+          "columna": 1
+        },
+        "quiero": "invitar a una persona nueva al panel con el rol que tendrá, y revocar la invitación si ya no corresponde",
+        "para": "decidir yo quién entra a la información de la parroquia y con qué permisos"
+      },
+      "antecedentes": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+            "argumentos": {
+              "rol": "parroco",
+              "parroquia": "${PARROQUIA}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 18,
+            "columna": 3
+          }
+        }
+      ],
+      "escenarios": [
+        {
+          "nombre": "invitar a una catequista",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "menu",
+                "ruta": ["Mi parroquia", "El equipo"]
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 21,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Invitar a alguien"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 22,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Correo"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${PREFIJO}catequista@ejemplo.test"
+              },
+              "origen": {
+                "linea": 23,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "seleccionar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Rol"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "Catequista"
+              },
+              "origen": {
+                "linea": 24,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Crear la invitación"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 25,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Ya lo pasé"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 26,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "menu",
+                "ruta": ["Mi parroquia", "El equipo"]
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 27,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "${PREFIJO}catequista@ejemplo.test"
+              },
+              "ambito": {
+                "por": "seccion",
+                "texto": "Invitaciones sin aceptar",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 28,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Catequista"
+              },
+              "ambito": {
+                "por": "fila",
+                "texto": "${PREFIJO}catequista@ejemplo.test",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 29,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Copiar el link"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 30,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 20,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "una invitación revocada deja de servir",
+          "pasos": [
+            {
+              "fase": "dado",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "argumentos": {
+                  "correo": "${PREFIJO}revocar@ejemplo.test",
+                  "rol": "Catequista",
+                  "guardarLinkComo": "linkInvitacion"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 33,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "menu",
+                "ruta": ["Mi parroquia", "El equipo"]
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 34,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Revocar"
+              },
+              "ambito": {
+                "por": "fila",
+                "texto": "${PREFIJO}revocar@ejemplo.test",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 35,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Sí, revocar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 36,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "url",
+                "url": "${linkInvitacion}"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 37,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Esta invitación ya no es válida"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 38,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Contraseña"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 39,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 32,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "nadie puede restablecer su propio acceso",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "menu",
+                "ruta": ["Mi parroquia", "El equipo"]
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 42,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "No disponible"
+              },
+              "ambito": {
+                "por": "fila",
+                "texto": "${USUARIO_parroco}",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 43,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Quitar el acceso"
+              },
+              "ambito": {
+                "por": "fila",
+                "texto": "${USUARIO_parroco}",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 44,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 41,
+            "columna": 1
+          }
+        }
+      ],
+      "limpieza": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "elimino las invitaciones con prefijo \"{prefijo}\"",
+            "argumentos": {
+              "prefijo": "${PREFIJO}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 47,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 1,
+        "columna": 1
+      }
+    }
+  ]
+}
