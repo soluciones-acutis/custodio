@@ -53,6 +53,9 @@ Matías Peralta (Soluciones Tecnológicas Acutis SpA).
 - **Seguimiento:** los martes se presenta el diseño de la semana (`docs/diseno/`);
   los viernes se entrega el avance en un Pull Request revisado en GitHub.
 - **Decisiones de arquitectura:** en `docs/adr/`.
+- **El lenguaje (DSL):** la especificación, la gramática y el JSON Schema del AST en
+  `docs/dsl/`; las historias de la Suite en `docs/historias/` y sus frases de negocio en
+  `vocabularios/`.
 
 ## Licencia
 
