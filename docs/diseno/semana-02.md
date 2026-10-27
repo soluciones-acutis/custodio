@@ -13,7 +13,7 @@ El diseño del DSL v1 se aprobó como dirección. Este documento cierra lo que l
 - **Cómo se encuentran los elementos:** la coincidencia de texto, las varias coincidencias, qué es una sección y el ámbito anidado quedan definidos en la especificación, no en cada adaptador, para que la suite de contrato pueda probar que el motor no importa.
 - **Secretos:** los declara el ambiente, y el lenguaje prohíbe usarlos donde podrían terminar impresos.
 - **Datos de prueba:** la limpieza corre por escenario, `${PREFIJO}` es único por escenario e intento, y queda espacio en el diseño para frases nativas.
-- **El PR #2** entrega la especificación v0.1, la gramática, el JSON Schema y los tipos del AST, el vocabulario con las firmas de todas las frases, las 12 historias válidas y 16 casos inválidos.
+- **El PR #2** entrega la especificación v0.1, la gramática, el JSON Schema y los tipos del AST, el vocabulario con las firmas de todas las frases, las 12 historias válidas y 17 casos inválidos.
 
 ## 2. Punto de partida
 
@@ -270,7 +270,7 @@ Que un objetivo sea ambiguo (4.2) no es un código `CUS`: solo se sabe al ejecut
 
 ### 8.1 Los casos inválidos
 
-Uno por cada código de error. Son 16, más que los 15 que pide el PR #2:
+Al menos uno por cada código de error. Son 17, más que los 15 que pide el PR #2:
 
 | # | Caso | Error esperado |
 |---|---|---|
@@ -290,40 +290,23 @@ Uno por cada código de error. Son 16, más que los 15 que pide el PR #2:
 | 14 | `inicio sesión como "secretaria parroquial"`, con espacio, dentro de `${USUARIO_{rol}}`. | `CUS-E014` |
 | 15 | `dsl: v1.0`. | `CUS-E015` |
 | 16 | Dos escenarios con el mismo nombre. | `CUS-E016` |
+| 17 | Un escenario sin pasos (lo pide el issue de DSL-04). | `CUS-E005` |
 
 ## 9. Inventario de frases de negocio
 
-Estas son las frases que usan hoy las seis historias de `docs/historias/` y que no son frases base. Salen de un análisis de los pasos de cada historia (138 pasos en total).
+Las 12 historias de `docs/historias/` tienen 262 pasos. Además de las frases base usan **53 frases de negocio**, que quedaron en [`vocabularios/acutis-suite.vocabulario.md`](../../vocabularios/acutis-suite.vocabulario.md) con su firma completa (parámetros, `produce` e implementación):
 
-| Frase (firma) | Historias | Propuesta |
-|---|---|---|
-| `inicio sesión como "{rol}" en la parroquia "{parroquia}"` | 001–006 | Con pasos. |
-| `ingreso el código de segundo factor generado con el secreto "{secreto}"` | 001 | Con pasos (sección 3.2). |
-| `visito el sitio de la parroquia "{parroquia}"` | 004 | Con pasos. |
-| `existe una invitación sin aceptar para "{correo}" con rol "{rol}" y guardo su link como "{guardarLinkComo}"` | 003 | Con pasos; `produce: ["{guardarLinkComo}"]`. |
-| `ELIMINAR las invitaciones con prefijo "{prefijo}"` | 003 | Candidata a nativa. |
-| `una persona pidió una misa desde el sitio a nombre de "{nombre}"` | 004 | Candidata a nativa. |
-| `la secretaría ve la petición de misa de "{nombre}"` | 004 | Con pasos. |
-| `el libro de caja muestra un ingreso de "{monto}" por la misa de "{nombre}"` | 004 | Con pasos. |
-| `ELIMINAR las peticiones de misa con prefijo "{prefijo}"` | 004 | Candidata a nativa. |
-| `ELIMINAR las misas del libro de intenciones con prefijo "{prefijo}" y sus ingresos en el libro de caja` | 004 | Candidata a nativa. |
-| `existe la partida de bautismo de "{persona}"` | 005 | Candidata a nativa. |
-| `abro la ficha de "{persona}"` | 005 | Sin pasos todavía. |
-| `abro la partida de bautismo de "{persona}"` | 005 | Con pasos. |
-| `el libro de "{libro}" muestra la partida de "{persona}"` | 005 | Con pasos. |
-| `el verificador del sitio de la parroquia "{parroquia}" acepta el código "{codigo}" con el apellido "{apellido}"` | 005 | Sin pasos todavía. |
-| `ELIMINAR los certificados, partidas y fichas con prefijo "{prefijo}"` | 005 | Nativa: una partida cerrada no se borra por pantalla. |
-| `elijo el curso "{curso}" en el asistente de inscripción` | 006 | Sin pasos todavía. |
-| `inscribo a "{persona}" con una ficha nueva` | 006 | Sin pasos todavía. |
-| `agrego como apoderada a "{persona}"` | 006 | Sin pasos todavía. |
-| `existe la inscripción preinscrita de "{persona}" con apoderada "{apoderado}" en el curso "{curso}"` | 006 | Con pasos (compuesta) o nativa. |
-| `"{persona}" aparece en el pase de lista del curso "{curso}"` | 006 | Sin pasos todavía. |
-| `"{persona}" no aparece en el pase de lista del curso "{curso}"` | 006 | Sin pasos todavía. |
-| `ELIMINAR las inscripciones, consentimientos y fichas con prefijo "{prefijo}"` | 006 | Candidata a nativa. |
+| Implementación | Frases | Ejemplos |
+|---|---:|---|
+| Con pasos | 13 | «inicio sesión como…», «visito el sitio de la parroquia…», «existe la partida de bautismo de…», «la secretaría ve la inscripción de…» |
+| `pendiente` | 23 | Las del asistente de inscripción, los firmantes de la colecta, el libro de caja, el verificador de certificados |
+| `nativa` | 17 | Todas las limpiezas «elimino … con prefijo», «reabro el mes…», y preparaciones como «existe la colecta presentada…» |
 
-Con las HU-SUITE-007 a 012 aparecerán más frases. Hay que completar este inventario cuando vuelvan al repositorio (sección 10).
+**Criterio.** Una frase tiene pasos solo cuando salen de etiquetas que ya aparecen en las historias, sin inventar pantallas. Es `nativa` cuando por pantalla es imposible (borrar una partida cerrada, reabrir un mes que la contadora no puede reabrir) o cuando prepararla por pantalla mezclaría lo que el escenario no prueba. Las demás son `pendiente`, con un motivo que dice qué falta averiguar.
 
-La palabra `ELIMINAR` en mayúsculas no es una fase del lenguaje. En v0.1 las limpiezas se escriben como frases normales («elimino las invitaciones con prefijo…»), y las historias se ajustan.
+**Composición.** «inicio sesión como…» usa «ingreso el código de segundo factor…», que a su vez usa la frase base con el generador TOTP (§3.2). «existe la inscripción preinscrita…» usa tres frases del asistente de inscripción.
+
+`ELIMINAR` y `REABRIR` en mayúsculas no eran fases del lenguaje: las limpiezas pasaron a ser frases normales («elimino las invitaciones con prefijo…», «reabro el mes… si quedó cerrado»).
 
 ## 10. Alcance del PR #2
 
@@ -344,34 +327,30 @@ La palabra `ELIMINAR` en mayúsculas no es una fase del lenguaje. En v0.1 las li
 
 **Historias**
 - [X] Subir las historias de usuario 007 a 012 en `docs/historias/`.
-- [ ] Actualizar las 12 historias a `dsl: 0.1.0` y a las frases base de la sección 3.2. Las limpiezas pasan a ser frases normales, en vez de `ELIMINAR`.
-- [ ] Completar el inventario de frases (sección 9) con las historias 007 a 012.
+- [x] Actualizar las 12 historias a `dsl: 0.1.0` y a las frases base de la sección 3.2. Las limpiezas pasan a ser frases normales, en vez de `ELIMINAR`.
+- [x] Completar el inventario de frases (sección 9) con las historias 007 a 012.
 
 **Especificación**
-- [ ] Escribir `docs/dsl/especificacion.md` v0.1 a partir de `especificacion-dsl-v1.md`, ajustada a «markdown como fuente».
-- [ ] Incluir la semántica de las secciones 4, 5 y 6 y la tabla de códigos de la sección 8.
-- [ ] Escribir la gramática EBNF (`docs/dsl/gramatica.ebnf`), partiendo del anexo A del documento técnico.
+- [x] Escribir `docs/dsl/especificacion.md` v0.1 a partir de `especificacion-dsl-v1.md`, ajustada a «markdown como fuente».
+- [x] Incluir la semántica de las secciones 4, 5 y 6 y la tabla de códigos de la sección 8.
+- [x] Escribir la gramática EBNF (`docs/dsl/gramatica.ebnf`), partiendo del anexo A del documento técnico.
 
 **AST**
-- [ ] Tipos del AST en `src/lenguaje/`: `Historia`, `Escenario`, `Paso` normalizado, `Localizador`, `Ambito`, `Valor` y `Origen`. Solo tipos, sin E/S: tiene que pasar la regla 6.
-- [ ] `docs/dsl/ast.schema.json` versión `0.1.0`, con el campo `implementacion` en las firmas de frases (sección 5.4).
-- [ ] Convertir los cinco JSON del v1 al AST normalizado y usarlos como ejemplos.
-- [ ] Prueba que valide los ejemplos de AST contra el JSON Schema. Necesita un validador de JSON Schema como dependencia de desarrollo; si no se agrega, se deja para la S3.
+- [x] Tipos del AST en `src/lenguaje/`: `Historia`, `Escenario`, `Paso` normalizado, `Localizador`, `Ambito`, `Valor` y `Origen`. Solo tipos, sin E/S: tiene que pasar la regla 6.
+- [x] `docs/dsl/ast.schema.json` versión `0.1.0`, con el campo `implementacion` en las firmas de frases (sección 5.4).
+- [x] Convertir los cinco JSON del v1 al AST normalizado y usarlos como ejemplos. Se generaron desde los `.historia.md` v0.1, con línea y columna reales, en `docs/dsl/ejemplos/`.
+- [x] Prueba que valide los ejemplos de AST contra el JSON Schema (`test/lenguaje/ast.test.ts`), con `ajv` como dependencia de desarrollo.
 
 **Vocabulario y casos**
-- [ ] `vocabularios/acutis-suite.vocabulario.md` con las firmas de todas las frases y sus pasos cuando se conocen.
-- [ ] Los 16 casos inválidos de la sección 8.1 en `test/lenguaje/casos/invalidos/`, cada uno con su código esperado.
-- [ ] Las 12 historias como casos válidos en `test/lenguaje/casos/validos/`, o referenciadas desde `docs/historias/`.
+- [x] `vocabularios/acutis-suite.vocabulario.md` con las firmas de todas las frases y sus pasos cuando se conocen.
+- [x] Los 17 casos inválidos de la sección 8.1 en `test/lenguaje/casos/invalidos/`, cada uno con su código esperado.
+- [x] Las 12 historias como casos válidos: se referencian desde `docs/historias/`, sin duplicarlas (`test/lenguaje/casos.test.ts`).
 
 **Revisión del diseño v1**
-- [ ] Correcciones de redacción del diseño v1:
-  - §8.1, la frase cortada;
-  - §9.1, el último párrafo;
-  - §4, citar la decisión y su fecha en vez de «la reunión de la semana pasada»;
-  - el índice, que incluye el título.
+- [x] Correcciones de redacción del diseño v1 (en `dsl_v1/`, fuera del repositorio): §8.1 y §9.1. La frase «la reunión de la semana pasada» del §4 no está en la versión actual del documento, y el índice ya no incluye el título.
 
 **Cierre**
-- [ ] `npm run verificar` en verde.
+- [x] `npm run verificar` en verde.
 - [ ] Descripción del PR con la plantilla, `Refs #n` a los issues DSL-01 a DSL-12 y las casillas de especificación marcadas en cada issue.
 
 ### 10.3 Fuera del PR #2
@@ -380,13 +359,35 @@ La palabra `ELIMINAR` en mayúsculas no es una fase del lenguaje. En v0.1 las li
 - **Frases nativas:** solo se deja el espacio en el diseño (sección 5.4); el puerto se construye más adelante.
 - **Analizador, validador y CLI `custodio validar`:** S3 (ADR-003).
 
-## 11. Criterios de aceptación de la semana
+## 11. Ajustes al escribir la especificación
+
+Al escribir la especificación y pasar las 12 historias por un analizador de prueba aparecieron estos ajustes:
+
+| Ajuste | Por qué |
+|---|---|
+| Campo `vocabularios: [acutis-suite]` en el frontmatter de las 12 historias. | Una historia tiene que decir qué vocabulario importa para que `CUS-E009` se pueda revisar. |
+| `fila` también es el elemento de una lista (rol *listitem*), no solo la fila de una tabla. | La HU-SUITE-011 verifica un texto «en la petición», que en el muro de Orar es un elemento de lista. |
+| HU-SUITE-012: `en el curso "…"` pasó a `en "…"` (sección por su título), y «la solicitud ya no está en…» pasó a `no veo el texto "…" en "Solicitudes por revisar"`. | Así se escriben con frases base y no hacen falta dos frases de negocio más. |
+| HU-SUITE-011: `en la petición "…"` pasó a `en la fila de "…"`. | Mismo motivo. |
+| HU-SUITE-004 y HU-SUITE-007: el `no veo` pasó antes de la frase de verificación que lo seguía. | El analizador encontró `CUS-W003`: la frase («el libro de caja muestra…», «la asistencia… quedó como presente») puede cambiar de página, y el `no veo` habría revisado la página equivocada. |
+| HU-SUITE-005: el número de partida `999` pasó a `un número único`. | Un número fijo choca entre ejecuciones (§5.3). |
+| Formas en markdown para los escapes y el rol: `el elemento con id de prueba "…"`, ``el elemento con selector `…` ``, `el elemento con rol "…" y nombre "…"`. | La tabla de §3.2 no las tenía. |
+| `CUS-E010` se reconoce porque la oración **empieza** como una frase del vocabulario pero no tiene sus parámetros. | Sin esa regla, una frase a la que le falta un parámetro se informaría como frase desconocida (`CUS-E006`). |
+| `CUS-E005` («no puede empezar con Y o ENTONCES») mira la primera línea del escenario, aunque no se haya entendido. | Si un primer paso inválido se descartara, el segundo pasaría a ser «el primero» y aparecería un error encadenado. |
+
+### 11.1 Cómo se comprobó
+
+- Un analizador de prueba, que no es parte del repositorio y no es el de la S3, leyó las 12 historias con las frases base de §3.2 y el vocabulario: **0 errores** en las 12. Las únicas advertencias son `CUS-W004` de las historias que usan frases sin pasos.
+- El mismo analizador corrió los 17 casos inválidos: **cada uno informa exactamente su error**, y ningún otro.
+- Generó el AST de cinco historias y del vocabulario (`docs/dsl/ejemplos/`), y esos AST cumplen el JSON Schema (`test/lenguaje/ast.test.ts`).
+
+## 12. Criterios de aceptación de la semana
 
 Del documento técnico, para la S2:
 
-- [ ] La especificación permite escribir **todas** las historias del inventario.
-- [ ] Cubre **DSL-01 a DSL-11** en papel.
-- [ ] Hay **≥ 12 historias** como casos válidos y **≥ 15 casos inválidos** con su error esperado.
-- [ ] La especificación y la gramática están en `docs/dsl/`, y el modelo del AST tipado está en `src/lenguaje/`.
+- [x] La especificación permite escribir **todas** las historias del inventario.
+- [x] Cubre **DSL-01 a DSL-11** en papel.
+- [x] Hay **≥ 12 historias** como casos válidos y **≥ 15 casos inválidos** con su error esperado.
+- [x] La especificación y la gramática están en `docs/dsl/`, y el modelo del AST tipado está en `src/lenguaje/`.
 
 Y la definición de terminado de cada PR: CI verde, pruebas para lo nuevo, sin secretos ni datos personales, documentación al día, descripción con evidencia y requisitos marcados en sus issues.
