@@ -35,7 +35,9 @@ interface Esquema {
 const leerJson = (ruta: string): unknown => JSON.parse(readFileSync(ruta, 'utf8'));
 const esquema = leerJson(join(DSL, 'ast.schema.json')) as Esquema;
 
-const ajv = new Ajv2020({ allErrors: true });
+// strictTypes: true convierte en error lo que ajv solo advertiría (tipos implícitos en el
+// Schema), para que el Schema se mantenga explícito.
+const ajv = new Ajv2020({ allErrors: true, strictTypes: true });
 const validar = ajv.compile(esquema);
 const errores = (): string => ajv.errorsText(validar.errors);
 

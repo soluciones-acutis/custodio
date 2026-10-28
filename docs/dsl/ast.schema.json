@@ -109,11 +109,14 @@
     "PasoDeEscenario": {
       "allOf": [
         { "$ref": "#/$defs/Paso" },
-        { "properties": { "fase": { "$ref": "#/$defs/Fase" } } }
+        { "type": "object", "properties": { "fase": { "$ref": "#/$defs/Fase" } } }
       ]
     },
     "PasoSinFase": {
-      "allOf": [{ "$ref": "#/$defs/Paso" }, { "properties": { "fase": { "type": "null" } } }]
+      "allOf": [
+        { "$ref": "#/$defs/Paso" },
+        { "type": "object", "properties": { "fase": { "type": "null" } } }
+      ]
     },
 
     "Paso": {
@@ -298,7 +301,7 @@
         {
           "allOf": [
             { "$ref": "#/$defs/LocalizadorPorTexto" },
-            { "properties": { "por": { "const": "campo" } } }
+            { "type": "object", "properties": { "por": { "const": "campo" } } }
           ]
         },
         { "$ref": "#/$defs/LocalizadorPorRol" }
@@ -309,7 +312,7 @@
         {
           "allOf": [
             { "$ref": "#/$defs/LocalizadorPorTexto" },
-            { "properties": { "por": { "enum": ["casilla", "opcion"] } } }
+            { "type": "object", "properties": { "por": { "enum": ["casilla", "opcion"] } } }
           ]
         },
         { "$ref": "#/$defs/LocalizadorPorRol" }
@@ -437,8 +440,8 @@
         "origen": { "$ref": "#/$defs/Origen" }
       },
       "if": { "properties": { "implementacion": { "const": "pasos" } } },
-      "then": { "properties": { "pasos": { "minItems": 1 } } },
-      "else": { "properties": { "pasos": { "maxItems": 0 } } }
+      "then": { "properties": { "pasos": { "type": "array", "minItems": 1 } } },
+      "else": { "properties": { "pasos": { "type": "array", "maxItems": 0 } } }
     }
   }
 }
