@@ -32,7 +32,10 @@ export const ACCIONES = [
 ] as const;
 export type Accion = (typeof ACCIONES)[number];
 
-/** Localizadores que encuentran un elemento por su nombre accesible, etiqueta o texto. */
+/**
+ * Localizadores que encuentran un elemento por su nombre accesible, etiqueta o texto.
+ * `fila` y `seccion` no están: en el markdown solo existen como ámbito (§8.3).
+ */
 export const LOCALIZADORES_POR_TEXTO = [
   'boton',
   'enlace',
@@ -41,8 +44,6 @@ export const LOCALIZADORES_POR_TEXTO = [
   'opcion',
   'titulo',
   'texto',
-  'fila',
-  'seccion',
 ] as const;
 export type LocalizadorPorTextoClave = (typeof LOCALIZADORES_POR_TEXTO)[number];
 
@@ -146,11 +147,14 @@ export interface ValorTotp {
   readonly secreto: string;
 }
 
-/** La fecha del día, tomada del puerto Reloj. */
+/**
+ * La fecha del día, tomada del puerto Reloj. Con `formato: null`, el adaptador
+ * usa el formato que pide el campo (especificación, §6.3).
+ */
 export interface ValorFecha {
   readonly tipo: 'fecha';
   readonly fecha: 'hoy';
-  readonly formato: string;
+  readonly formato: string | null;
 }
 
 /** Un valor que la aplicación exige único, como el número de una partida. */

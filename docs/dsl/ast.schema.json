@@ -245,17 +245,7 @@
       "additionalProperties": false,
       "properties": {
         "por": {
-          "enum": [
-            "boton",
-            "enlace",
-            "campo",
-            "casilla",
-            "opcion",
-            "titulo",
-            "texto",
-            "fila",
-            "seccion"
-          ]
+          "enum": ["boton", "enlace", "campo", "casilla", "opcion", "titulo", "texto"]
         },
         "texto": { "type": "string" },
         "exacto": { "type": "boolean" }
@@ -389,7 +379,10 @@
       "properties": {
         "tipo": { "const": "fecha" },
         "fecha": { "const": "hoy" },
-        "formato": { "type": "string", "minLength": 1 }
+        "formato": {
+          "description": "null: el adaptador usa el formato que pide el campo (especificación, sección 6.3).",
+          "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+        }
       }
     },
     "ValorUnico": {

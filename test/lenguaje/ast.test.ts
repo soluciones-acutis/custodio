@@ -70,7 +70,7 @@ const historiaMinima = {
 
 const minimo = {
   ast: VERSION_AST,
-  archivo: 'docs/historias/HU-SUITE-999.historia.md',
+  archivo: 'historias/HU-SUITE-999.historia.md',
   historias: [historiaMinima],
 } satisfies ArchivoDeHistorias;
 
@@ -116,6 +116,15 @@ describe('AST v0.1 (docs/dsl/ast.schema.json)', () => {
       descripcion: 'ver que la URL contiene un texto',
       paso: { ...pasoValido, accion: 'ver', objetivo: { por: 'url', url: '/admin' } },
     },
+    {
+      descripcion: 'la fecha de hoy en el formato que pide el campo',
+      paso: {
+        ...pasoValido,
+        accion: 'completar',
+        objetivo: { por: 'campo', texto: 'Fecha', exacto: true },
+        valor: { tipo: 'fecha', fecha: 'hoy', formato: null },
+      },
+    },
   ])('acepta $descripcion', ({ paso }) => {
     expect(validar(archivo([paso])), errores()).toBe(true);
   });
@@ -152,6 +161,10 @@ describe('AST v0.1 (docs/dsl/ast.schema.json)', () => {
     {
       descripcion: 'un localizador CSS sin selector',
       paso: { ...pasoValido, objetivo: { por: 'css' } },
+    },
+    {
+      descripcion: 'presionar una fila, que solo existe como ámbito',
+      paso: { ...pasoValido, objetivo: { por: 'fila', texto: 'x' } },
     },
   ])('rechaza $descripcion', ({ paso }) => {
     expect(validar(archivo([paso]))).toBe(false);
