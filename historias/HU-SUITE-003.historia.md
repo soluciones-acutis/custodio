@@ -1,16 +1,19 @@
 ---
-dsl: v1.0
+dsl: 0.1.0
 id: HU-SUITE-003
 producto: suite-parroquial
 titulo: El párroco invita a una persona al equipo con su rol y revoca la invitación que ya no corresponde
 actor: Párroco
 criticidad: alta
 etiquetas: [acceso, equipo, mi-parroquia]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
 **Como** párroco
+
 **Quiero** invitar a una persona nueva al panel con el rol que tendrá, y revocar la invitación si ya no corresponde
+
 **Para** decidir yo quién entra a la información de la parroquia y con qué permisos
 
 ## Antecedentes
@@ -43,4 +46,4 @@ etiquetas: [acceso, equipo, mi-parroquia]
 - Y no veo el botón "Quitar el acceso" en la fila de "${USUARIO_parroco}"
 
 ## Limpieza
-- ELIMINAR las invitaciones con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

@@ -1,0 +1,271 @@
+{
+  "ast": "0.1.0",
+  "archivo": "historias/HU-SUITE-002.historia.md",
+  "historias": [
+    {
+      "dsl": "0.1.0",
+      "id": "HU-SUITE-002",
+      "producto": "suite-parroquial",
+      "titulo": "Cada persona del equipo ve en el panel solo los módulos de su rol",
+      "actor": "Párroco",
+      "criticidad": "alta",
+      "etiquetas": ["acceso", "roles", "proteccion-datos"],
+      "vocabularios": ["acutis-suite"],
+      "narrativa": {
+        "como": "párroco",
+        "origen": {
+          "linea": 13,
+          "columna": 1
+        },
+        "quiero": "que cada persona del equipo vea en su panel solo los módulos de su rol",
+        "para": "que los sueldos, las cuentas y los libros sacramentales no queden a la vista de quien no los necesita"
+      },
+      "antecedentes": [],
+      "escenarios": [
+        {
+          "nombre": "la catequista solo ve Catequesis",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "argumentos": {
+                  "rol": "catequista",
+                  "parroquia": "${PARROQUIA}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 20,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Catequesis"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 21,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Comunidad"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 22,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Remuneraciones"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 23,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Contabilidad"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 24,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 19,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "la contadora ve Remuneraciones y Contabilidad, pero no Catequesis",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "argumentos": {
+                  "rol": "contadora",
+                  "parroquia": "${PARROQUIA}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 27,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Remuneraciones"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 28,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Contabilidad"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 29,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Catequesis"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 30,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Sitio y difusión"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 31,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 26,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "el Consejo Económico solo ve las cuentas de la parroquia",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "argumentos": {
+                  "rol": "consejo",
+                  "parroquia": "${PARROQUIA}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 34,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Cuentas de la parroquia"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 35,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Comprobantes del mes"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 36,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Remuneraciones"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 37,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 33,
+            "columna": 1
+          }
+        }
+      ],
+      "limpieza": [],
+      "origen": {
+        "linea": 1,
+        "columna": 1
+      }
+    }
+  ]
+}

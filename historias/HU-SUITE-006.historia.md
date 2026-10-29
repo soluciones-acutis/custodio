@@ -1,16 +1,19 @@
 ---
-dsl: v1.0
+dsl: 0.1.0
 id: HU-SUITE-006
 producto: suite-parroquial
 titulo: La inscripción de un menor en catequesis solo se activa con el consentimiento firmado del apoderado
 actor: Secretaria parroquial
 criticidad: alta
 etiquetas: [catequesis, menores, consentimiento, ley-21719]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
 **Como** secretaria de la parroquia
+
 **Quiero** inscribir a un niño en el mesón y activar su inscripción cuando el apoderado entrega el consentimiento firmado
+
 **Para** cumplir la Ley 21.719 y que solo participen en catequesis los menores autorizados por su familia
 
 ## Antecedentes
@@ -39,4 +42,4 @@ etiquetas: [catequesis, menores, consentimiento, ley-21719]
 - Y "${PREFIJO}Sofía Rojas" aparece en el pase de lista del curso "${CURSO_CATEQUESIS}"
 
 ## Limpieza
-- ELIMINAR las inscripciones, consentimientos y fichas con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

@@ -1,16 +1,19 @@
 ---
-dsl: v1.0
+dsl: 0.1.0
 id: HU-SUITE-001
 producto: suite-parroquial
 titulo: La secretaría entra al panel con su contraseña y el código de su app de autenticación
 actor: Secretaria parroquial
 criticidad: alta
 etiquetas: [acceso, segundo-factor, panel]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
 **Como** secretaria de la parroquia
+
 **Quiero** entrar al panel con mi contraseña y un código de seis dígitos de mi app de autenticación
+
 **Para** trabajar en la Suite con la certeza de que nadie más puede entrar con mi cuenta
 
 ## Antecedentes

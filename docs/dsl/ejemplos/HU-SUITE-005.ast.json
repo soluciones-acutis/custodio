@@ -1,0 +1,531 @@
+{
+  "ast": "0.1.0",
+  "archivo": "historias/HU-SUITE-005.historia.md",
+  "historias": [
+    {
+      "dsl": "0.1.0",
+      "id": "HU-SUITE-005",
+      "producto": "suite-parroquial",
+      "titulo": "La secretaría anota una partida de bautismo y emite un certificado que se puede verificar en el sitio",
+      "actor": "Secretaria parroquial",
+      "criticidad": "alta",
+      "etiquetas": ["comunidad", "libros-sacramentales", "certificados"],
+      "vocabularios": ["acutis-suite"],
+      "narrativa": {
+        "como": "secretaria de la parroquia",
+        "origen": {
+          "linea": 13,
+          "columna": 1
+        },
+        "quiero": "transcribir una partida de bautismo y emitir su certificado desde la partida",
+        "para": "entregarle a la familia un certificado fiel al libro, que cualquiera pueda verificar en el sitio de la parroquia"
+      },
+      "antecedentes": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+            "argumentos": {
+              "rol": "secretaria",
+              "parroquia": "${PARROQUIA}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 20,
+            "columna": 3
+          }
+        }
+      ],
+      "escenarios": [
+        {
+          "nombre": "anotar una partida de bautismo",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "menu",
+                "ruta": ["Comunidad", "Libros sacramentales"]
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 23,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "seleccionar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Libro"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "Bautismos"
+              },
+              "origen": {
+                "linea": 24,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Anotar bautismo"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 25,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Nombre"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${PREFIJO}Tomás Pérez"
+              },
+              "origen": {
+                "linea": 26,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Crear la ficha"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 27,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Crear y elegir"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 28,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Fecha"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "13-09-2026"
+              },
+              "origen": {
+                "linea": 29,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Ministro"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${PREFIJO}P. Ministro"
+              },
+              "origen": {
+                "linea": 30,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Número"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "unico",
+                "unico": "numero"
+              },
+              "origen": {
+                "linea": 31,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Anotar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 32,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "enlace",
+                "texto": "Ver la partida"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 33,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "el libro de \"{libro}\" muestra la partida de \"{persona}\"",
+                "argumentos": {
+                  "libro": "Bautismos",
+                  "persona": "${PREFIJO}Tomás Pérez"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 34,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 22,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "emitir el certificado y verificarlo en el sitio",
+          "pasos": [
+            {
+              "fase": "dado",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "existe la partida de bautismo de \"{persona}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Tomás Pérez"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 37,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "cuando",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "abro la ficha de \"{persona}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Tomás Pérez"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 38,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Emitir certificado"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 39,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Sí, emitir"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 40,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Vigente"
+              },
+              "ambito": {
+                "por": "seccion",
+                "texto": "Certificados emitidos",
+                "ambito": null
+              },
+              "valor": null,
+              "origen": {
+                "linea": 41,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "capturo el código del certificado como \"{como}\"",
+                "argumentos": {
+                  "como": "codigoCertificado"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 42,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "el verificador del sitio de la parroquia \"{parroquia}\" acepta el código \"{codigo}\" con el apellido \"{apellido}\"",
+                "argumentos": {
+                  "parroquia": "${PARROQUIA}",
+                  "codigo": "${codigoCertificado}",
+                  "apellido": "Pérez"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 43,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 36,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "una partida cerrada ya no se puede corregir",
+          "pasos": [
+            {
+              "fase": "dado",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "existe la partida de bautismo de \"{persona}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Tomás Pérez"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 46,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "cuando",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "abro la partida de bautismo de \"{persona}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Tomás Pérez"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 47,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Cerrar la partida"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 48,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Sí, cerrar la partida"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 49,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "abro la partida de bautismo de \"{persona}\"",
+                "argumentos": {
+                  "persona": "${PREFIJO}Tomás Pérez"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 50,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Cerrada"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 51,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "ver",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Agregar nota marginal"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 52,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Corregir"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 53,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 45,
+            "columna": 1
+          }
+        }
+      ],
+      "limpieza": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "elimino todo lo creado con prefijo \"{prefijo}\"",
+            "argumentos": {
+              "prefijo": "${PREFIJO}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 56,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 1,
+        "columna": 1
+      }
+    }
+  ]
+}
