@@ -1,0 +1,8 @@
+node_modules/
+coverage/
+dist/
+package-lock.json
+
+# El markdown queda fuera de Prettier: las historias (*.historia.md) tendrán su
+# propio formateador canónico (DSL-13) y Prettier no debe reescribirlas.
+*.md

@@ -1,0 +1,57 @@
+name: Error
+description: Algo de Custodio no funciona como debería.
+title: 'Error: '
+labels: [error]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Este repositorio es público.** No pegues contraseñas, tokens, secretos TOTP,
+        URLs con credenciales ni datos personales reales. Usa datos ficticios.
+        Si algo así se publicó por error, avisa de inmediato al supervisor: el secreto
+        se da por comprometido y se rota (borrar el comentario no basta).
+
+  - type: textarea
+    id: que-paso
+    attributes:
+      label: Qué pasó
+    validations:
+      required: true
+
+  - type: textarea
+    id: como-reproducir
+    attributes:
+      label: Cómo reproducirlo
+      placeholder: |
+        1. Correr `npm run ...`
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Qué se esperaba
+    validations:
+      required: true
+
+  - type: textarea
+    id: salida
+    attributes:
+      label: Salida de consola o diagnóstico
+      description: Por ejemplo, el error `CUS-Exxx` con su línea y columna (opcional).
+      render: shell
+
+  - type: input
+    id: version
+    attributes:
+      label: Versión o commit
+      placeholder: v0.1.0 o 606a54a
+
+  - type: checkboxes
+    id: confirmacion
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Revisé que el issue no contiene secretos ni datos personales reales.
+          required: true
