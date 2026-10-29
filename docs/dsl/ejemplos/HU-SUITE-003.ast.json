@@ -1,6 +1,6 @@
 {
   "ast": "0.1.0",
-  "archivo": "docs/historias/HU-SUITE-003.historia.md",
+  "archivo": "historias/HU-SUITE-003.historia.md",
   "historias": [
     {
       "dsl": "0.1.0",
@@ -36,7 +36,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 18,
+            "linea": 20,
             "columna": 3
           }
         }
@@ -55,7 +55,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 21,
+                "linea": 23,
                 "columna": 3
               }
             },
@@ -69,7 +69,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 22,
+                "linea": 24,
                 "columna": 3
               }
             },
@@ -86,7 +86,7 @@
                 "texto": "${PREFIJO}catequista@ejemplo.test"
               },
               "origen": {
-                "linea": 23,
+                "linea": 25,
                 "columna": 3
               }
             },
@@ -103,7 +103,7 @@
                 "texto": "Catequista"
               },
               "origen": {
-                "linea": 24,
+                "linea": 26,
                 "columna": 3
               }
             },
@@ -117,7 +117,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 25,
+                "linea": 27,
                 "columna": 3
               }
             },
@@ -131,7 +131,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 26,
+                "linea": 28,
                 "columna": 3
               }
             },
@@ -145,7 +145,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 27,
+                "linea": 29,
                 "columna": 3
               }
             },
@@ -163,7 +163,7 @@
               },
               "valor": null,
               "origen": {
-                "linea": 28,
+                "linea": 30,
                 "columna": 3
               }
             },
@@ -181,7 +181,7 @@
               },
               "valor": null,
               "origen": {
-                "linea": 29,
+                "linea": 31,
                 "columna": 3
               }
             },
@@ -195,13 +195,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 30,
+                "linea": 32,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 20,
+            "linea": 22,
             "columna": 1
           }
         },
@@ -224,7 +224,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 33,
+                "linea": 35,
                 "columna": 3
               }
             },
@@ -238,7 +238,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 34,
+                "linea": 36,
                 "columna": 3
               }
             },
@@ -256,7 +256,7 @@
               },
               "valor": null,
               "origen": {
-                "linea": 35,
+                "linea": 37,
                 "columna": 3
               }
             },
@@ -270,7 +270,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 36,
+                "linea": 38,
                 "columna": 3
               }
             },
@@ -284,7 +284,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 37,
+                "linea": 39,
                 "columna": 3
               }
             },
@@ -298,7 +298,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 38,
+                "linea": 40,
                 "columna": 3
               }
             },
@@ -312,13 +312,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 39,
+                "linea": 41,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 32,
+            "linea": 34,
             "columna": 1
           }
         },
@@ -335,7 +335,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 42,
+                "linea": 44,
                 "columna": 3
               }
             },
@@ -353,7 +353,7 @@
               },
               "valor": null,
               "origen": {
-                "linea": 43,
+                "linea": 45,
                 "columna": 3
               }
             },
@@ -371,13 +371,13 @@
               },
               "valor": null,
               "origen": {
-                "linea": 44,
+                "linea": 46,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 41,
+            "linea": 43,
             "columna": 1
           }
         }
@@ -389,7 +389,7 @@
           "objetivo": {
             "por": "frase",
             "vocabulario": "acutis-suite",
-            "nombre": "elimino las invitaciones con prefijo \"{prefijo}\"",
+            "nombre": "elimino todo lo creado con prefijo \"{prefijo}\"",
             "argumentos": {
               "prefijo": "${PREFIJO}"
             }
@@ -397,7 +397,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 47,
+            "linea": 49,
             "columna": 3
           }
         }

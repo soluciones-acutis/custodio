@@ -1,6 +1,6 @@
 {
   "ast": "0.1.0",
-  "archivo": "docs/historias/HU-SUITE-005.historia.md",
+  "archivo": "historias/HU-SUITE-005.historia.md",
   "historias": [
     {
       "dsl": "0.1.0",
@@ -36,7 +36,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 18,
+            "linea": 20,
             "columna": 3
           }
         }
@@ -55,7 +55,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 21,
+                "linea": 23,
                 "columna": 3
               }
             },
@@ -72,7 +72,7 @@
                 "texto": "Bautismos"
               },
               "origen": {
-                "linea": 22,
+                "linea": 24,
                 "columna": 3
               }
             },
@@ -86,7 +86,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 23,
+                "linea": 25,
                 "columna": 3
               }
             },
@@ -103,7 +103,7 @@
                 "texto": "${PREFIJO}Tomás Pérez"
               },
               "origen": {
-                "linea": 24,
+                "linea": 26,
                 "columna": 3
               }
             },
@@ -117,7 +117,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 25,
+                "linea": 27,
                 "columna": 3
               }
             },
@@ -131,7 +131,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 26,
+                "linea": 28,
                 "columna": 3
               }
             },
@@ -148,7 +148,7 @@
                 "texto": "13-09-2026"
               },
               "origen": {
-                "linea": 27,
+                "linea": 29,
                 "columna": 3
               }
             },
@@ -165,7 +165,7 @@
                 "texto": "${PREFIJO}P. Ministro"
               },
               "origen": {
-                "linea": 28,
+                "linea": 30,
                 "columna": 3
               }
             },
@@ -182,7 +182,7 @@
                 "unico": "numero"
               },
               "origen": {
-                "linea": 29,
+                "linea": 31,
                 "columna": 3
               }
             },
@@ -196,7 +196,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 30,
+                "linea": 32,
                 "columna": 3
               }
             },
@@ -210,7 +210,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 31,
+                "linea": 33,
                 "columna": 3
               }
             },
@@ -229,13 +229,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 32,
+                "linea": 34,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 20,
+            "linea": 22,
             "columna": 1
           }
         },
@@ -256,7 +256,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 35,
+                "linea": 37,
                 "columna": 3
               }
             },
@@ -274,7 +274,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 36,
+                "linea": 38,
                 "columna": 3
               }
             },
@@ -288,7 +288,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 37,
+                "linea": 39,
                 "columna": 3
               }
             },
@@ -302,7 +302,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 38,
+                "linea": 40,
                 "columna": 3
               }
             },
@@ -320,7 +320,7 @@
               },
               "valor": null,
               "origen": {
-                "linea": 39,
+                "linea": 41,
                 "columna": 3
               }
             },
@@ -338,7 +338,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 40,
+                "linea": 42,
                 "columna": 3
               }
             },
@@ -358,13 +358,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 41,
+                "linea": 43,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 34,
+            "linea": 36,
             "columna": 1
           }
         },
@@ -385,7 +385,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 44,
+                "linea": 46,
                 "columna": 3
               }
             },
@@ -403,7 +403,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 45,
+                "linea": 47,
                 "columna": 3
               }
             },
@@ -417,7 +417,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 46,
+                "linea": 48,
                 "columna": 3
               }
             },
@@ -431,7 +431,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 47,
+                "linea": 49,
                 "columna": 3
               }
             },
@@ -449,7 +449,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 48,
+                "linea": 50,
                 "columna": 3
               }
             },
@@ -463,7 +463,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 49,
+                "linea": 51,
                 "columna": 3
               }
             },
@@ -477,7 +477,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 50,
+                "linea": 52,
                 "columna": 3
               }
             },
@@ -491,13 +491,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 51,
+                "linea": 53,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 43,
+            "linea": 45,
             "columna": 1
           }
         }
@@ -509,7 +509,7 @@
           "objetivo": {
             "por": "frase",
             "vocabulario": "acutis-suite",
-            "nombre": "elimino los certificados, partidas y fichas con prefijo \"{prefijo}\"",
+            "nombre": "elimino todo lo creado con prefijo \"{prefijo}\"",
             "argumentos": {
               "prefijo": "${PREFIJO}"
             }
@@ -517,7 +517,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 54,
+            "linea": 56,
             "columna": 3
           }
         }

@@ -1,6 +1,6 @@
 {
   "ast": "0.1.0",
-  "archivo": "docs/historias/HU-SUITE-002.historia.md",
+  "archivo": "historias/HU-SUITE-002.historia.md",
   "historias": [
     {
       "dsl": "0.1.0",
@@ -40,7 +40,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 18,
+                "linea": 20,
                 "columna": 3
               }
             },
@@ -54,7 +54,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 19,
+                "linea": 21,
                 "columna": 3
               }
             },
@@ -68,7 +68,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 20,
+                "linea": 22,
                 "columna": 3
               }
             },
@@ -82,7 +82,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 21,
+                "linea": 23,
                 "columna": 3
               }
             },
@@ -96,13 +96,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 22,
+                "linea": 24,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 17,
+            "linea": 19,
             "columna": 1
           }
         },
@@ -124,7 +124,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 25,
+                "linea": 27,
                 "columna": 3
               }
             },
@@ -138,7 +138,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 26,
+                "linea": 28,
                 "columna": 3
               }
             },
@@ -152,7 +152,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 27,
+                "linea": 29,
                 "columna": 3
               }
             },
@@ -166,7 +166,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 28,
+                "linea": 30,
                 "columna": 3
               }
             },
@@ -180,13 +180,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 29,
+                "linea": 31,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 24,
+            "linea": 26,
             "columna": 1
           }
         },
@@ -208,7 +208,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 32,
+                "linea": 34,
                 "columna": 3
               }
             },
@@ -222,7 +222,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 33,
+                "linea": 35,
                 "columna": 3
               }
             },
@@ -236,7 +236,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 34,
+                "linea": 36,
                 "columna": 3
               }
             },
@@ -250,13 +250,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 35,
+                "linea": 37,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 31,
+            "linea": 33,
             "columna": 1
           }
         }

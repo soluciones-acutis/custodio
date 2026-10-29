@@ -1,6 +1,6 @@
 {
   "ast": "0.1.0",
-  "archivo": "docs/historias/HU-SUITE-001.historia.md",
+  "archivo": "historias/HU-SUITE-001.historia.md",
   "historias": [
     {
       "dsl": "0.1.0",
@@ -31,7 +31,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 18,
+            "linea": 20,
             "columna": 3
           }
         }
@@ -53,7 +53,7 @@
                 "texto": "${USUARIO_secretaria}"
               },
               "origen": {
-                "linea": 21,
+                "linea": 23,
                 "columna": 3
               }
             },
@@ -70,7 +70,7 @@
                 "texto": "${CLAVE_secretaria}"
               },
               "origen": {
-                "linea": 22,
+                "linea": 24,
                 "columna": 3
               }
             },
@@ -84,7 +84,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 23,
+                "linea": 25,
                 "columna": 3
               }
             },
@@ -98,7 +98,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 24,
+                "linea": 26,
                 "columna": 3
               }
             },
@@ -116,7 +116,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 25,
+                "linea": 27,
                 "columna": 3
               }
             },
@@ -130,7 +130,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 26,
+                "linea": 28,
                 "columna": 3
               }
             },
@@ -144,7 +144,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 27,
+                "linea": 29,
                 "columna": 3
               }
             },
@@ -158,13 +158,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 28,
+                "linea": 30,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 20,
+            "linea": 22,
             "columna": 1
           }
         },
@@ -184,7 +184,7 @@
                 "texto": "${USUARIO_secretaria}"
               },
               "origen": {
-                "linea": 31,
+                "linea": 33,
                 "columna": 3
               }
             },
@@ -201,7 +201,7 @@
                 "texto": "clave-que-no-es"
               },
               "origen": {
-                "linea": 32,
+                "linea": 34,
                 "columna": 3
               }
             },
@@ -215,7 +215,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 33,
+                "linea": 35,
                 "columna": 3
               }
             },
@@ -229,7 +229,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 34,
+                "linea": 36,
                 "columna": 3
               }
             },
@@ -243,13 +243,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 35,
+                "linea": 37,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 30,
+            "linea": 32,
             "columna": 1
           }
         },
@@ -269,7 +269,7 @@
                 "texto": "${USUARIO_secretaria}"
               },
               "origen": {
-                "linea": 38,
+                "linea": 40,
                 "columna": 3
               }
             },
@@ -284,37 +284,6 @@
               "valor": {
                 "tipo": "texto",
                 "texto": "${CLAVE_secretaria}"
-              },
-              "origen": {
-                "linea": 39,
-                "columna": 3
-              }
-            },
-            {
-              "fase": "y",
-              "accion": "presionar",
-              "objetivo": {
-                "por": "boton",
-                "texto": "Entrar"
-              },
-              "ambito": null,
-              "valor": null,
-              "origen": {
-                "linea": 40,
-                "columna": 3
-              }
-            },
-            {
-              "fase": "y",
-              "accion": "completar",
-              "objetivo": {
-                "por": "campo",
-                "texto": "Código de seis dígitos"
-              },
-              "ambito": null,
-              "valor": {
-                "tipo": "texto",
-                "texto": "000000"
               },
               "origen": {
                 "linea": 41,
@@ -336,6 +305,37 @@
               }
             },
             {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Código de seis dígitos"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "000000"
+              },
+              "origen": {
+                "linea": 43,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Entrar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 44,
+                "columna": 3
+              }
+            },
+            {
               "fase": "entonces",
               "accion": "ver",
               "objetivo": {
@@ -345,7 +345,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 43,
+                "linea": 45,
                 "columna": 3
               }
             },
@@ -359,13 +359,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 44,
+                "linea": 46,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 37,
+            "linea": 39,
             "columna": 1
           }
         },
@@ -387,7 +387,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 47,
+                "linea": 49,
                 "columna": 3
               }
             },
@@ -401,7 +401,7 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 48,
+                "linea": 50,
                 "columna": 3
               }
             },
@@ -411,34 +411,6 @@
               "objetivo": {
                 "por": "boton",
                 "texto": "Salir"
-              },
-              "ambito": null,
-              "valor": null,
-              "origen": {
-                "linea": 49,
-                "columna": 3
-              }
-            },
-            {
-              "fase": "entonces",
-              "accion": "ver",
-              "objetivo": {
-                "por": "campo",
-                "texto": "Contraseña"
-              },
-              "ambito": null,
-              "valor": null,
-              "origen": {
-                "linea": 50,
-                "columna": 3
-              }
-            },
-            {
-              "fase": "cuando",
-              "accion": "navegar",
-              "objetivo": {
-                "por": "url",
-                "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
               },
               "ambito": null,
               "valor": null,
@@ -462,6 +434,34 @@
               }
             },
             {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "url",
+                "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 53,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Contraseña"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 54,
+                "columna": 3
+              }
+            },
+            {
               "fase": "y",
               "accion": "noVer",
               "objetivo": {
@@ -471,13 +471,13 @@
               "ambito": null,
               "valor": null,
               "origen": {
-                "linea": 53,
+                "linea": 55,
                 "columna": 3
               }
             }
           ],
           "origen": {
-            "linea": 46,
+            "linea": 48,
             "columna": 1
           }
         }

@@ -210,6 +210,18 @@
       }
     },
     {
+      "patron": "elimino todo lo creado con prefijo \"{prefijo}\"",
+      "parametros": ["prefijo"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "una sola operación del puerto de datos de prueba de la Suite borra todo registro que lleve el prefijo, y lo que depende de él (ingresos de caja, asientos, consentimientos).",
+      "pasos": [],
+      "origen": {
+        "linea": 42,
+        "columna": 1
+      }
+    },
+    {
       "patron": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
       "parametros": ["correo", "rol", "guardarLinkComo"],
       "produce": ["{guardarLinkComo}"],
@@ -226,7 +238,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 44,
+            "linea": 51,
             "columna": 3
           }
         },
@@ -240,7 +252,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 45,
+            "linea": 52,
             "columna": 3
           }
         },
@@ -257,7 +269,7 @@
             "texto": "{correo}"
           },
           "origen": {
-            "linea": 46,
+            "linea": 53,
             "columna": 3
           }
         },
@@ -274,7 +286,7 @@
             "texto": "{rol}"
           },
           "origen": {
-            "linea": 47,
+            "linea": 54,
             "columna": 3
           }
         },
@@ -288,7 +300,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 48,
+            "linea": 55,
             "columna": 3
           }
         },
@@ -305,7 +317,7 @@
             "como": "{guardarLinkComo}"
           },
           "origen": {
-            "linea": 49,
+            "linea": 56,
             "columna": 3
           }
         },
@@ -319,25 +331,13 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 50,
+            "linea": 57,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 42,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las invitaciones con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "borrar varias invitaciones necesita repetir pasos, y v0.1 no tiene repeticiones.",
-      "pasos": [],
-      "origen": {
-        "linea": 54,
+        "linea": 49,
         "columna": 1
       }
     },
@@ -362,7 +362,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 60,
+            "linea": 64,
             "columna": 3
           }
         },
@@ -376,7 +376,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 61,
+            "linea": 65,
             "columna": 3
           }
         },
@@ -393,7 +393,7 @@
             "texto": "Por un difunto"
           },
           "origen": {
-            "linea": 62,
+            "linea": 66,
             "columna": 3
           }
         },
@@ -410,7 +410,7 @@
             "texto": "${PREFIJO}Por el eterno descanso de Juan"
           },
           "origen": {
-            "linea": 63,
+            "linea": 67,
             "columna": 3
           }
         },
@@ -427,7 +427,7 @@
             "texto": "{nombre}"
           },
           "origen": {
-            "linea": 64,
+            "linea": 68,
             "columna": 3
           }
         },
@@ -444,7 +444,7 @@
             "texto": "+56 9 0000 0000"
           },
           "origen": {
-            "linea": 65,
+            "linea": 69,
             "columna": 3
           }
         },
@@ -458,7 +458,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 66,
+            "linea": 70,
             "columna": 3
           }
         },
@@ -472,7 +472,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 67,
+            "linea": 71,
             "columna": 3
           }
         },
@@ -486,13 +486,13 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 68,
+            "linea": 72,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 59,
+        "linea": 63,
         "columna": 1
       }
     },
@@ -518,7 +518,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 71,
+            "linea": 75,
             "columna": 3
           }
         },
@@ -532,7 +532,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 72,
+            "linea": 76,
             "columna": 3
           }
         },
@@ -550,13 +550,13 @@
           },
           "valor": null,
           "origen": {
-            "linea": 73,
+            "linea": 77,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 70,
+        "linea": 74,
         "columna": 1
       }
     },
@@ -568,31 +568,7 @@
       "motivo": "falta la pantalla del libro de caja.",
       "pasos": [],
       "origen": {
-        "linea": 75,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las peticiones de misa con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros.",
-      "pasos": [],
-      "origen": {
-        "linea": 78,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las misas del libro de intenciones con prefijo \"{prefijo}\" y sus ingresos en el libro de caja",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros, y los ingresos del libro de caja no se borran por pantalla.",
-      "pasos": [],
-      "origen": {
-        "linea": 81,
+        "linea": 79,
         "columna": 1
       }
     },
@@ -613,7 +589,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 87,
+            "linea": 85,
             "columna": 3
           }
         },
@@ -630,7 +606,7 @@
             "texto": "Bautismos"
           },
           "origen": {
-            "linea": 88,
+            "linea": 86,
             "columna": 3
           }
         },
@@ -644,7 +620,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 89,
+            "linea": 87,
             "columna": 3
           }
         },
@@ -661,7 +637,7 @@
             "texto": "{persona}"
           },
           "origen": {
-            "linea": 90,
+            "linea": 88,
             "columna": 3
           }
         },
@@ -675,7 +651,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 91,
+            "linea": 89,
             "columna": 3
           }
         },
@@ -689,7 +665,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 92,
+            "linea": 90,
             "columna": 3
           }
         },
@@ -706,7 +682,7 @@
             "texto": "13-09-2026"
           },
           "origen": {
-            "linea": 93,
+            "linea": 91,
             "columna": 3
           }
         },
@@ -723,7 +699,7 @@
             "texto": "${PREFIJO}P. Ministro"
           },
           "origen": {
-            "linea": 94,
+            "linea": 92,
             "columna": 3
           }
         },
@@ -740,7 +716,7 @@
             "unico": "numero"
           },
           "origen": {
-            "linea": 95,
+            "linea": 93,
             "columna": 3
           }
         },
@@ -754,7 +730,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 96,
+            "linea": 94,
             "columna": 3
           }
         },
@@ -768,13 +744,13 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 97,
+            "linea": 95,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 86,
+        "linea": 84,
         "columna": 1
       }
     },
@@ -795,7 +771,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 100,
+            "linea": 98,
             "columna": 3
           }
         },
@@ -812,7 +788,7 @@
             "texto": "Bautismos"
           },
           "origen": {
-            "linea": 101,
+            "linea": 99,
             "columna": 3
           }
         },
@@ -830,13 +806,13 @@
           },
           "valor": null,
           "origen": {
-            "linea": 102,
+            "linea": 100,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 99,
+        "linea": 97,
         "columna": 1
       }
     },
@@ -857,7 +833,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 105,
+            "linea": 103,
             "columna": 3
           }
         },
@@ -874,7 +850,7 @@
             "texto": "{libro}"
           },
           "origen": {
-            "linea": 106,
+            "linea": 104,
             "columna": 3
           }
         },
@@ -888,13 +864,13 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 107,
+            "linea": 105,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 104,
+        "linea": 102,
         "columna": 1
       }
     },
@@ -906,7 +882,7 @@
       "motivo": "falta confirmar desde dónde se abre la ficha de una persona en «Comunidad».",
       "pasos": [],
       "origen": {
-        "linea": 109,
+        "linea": 107,
         "columna": 1
       }
     },
@@ -918,7 +894,7 @@
       "motivo": "falta la etiqueta del código en «Certificados emitidos».",
       "pasos": [],
       "origen": {
-        "linea": 112,
+        "linea": 110,
         "columna": 1
       }
     },
@@ -930,19 +906,7 @@
       "motivo": "se sabe que la página es «Verificar un certificado» del sitio; faltan sus campos.",
       "pasos": [],
       "origen": {
-        "linea": 116,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino los certificados, partidas y fichas con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "una partida cerrada y un certificado emitido no se pueden borrar por pantalla.",
-      "pasos": [],
-      "origen": {
-        "linea": 119,
+        "linea": 114,
         "columna": 1
       }
     },
@@ -954,7 +918,7 @@
       "motivo": "falta recorrer el asistente de inscripción.",
       "pasos": [],
       "origen": {
-        "linea": 124,
+        "linea": 119,
         "columna": 1
       }
     },
@@ -966,7 +930,7 @@
       "motivo": "falta recorrer el asistente de inscripción.",
       "pasos": [],
       "origen": {
-        "linea": 127,
+        "linea": 122,
         "columna": 1
       }
     },
@@ -978,7 +942,7 @@
       "motivo": "falta recorrer el asistente de inscripción.",
       "pasos": [],
       "origen": {
-        "linea": 130,
+        "linea": 125,
         "columna": 1
       }
     },
@@ -999,7 +963,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 134,
+            "linea": 129,
             "columna": 3
           }
         },
@@ -1017,7 +981,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 135,
+            "linea": 130,
             "columna": 3
           }
         },
@@ -1035,7 +999,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 136,
+            "linea": 131,
             "columna": 3
           }
         },
@@ -1053,7 +1017,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 137,
+            "linea": 132,
             "columna": 3
           }
         },
@@ -1067,7 +1031,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 138,
+            "linea": 133,
             "columna": 3
           }
         },
@@ -1081,13 +1045,13 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 139,
+            "linea": 134,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 133,
+        "linea": 128,
         "columna": 1
       }
     },
@@ -1099,7 +1063,7 @@
       "motivo": "prepararla por pantalla exige entrar como secretaria, inscribir y registrar el consentimiento antes de que la catequista inicie sesión.",
       "pasos": [],
       "origen": {
-        "linea": 141,
+        "linea": 136,
         "columna": 1
       }
     },
@@ -1111,7 +1075,7 @@
       "motivo": "el pase de lista está en «Catequesis > Mis cursos y el pase de lista» (HU-SUITE-007), que es la vista de la catequista; falta confirmar dónde lo ve la secretaría.",
       "pasos": [],
       "origen": {
-        "linea": 144,
+        "linea": 139,
         "columna": 1
       }
     },
@@ -1123,7 +1087,7 @@
       "motivo": "igual que «aparece en el pase de lista», terminando con `no veo`.",
       "pasos": [],
       "origen": {
-        "linea": 147,
+        "linea": 142,
         "columna": 1
       }
     },
@@ -1135,7 +1099,7 @@
       "motivo": "falta la pantalla donde se consulta la asistencia guardada.",
       "pasos": [],
       "origen": {
-        "linea": 150,
+        "linea": 145,
         "columna": 1
       }
     },
@@ -1147,7 +1111,7 @@
       "motivo": "falta la etiqueta de la casilla en el formulario público de catequesis.",
       "pasos": [],
       "origen": {
-        "linea": 153,
+        "linea": 148,
         "columna": 1
       }
     },
@@ -1172,7 +1136,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 157,
+            "linea": 152,
             "columna": 3
           }
         },
@@ -1186,7 +1150,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 158,
+            "linea": 153,
             "columna": 3
           }
         },
@@ -1204,7 +1168,7 @@
           },
           "valor": null,
           "origen": {
-            "linea": 159,
+            "linea": 154,
             "columna": 3
           }
         },
@@ -1221,7 +1185,7 @@
             "texto": "{nombre}"
           },
           "origen": {
-            "linea": 160,
+            "linea": 155,
             "columna": 3
           }
         },
@@ -1237,7 +1201,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 161,
+            "linea": 156,
             "columna": 3
           }
         },
@@ -1251,7 +1215,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 162,
+            "linea": 157,
             "columna": 3
           }
         },
@@ -1265,13 +1229,13 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 163,
+            "linea": 158,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 156,
+        "linea": 151,
         "columna": 1
       }
     },
@@ -1297,7 +1261,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 166,
+            "linea": 161,
             "columna": 3
           }
         },
@@ -1311,7 +1275,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 167,
+            "linea": 162,
             "columna": 3
           }
         },
@@ -1329,13 +1293,13 @@
           },
           "valor": null,
           "origen": {
-            "linea": 168,
+            "linea": 163,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 165,
+        "linea": 160,
         "columna": 1
       }
     },
@@ -1347,43 +1311,7 @@
       "motivo": "necesita revertir un registro guardado.",
       "pasos": [],
       "origen": {
-        "linea": 170,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las inscripciones y fichas con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros.",
-      "pasos": [],
-      "origen": {
-        "linea": 173,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las inscripciones, consentimientos y fichas con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros.",
-      "pasos": [],
-      "origen": {
-        "linea": 176,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las inscripciones, solicitudes y fichas con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros.",
-      "pasos": [],
-      "origen": {
-        "linea": 179,
+        "linea": 165,
         "columna": 1
       }
     },
@@ -1395,7 +1323,7 @@
       "motivo": "falta la etiqueta del botón que avanza el asistente de contratación.",
       "pasos": [],
       "origen": {
-        "linea": 184,
+        "linea": 170,
         "columna": 1
       }
     },
@@ -1407,7 +1335,7 @@
       "motivo": "falta el último paso del asistente de contratación.",
       "pasos": [],
       "origen": {
-        "linea": 187,
+        "linea": 173,
         "columna": 1
       }
     },
@@ -1419,7 +1347,7 @@
       "motivo": "contratar por pantalla son más de diez pasos que no son lo que el escenario prueba.",
       "pasos": [],
       "origen": {
-        "linea": 190,
+        "linea": 176,
         "columna": 1
       }
     },
@@ -1431,7 +1359,7 @@
       "motivo": "falta la pantalla de cálculo de liquidaciones.",
       "pasos": [],
       "origen": {
-        "linea": 193,
+        "linea": 179,
         "columna": 1
       }
     },
@@ -1443,7 +1371,7 @@
       "motivo": "falta el aviso de confirmación del cierre.",
       "pasos": [],
       "origen": {
-        "linea": 196,
+        "linea": 182,
         "columna": 1
       }
     },
@@ -1455,19 +1383,7 @@
       "motivo": "la contadora no puede reabrir un mes cerrado por pantalla (lo verifica la propia HU-SUITE-008).",
       "pasos": [],
       "origen": {
-        "linea": 199,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las liquidaciones, contratos y trabajadores con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "una liquidación cerrada no se borra por pantalla.",
-      "pasos": [],
-      "origen": {
-        "linea": 202,
+        "linea": 185,
         "columna": 1
       }
     },
@@ -1479,7 +1395,7 @@
       "motivo": "falta cómo se rotulan los campos del arqueo por denominación.",
       "pasos": [],
       "origen": {
-        "linea": 207,
+        "linea": 190,
         "columna": 1
       }
     },
@@ -1491,7 +1407,7 @@
       "motivo": "falta la etiqueta de los campos de firmantes.",
       "pasos": [],
       "origen": {
-        "linea": 210,
+        "linea": 193,
         "columna": 1
       }
     },
@@ -1503,7 +1419,7 @@
       "motivo": "falta la etiqueta de los campos de firmantes.",
       "pasos": [],
       "origen": {
-        "linea": 213,
+        "linea": 196,
         "columna": 1
       }
     },
@@ -1515,7 +1431,7 @@
       "motivo": "falta la etiqueta de los campos de firmantes.",
       "pasos": [],
       "origen": {
-        "linea": 216,
+        "linea": 199,
         "columna": 1
       }
     },
@@ -1527,7 +1443,7 @@
       "motivo": "por pantalla el monto sale del arqueo, así que no se puede preparar una colecta por un monto dado.",
       "pasos": [],
       "origen": {
-        "linea": 219,
+        "linea": 202,
         "columna": 1
       }
     },
@@ -1539,19 +1455,7 @@
       "motivo": "falta la pantalla del libro diario.",
       "pasos": [],
       "origen": {
-        "linea": 222,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las rendiciones y comprobantes con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros, y un asiento aprobado no se borra por pantalla.",
-      "pasos": [],
-      "origen": {
-        "linea": 225,
+        "linea": 205,
         "columna": 1
       }
     },
@@ -1572,7 +1476,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 231,
+            "linea": 211,
             "columna": 3
           }
         },
@@ -1586,7 +1490,7 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 232,
+            "linea": 212,
             "columna": 3
           }
         },
@@ -1603,7 +1507,7 @@
             "texto": "{titulo}"
           },
           "origen": {
-            "linea": 233,
+            "linea": 213,
             "columna": 3
           }
         },
@@ -1620,7 +1524,7 @@
             "texto": "Te esperamos este domingo en el patio de la parroquia"
           },
           "origen": {
-            "linea": 234,
+            "linea": 214,
             "columna": 3
           }
         },
@@ -1637,7 +1541,7 @@
             "texto": "Habrá juegos, comida y música para toda la familia."
           },
           "origen": {
-            "linea": 235,
+            "linea": 215,
             "columna": 3
           }
         },
@@ -1651,13 +1555,13 @@
           "ambito": null,
           "valor": null,
           "origen": {
-            "linea": 236,
+            "linea": 216,
             "columna": 3
           }
         }
       ],
       "origen": {
-        "linea": 230,
+        "linea": 210,
         "columna": 1
       }
     },
@@ -1669,19 +1573,7 @@
       "motivo": "falta un elemento del sitio que confirme que la portada terminó de cargar; sin él, el `no veo` no tiene ancla (`CUS-W003`).",
       "pasos": [],
       "origen": {
-        "linea": 238,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las noticias con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros.",
-      "pasos": [],
-      "origen": {
-        "linea": 241,
+        "linea": 218,
         "columna": 1
       }
     },
@@ -1693,7 +1585,7 @@
       "motivo": "la petición tiene que quedar asociada a la cuenta de un fiel de prueba.",
       "pasos": [],
       "origen": {
-        "linea": 244,
+        "linea": 221,
         "columna": 1
       }
     },
@@ -1705,19 +1597,7 @@
       "motivo": "falta la dirección del muro público y un elemento que sirva de ancla.",
       "pasos": [],
       "origen": {
-        "linea": 247,
-        "columna": 1
-      }
-    },
-    {
-      "patron": "elimino las peticiones de oración con prefijo \"{prefijo}\"",
-      "parametros": ["prefijo"],
-      "produce": [],
-      "implementacion": "nativa",
-      "motivo": "necesita repetir sobre varios registros.",
-      "pasos": [],
-      "origen": {
-        "linea": 250,
+        "linea": 224,
         "columna": 1
       }
     }
