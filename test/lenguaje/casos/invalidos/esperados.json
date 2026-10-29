@@ -1,5 +1,6 @@
 {
-  "$comment": "Cada caso inválido y el error que tiene que informar el validador (docs/dsl/especificacion.md, §13).",
+  "$comment": "Cada caso inválido y el error que tiene que informar el validador (docs/dsl/especificacion.md, §13). Se validan contra el ambiente indicado y los vocabularios de vocabularios/; `vocabulario` agrega uno de esta carpeta.",
+  "ambiente": "ambientes/suite-pruebas.ambiente.md",
   "casos": [
     {
       "archivo": "01-sin-frontmatter.historia.md",
@@ -78,7 +79,7 @@
       "archivo": "13-secreto-en-verificacion.historia.md",
       "codigo": "CUS-E013",
       "requisito": "DSL-08",
-      "descripcion": "Un secreto en una verificación terminaría impreso en el informe."
+      "descripcion": "Un secreto en una verificación terminaría impreso en el informe. Es secreto porque el ambiente declara `CLAVE_*` en `## Secretos`."
     },
     {
       "archivo": "14-parametro-invalido-en-nombre-de-variable.historia.md",
@@ -103,6 +104,19 @@
       "codigo": "CUS-E005",
       "requisito": "DSL-04",
       "descripcion": "Un escenario sin pasos."
+    },
+    {
+      "archivo": "18-variable-no-declarada.historia.md",
+      "codigo": "CUS-E011",
+      "requisito": "DSL-08",
+      "descripcion": "`${PARROQUA}`, mal escrita, no está declarada en el ambiente."
+    },
+    {
+      "archivo": "19-frase-en-dos-vocabularios.historia.md",
+      "codigo": "CUS-E017",
+      "requisito": "DSL-07",
+      "descripcion": "«visito el sitio de la parroquia…» está en los dos vocabularios que importa la historia.",
+      "vocabulario": "casos-repetida.vocabulario.md"
     }
   ]
 }

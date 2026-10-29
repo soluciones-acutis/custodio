@@ -1,7 +1,7 @@
 # Especificación del DSL de Custodio — v0.1
 
 - **Versión del lenguaje:** `0.1.0`
-- **Estado:** Propuesta (PR #2)
+- **Estado:** Propuesta (PR #16), con los ajustes de la revisión
 - **Diseño y justificación de cada decisión:** [docs/diseno/semana-02.md](../diseno/semana-02.md)
 
 | Documento | Para qué |
@@ -11,7 +11,8 @@
 | [`ejemplos/`](ejemplos/) | AST de cinco historias y del vocabulario, generados desde los `.historia.md`. |
 | [`src/lenguaje/ast.ts`](../../src/lenguaje/ast.ts) | Los mismos tipos del AST en TypeScript. |
 | [`vocabularios/acutis-suite.vocabulario.md`](../../vocabularios/acutis-suite.vocabulario.md) | Las frases de negocio de la Suite. |
-| [`docs/historias/`](../historias/) | Las 12 historias del inventario: los casos válidos. |
+| [`historias/`](../../historias/) | Las 12 historias del inventario: los casos válidos. |
+| [`ambientes/suite-pruebas.ambiente.md`](../../ambientes/suite-pruebas.ambiente.md) | Las variables y los secretos que declara el ambiente de pruebas de la Suite (§9.5). |
 | [`test/lenguaje/casos/invalidos/`](../../test/lenguaje/casos/invalidos/) | Los casos inválidos, con su error esperado (§13). |
 
 Esta especificación es **normativa**: dice cómo se escribe una historia y qué significa. El **por qué** de cada decisión, con sus alternativas descartadas, está en el diseño de la semana 2.
@@ -30,8 +31,9 @@ Esta especificación es **normativa**: dice cómo se escribe una historia y qué
 |---|---|
 | `*.historia.md` | Una o más historias. Cada una empieza con su frontmatter. |
 | `*.vocabulario.md` | Un vocabulario de frases de negocio (§10). |
+| `*.ambiente.md` | La declaración de un ambiente: los nombres de sus variables y secretos (§9.5). |
 
-Ambos van en markdown UTF-8 con fin de línea LF y se leen tal cual en GitHub (DSL-01).
+Los tres van en markdown UTF-8 con fin de línea LF y se leen tal cual en GitHub (DSL-01). Las historias viven en `historias/`, los vocabularios en `vocabularios/` y los ambientes en `ambientes/`, los tres en la raíz del repositorio.
 
 ## 3. Frontmatter
 
@@ -67,12 +69,14 @@ Las secciones son títulos `##`. Este es su orden:
 
 | Sección | Obligatoria | Contenido | Requisito |
 |---|:-:|---|---|
-| `## Historia` | sí | La narrativa: tres líneas que empiezan con `**Como**`, `**Quiero**` y `**Para**`, las tres obligatorias. | DSL-03 |
+| `## Historia` | sí | La narrativa: tres párrafos que empiezan con `**Como**`, `**Quiero**` y `**Para**`, los tres obligatorios y en ese orden. | DSL-03 |
 | `## Antecedentes` | no | Pasos que corren antes de cada escenario, sin fase. | DSL-16 |
 | `## Escenario: <nombre>` | sí, al menos uno | Pasos con fase (§5). El nombre es único en la historia. | DSL-04 |
 | `## Limpieza` | no | Pasos que corren al terminar cada escenario, sin fase (§11.3). | DSL-10 |
 
 Cualquier otra sección `##`, y cualquier párrafo que no sea un paso, es una **nota**. No se ejecuta, y el formateador la conserva tal cual (DSL-13).
+
+**Líneas en blanco.** Entre dos bloques (el frontmatter, cada sección y lo que la sigue) puede haber líneas en blanco, y no cambian nada. En la narrativa, la forma canónica separa `**Como**`, `**Quiero**` y `**Para**` con una línea en blanco: sin ella, GitHub las muestra como un solo párrafo. El analizador acepta las dos formas, y el formateador (DSL-13) escribe la canónica.
 
 ## 5. Fases y pasos
 
@@ -123,7 +127,7 @@ Al final de cualquier frase que tenga un elemento se puede agregar un **ámbito*
 | `el elemento con id de prueba "…"` | `idDePrueba` | **Escape**: advertencia `CUS-W001`. |
 | ``el elemento con selector `…` `` | `css` | **Escape**: advertencia `CUS-W001`. |
 
-Con `exactamente` antes del elemento, el texto tiene que coincidir completo (§8.1): `veo exactamente el texto "Activa"`.
+Con `exactamente` antes del elemento, el texto tiene que coincidir completo (§8.1): `veo exactamente el texto "Activa"`. Vale con cualquier elemento salvo los escapes, también con un campo o una casilla: `completo exactamente el campo "Nombre" con "…"` no escribe en «Nombre del apoderado».
 
 ### 6.2 Valores
 
@@ -131,8 +135,17 @@ Con `exactamente` antes del elemento, el texto tiene que coincidir completo (§8
 |---|---|
 | `"…"` | El texto tal cual, con sus variables (§9). |
 | `el código generado con el secreto "${TOTP_…}"` | Generador TOTP (§11.4). |
-| `la fecha de hoy` | La fecha del día, del puerto `Reloj`, en formato `DD-MM-AAAA`. |
+| `la fecha de hoy` | La fecha del día, del puerto `Reloj`, en el formato que pide el campo (§6.3). |
+| `la fecha de hoy en formato "AAAA-MM-DD"` | La fecha del día, en el formato que se indica. |
 | `un número único` | Un número que no se repite entre ejecuciones (§9.4). |
+
+### 6.3 El formato de la fecha
+
+Sin `en formato`, el formato lo resuelve el adaptador según el campo: un campo de fecha nativo (`<input type="date">`) recibe su valor en `AAAA-MM-DD`, aunque en pantalla muestre otra cosa, y un campo de texto recibe `DD-MM-AAAA`. Con `en formato "…"` se usa el formato indicado, escrito con `DD`, `MM` y `AAAA`. En el AST, `formato` es `null` cuando lo resuelve el adaptador.
+
+### 6.4 Cadenas
+
+Una cadena va entre comillas dobles. Dentro de ella, `\"` es una comilla y `\\` es una barra invertida; cualquier otra barra invertida es literal. En el AST el texto queda sin los escapes: `veo el texto "Pulsa \"Guardar\""` busca `Pulsa "Guardar"`.
 
 ## 7. Objetivos que acepta cada acción
 
@@ -198,18 +211,21 @@ Se escriben `${NOMBRE}`. Hay tres orígenes (DSL-08):
 
 | Origen | Convención | Ejemplo | Se resuelve |
 |---|---|---|---|
-| **Ambiente** | `MAYÚSCULAS` | `${PARROQUIA}`, `${DOMINIO_PRUEBAS}`, `${USUARIO_secretaria}` | Al ejecutar, desde la configuración del ambiente (SRV-01). |
-| **Secreto** | lo declara el ambiente | `${CLAVE_secretaria}`, `${TOTP_secretaria}` | Solo al ejecutar, desde la bóveda (§9.2). |
+| **Ambiente** | `MAYÚSCULAS`, declarada en el ambiente | `${PARROQUIA}`, `${DOMINIO_PRUEBAS}`, `${USUARIO_secretaria}` | Al ejecutar, desde la configuración del ambiente (SRV-01). |
+| **Secreto** | declarado como secreto en el ambiente | `${CLAVE_secretaria}`, `${TOTP_secretaria}` | Solo al ejecutar, desde la bóveda (§9.2). |
 | **Captura** | `camelCase` | `${linkInvitacion}` | Al ejecutar, con lo que guardó un `capturar` anterior. |
+| **Prefijo** | `${PREFIJO}` | `${PREFIJO}` | Lo genera el ejecutor (§9.3). No se declara. |
 
-- Una variable que el ambiente no define, o una captura usada antes de hacerse, es `CUS-E011`. Nunca se envía un `${…}` sin resolver a la aplicación.
+- Una variable que el archivo de ambiente (§9.5) no declara, o una captura usada antes de hacerse, es `CUS-E011`. Nunca se envía un `${…}` sin resolver a la aplicación.
 - Una captura vale en su escenario. Las capturas de los antecedentes valen en todos los escenarios.
 
 ### 9.2 Secretos
 
-1. **El ambiente declara qué nombres son secretos**, en un archivo versionado con los nombres y nunca los valores.
+1. **El ambiente declara qué nombres son secretos**, en la lista `## Secretos` de su archivo (§9.5), con los nombres y nunca los valores. Lo que hace secreto a `CLAVE_secretaria` es esa declaración, no su nombre.
 2. **Un secreto solo puede ir** en el valor de `completar` o dentro del código generado (TOTP), directamente o como argumento de una frase que lo use ahí. En cualquier otro lugar (un elemento, `ver`, `capturar`, una URL) es `CUS-E013`.
 3. **Al ejecutar**, los valores de los secretos se ocultan en todo lo que se guarda o se registra (SRV-06).
+
+`CUS-E011` y `CUS-E013` se revisan **después de sustituir los parámetros** de cada frase usada (§10.1): `${CLAVE_{rol}}` con `rol = "secretaria"` se revisa como `${CLAVE_secretaria}`, que calza con el patrón `CLAVE_*`.
 
 `USUARIO_*` es una variable de ambiente y no un secreto: es el correo de una cuenta de prueba, que igual aparece en pantalla. Los secretos de la Suite son `CLAVE_*` y `TOTP_*`.
 
@@ -220,6 +236,42 @@ El ejecutor genera un `${PREFIJO}` **único por escenario y por intento**: corto
 ### 9.4 `un número único`
 
 Para los valores que la aplicación exige únicos, como el número de una partida, en vez de un número fijo que choca entre ejecuciones.
+
+### 9.5 El archivo de ambiente
+
+Cada ambiente se declara en un `<nombre>.ambiente.md` dentro de `ambientes/`. Tiene solo nombres, nunca valores: con él, el validador revisa `CUS-E011` y `CUS-E013` sin conectarse a nada.
+
+```markdown
+---
+ambiente: suite-pruebas
+dsl: 0.1.0
+producto: suite-parroquial
+desechable: sí
+---
+
+## Variables
+- DOMINIO_PRUEBAS
+- PARROQUIA
+- USUARIO_*
+
+## Secretos
+- CLAVE_*
+- TOTP_*
+```
+
+| Parte | Obligatoria | Regla |
+|---|:-:|---|
+| `ambiente` | sí | Nombre del ambiente, en minúsculas con guiones. |
+| `dsl` | sí | Versión del lenguaje (§14). |
+| `producto` | sí | El producto que prueba. |
+| `desechable` | sí | `sí` si sus datos se pueden perder sin daño; `no` si no. Decide qué pasa con una limpieza sin pasos (§11.3). |
+| `## Variables` | sí | Un nombre por línea, en `MAYÚSCULAS`. |
+| `## Secretos` | no | Un nombre por línea. Un secreto no puede estar también en `## Variables`. |
+
+- Un nombre puede terminar en `*`, que calza con cualquier final hecho de letras, dígitos y `_`: `USUARIO_*` declara `USUARIO_secretaria` y `USUARIO_parroco`.
+- `PREFIJO` no se declara: lo genera el ejecutor (§9.3).
+- Lo demás del archivo (títulos `#`, párrafos) son notas, como en una historia.
+- Al validar se elige un ambiente; si no se indica, el validador usa el único que hay en `ambientes/`. Otras opciones del ambiente, como el plazo de las esperas (§11.1) o la ventana del TOTP (§11.4), llegan con SRV-01.
 
 ## 10. Frases de negocio y vocabularios
 
@@ -241,8 +293,8 @@ producto: suite-parroquial
 > produce: {guardarLinkComo}
 - …
 
-## Frase: elimino las invitaciones con prefijo "{prefijo}"
-> implementación: nativa — borrar varias invitaciones necesita repetir pasos.
+## Frase: elimino todo lo creado con prefijo "{prefijo}"
+> implementación: nativa — una sola operación del puerto de datos de prueba.
 ```
 
 ### 10.1 Patrón y parámetros
@@ -252,6 +304,7 @@ producto: suite-parroquial
 - Los parámetros se reemplazan **al compilar**, sobre el AST y no sobre el texto crudo. Las variables `${…}` se resuelven **al ejecutar**.
 - Se pueden combinar: `${USUARIO_{rol}}` con `rol = "secretaria"` queda `${USUARIO_secretaria}`. Un parámetro que arma un nombre de variable solo admite letras, números y `_`. Si no, es `CUS-E014`.
 - Si a una frase le faltan o le sobran parámetros, es `CUS-E010`. Si no calza con ninguna frase, es `CUS-E006`, con sugerencias tomadas de las frases base y de los vocabularios.
+- Si una oración calza con frases de **dos vocabularios importados**, es `CUS-E017`, y no gana ninguno, por la misma razón que no existe «el primero» (§8.2): si ganara uno, la historia podría pasar por la frase equivocada sin que nadie lo note. Se resuelve cambiando el patrón en uno de los vocabularios. Las frases base siempre ganan: se buscan antes.
 
 ### 10.2 Lo que declara una frase
 
@@ -267,7 +320,12 @@ Sin `implementación`, la frase tiene pasos y tiene que tener al menos uno.
 
 ### 10.3 Frases sin pasos
 
-Una frase `pendiente`, o `nativa` mientras no exista su puerto, **es válida**. La historia que la usa, directa o indirectamente, recibe la advertencia `CUS-W004` y **no se ejecuta**: el escenario se informa como `incompleto` (§11.5).
+Una frase `pendiente`, o `nativa` mientras no exista su puerto, **es válida**. Lo que pasa con la historia depende de dónde se usa, directa o indirectamente:
+
+| Dónde | Advertencia | Al ejecutar |
+|---|---|---|
+| En los antecedentes o en un escenario | `CUS-W004` | El escenario **no se ejecuta** y se informa como `incompleto` (§11.5). |
+| En la `## Limpieza` | `CUS-W005` | Depende del ambiente (§11.3). |
 
 ### 10.4 Frases que usan frases
 
@@ -290,6 +348,16 @@ Toda acción espera automáticamente a que su objetivo exista y esté listo, has
 - Corre **al terminar cada escenario**, haya pasado o fallado, y aunque hayan fallado los antecedentes.
 - Es **idempotente**: no falla si no encuentra nada que borrar.
 - Sus fallos se informan aparte (`limpieza_fallida`) y no ocultan el resultado del escenario (DSL-10).
+- Todo dato de prueba lleva `${PREFIJO}` (§9.3), así que la limpieza de un escenario suele ser una sola frase nativa del vocabulario, como «elimino todo lo creado con prefijo "${PREFIJO}"»: una operación del puerto de datos de prueba que borra todo lo que lleva el prefijo, en todos los módulos.
+
+**Limpieza sin pasos.** Si la limpieza usa una frase sin pasos (`CUS-W005`), lo que pasa depende del campo `desechable` del ambiente (§9.5):
+
+| Ambiente | El escenario | La limpieza |
+|---|---|---|
+| `desechable: sí` | Se ejecuta. | No se ejecuta y se informa como `limpieza_pendiente`. |
+| `desechable: no` | No se ejecuta y se informa como `incompleto`. | — |
+
+Así una historia cuyos escenarios tienen todos sus pasos se puede ejecutar antes de que exista el puerto de datos de prueba, pero solo donde dejar datos sueltos no hace daño.
 
 ### 11.4 Segundo factor (TOTP)
 
@@ -298,6 +366,13 @@ El código se calcula desde el secreto en el momento de escribirlo (DSL-09). Si 
 ### 11.5 Escenario `incompleto`
 
 Un escenario que usa una frase sin pasos no se ejecuta y se informa como `incompleto`. En CI, una historia crítica `incompleto` cuenta como falla.
+
+`incompleto` es un **resultado**, no un estado de la cola (SRV-04). Son dos cosas distintas:
+
+| | Qué dice | Valores |
+|---|---|---|
+| Estado de la cola | En qué va el trabajo. | `pendiente`, `en_curso`, `terminada` |
+| Resultado del escenario y de la ejecución | Qué pasó. | `aprobada`, `fallida`, `incompleto`, `limpieza_fallida`, `limpieza_pendiente` |
 
 ## 12. AST
 
@@ -312,7 +387,7 @@ Cada paso queda **normalizado**, siempre con las mismas claves:
   "objetivo": { "por": "boton", "texto": "Revocar" },
   "ambito": { "por": "fila", "texto": "${PREFIJO}revocar@ejemplo.test", "ambito": null },
   "valor": null,
-  "origen": { "linea": 34, "columna": 3 }
+  "origen": { "linea": 37, "columna": 3 }
 }
 ```
 
@@ -322,7 +397,7 @@ Cada paso queda **normalizado**, siempre con las mismas claves:
 | `accion` | Una de las acciones de §6, o `frase`. |
 | `objetivo` | Un localizador (§6.1), `{ "por": "url" }`, `{ "por": "menu", "ruta": […] }` o, en una frase, `{ "por": "frase", "vocabulario", "nombre", "argumentos" }`. |
 | `ambito` | El ámbito anidado, o `null`. |
-| `valor` | `{ "tipo": "texto" \| "totp" \| "fecha" \| "unico" \| "captura", … }`, o `null`. |
+| `valor` | `{ "tipo": "texto" \| "totp" \| "fecha" \| "unico" \| "captura", … }`, o `null`. En una fecha, `formato` es `null` cuando lo resuelve el adaptador (§6.3). |
 | `origen` | Línea y columna en el archivo fuente, para los diagnósticos (DSL-12). |
 
 El Schema exige lo de §7: por ejemplo, rechaza un `completar` con un `boton` como objetivo o sin `valor`. En [`ejemplos/`](ejemplos/) hay AST de las historias [HU-SUITE-001](ejemplos/HU-SUITE-001.ast.json), [002](ejemplos/HU-SUITE-002.ast.json), [003](ejemplos/HU-SUITE-003.ast.json), [005](ejemplos/HU-SUITE-005.ast.json) y [006](ejemplos/HU-SUITE-006.ast.json), y del [vocabulario](ejemplos/acutis-suite.vocabulario.ast.json).
@@ -345,37 +420,36 @@ Tabla provisoria para v0.1:
 | `CUS-E008` | Falta un valor obligatorio. | DSL-05 |
 | `CUS-E009` | El vocabulario importado no existe. | DSL-07 |
 | `CUS-E010` | A una frase de negocio le faltan o le sobran parámetros. | DSL-07 |
-| `CUS-E011` | Variable no definida, captura usada antes de hacerse, o `produce` que no coincide con las capturas de la frase. | DSL-08 |
+| `CUS-E011` | Variable que el ambiente no declara, captura usada antes de hacerse, o `produce` que no coincide con las capturas de la frase. | DSL-08 |
 | `CUS-E012` | Referencia circular entre frases. | DSL-07 |
 | `CUS-E013` | Secreto en un lugar no permitido. | DSL-08 |
 | `CUS-E014` | Nombre de variable inválido después de sustituir parámetros. | DSL-07, DSL-08 |
 | `CUS-E015` | Versión `dsl:` mal escrita o no soportada. | DSL-11 |
 | `CUS-E016` | Dos escenarios con el mismo nombre. | DSL-04 |
+| `CUS-E017` | Una oración calza con frases de dos vocabularios importados. | DSL-07 |
 | `CUS-W001` | Elemento ubicado con un escape (`id de prueba` o `selector`): deuda de accesibilidad. | DSL-06 |
 | `CUS-W002` | Escenario sin ninguna verificación. | DSL-04 |
 | `CUS-W003` | `no veo` sin ancla (§11.2). | DSL-05 |
-| `CUS-W004` | La historia usa una frase sin pasos: no se puede ejecutar todavía. | DSL-07 |
+| `CUS-W004` | La historia usa una frase sin pasos en los antecedentes o en un escenario: no se puede ejecutar todavía. | DSL-07 |
+| `CUS-W005` | La limpieza usa una frase sin pasos: el escenario solo se ejecuta en un ambiente desechable (§11.3). | DSL-10 |
 
 Que un objetivo coincida con varios elementos (§8.2) no es un código `CUS`: se sabe al ejecutar y se informa como fallo del paso.
 
-**Casos inválidos.** En [`test/lenguaje/casos/invalidos/`](../../test/lenguaje/casos/invalidos/) hay al menos un caso por cada código de error (17 casos: `CUS-E005` tiene dos, un escenario que empieza con `Y` y uno sin pasos). [`esperados.json`](../../test/lenguaje/casos/invalidos/esperados.json) dice qué error tiene que informar cada uno. La prueba `test/lenguaje/casos.test.ts` comprueba que cada código de esta tabla tenga su caso.
+**Casos inválidos.** En [`test/lenguaje/casos/invalidos/`](../../test/lenguaje/casos/invalidos/) hay al menos un caso por cada código de error (19 casos: `CUS-E005` tiene dos, un escenario que empieza con `Y` y uno sin pasos, y `CUS-E011` también, una captura usada antes de hacerse y una variable que el ambiente no declara). Los casos se validan contra el ambiente [`suite-pruebas`](../../ambientes/suite-pruebas.ambiente.md). [`esperados.json`](../../test/lenguaje/casos/invalidos/esperados.json) dice qué error tiene que informar cada uno. La prueba `test/lenguaje/casos.test.ts` comprueba que cada código de esta tabla tenga su caso.
 
 ## 14. Versiones
 
 - El lenguaje se versiona con **semver**, sin `v`: `MAYOR.MENOR.PARCHE`.
 - Mientras la versión sea `0.x`, cualquier versión menor puede traer cambios incompatibles. Desde `1.0.0`, solo la versión mayor.
 - El campo `dsl:` de cada historia y vocabulario dice con qué versión se escribió. Una versión mal escrita o que el validador no soporta es `CUS-E015`.
-- La especificación, la gramática, el JSON Schema y el vocabulario `acutis-suite` comparten la versión `0.1.0`.
+- La especificación, la gramática, el JSON Schema, el vocabulario `acutis-suite` y el ambiente `suite-pruebas` comparten la versión `0.1.0`.
 
 ## 15. Lo que todavía no sabemos
 
 | Pregunta | Cuándo se decide |
 |---|---|
-| ¿Dónde viven las historias: `historias/` en la raíz, como propone el documento técnico, o `docs/historias/`? | Reunión de diseño. |
-| Si una oración calza con frases de dos vocabularios importados, ¿es un error de los vocabularios o gana uno? | S4, con la resolución de vocabularios. |
 | ¿`mensaje` puede ser un localizador propio (rol *status* o *alert*), si la Suite marca así sus confirmaciones? | Al revisar la Suite. |
 | ¿Cuentas de prueba por trabajador, o un bloqueo por cuenta? Afecta el TOTP en paralelo. | S6, con la cola. |
-| ¿`incompleto` se agrega como estado de una ejecución en SRV-04? | Reunión de diseño. |
 | Los escenarios con ejemplos (DSL-17). | Si sobra tiempo (PODRÍA). |
 
 ## 16. Cobertura de requisitos
@@ -389,9 +463,9 @@ Que un objetivo coincida con varios elementos (§8.2) no es un código `CUS`: se
 | DSL-05 Vocabulario base | §6, §7 |
 | DSL-06 Localización semántica | §6.1, §8 |
 | DSL-07 Vocabulario de negocio | §10 |
-| DSL-08 Variables | §9 |
+| DSL-08 Variables | §9 (el archivo de ambiente en §9.5) |
 | DSL-09 Segundo factor | §6.2, §11.4 |
-| DSL-10 Limpieza | §4, §9.3, §11.3 |
+| DSL-10 Limpieza | §4, §9.3, §10.3, §11.3 |
 | DSL-11 Gramática y versión | [`gramatica.ebnf`](gramatica.ebnf), §14 |
 | DSL-12 Diagnósticos | §13 |
 | DSL-13 Formateador | §4 (notas). Las reglas de formato se definen en la S4. |

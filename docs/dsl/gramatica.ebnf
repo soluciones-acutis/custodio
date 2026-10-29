@@ -9,8 +9,12 @@
 
 archivo_de_historias = historia , { historia } ;
 
-historia         = frontmatter , seccion_historia , [ antecedentes ] ,
+historia         = frontmatter , { linea_en_blanco } ,
+                   seccion_historia , { linea_en_blanco } ,
+                   [ antecedentes , { linea_en_blanco } ] ,
                    escenario , { escenario | nota } , [ limpieza ] , { nota } ;
+                 (* Entre dos bloques puede haber líneas en blanco (las de entre      *)
+                 (* escenarios y antes de la limpieza son notas vacías).              *)
 
 frontmatter      = "---" , salto , campo_yaml , { campo_yaml } , "---" , salto ;
 campo_yaml       = clave , ":" , espacio , valor_yaml , salto ;
@@ -21,14 +25,18 @@ valor_yaml       = texto_linea | lista_yaml ;
 lista_yaml       = "[" , [ nombre_yaml , { "," , [ espacio ] , nombre_yaml } ] , "]" ;
 
 seccion_historia = "## Historia" , salto , { linea_en_blanco } ,
-                   "**Como**" , espacio , texto_linea , salto ,
-                   "**Quiero**" , espacio , texto_linea , salto ,
+                   "**Como**" , espacio , texto_linea , salto , { linea_en_blanco } ,
+                   "**Quiero**" , espacio , texto_linea , salto , { linea_en_blanco } ,
                    "**Para**" , espacio , texto_linea , salto ;
+                 (* Forma canónica: una línea en blanco entre las tres partes, para  *)
+                 (* que GitHub las muestre como párrafos. El formateador la escribe. *)
 
-antecedentes     = "## Antecedentes" , salto , paso_sin_fase , { paso_sin_fase } ;
-escenario        = "## Escenario:" , espacio , texto_linea , salto ,
+antecedentes     = "## Antecedentes" , salto , { linea_en_blanco } ,
+                   paso_sin_fase , { paso_sin_fase } ;
+escenario        = "## Escenario:" , espacio , texto_linea , salto , { linea_en_blanco } ,
                    paso_inicial , { paso_con_fase } ;
-limpieza         = "## Limpieza" , salto , paso_sin_fase , { paso_sin_fase } ;
+limpieza         = "## Limpieza" , salto , { linea_en_blanco } ,
+                   paso_sin_fase , { paso_sin_fase } ;
 
 nota             = ( "## " , texto_linea - titulo_reservado , salto )
                  | ( texto_linea - ( "- " , texto_linea ) , salto )
@@ -70,19 +78,17 @@ direccion        = "que la dirección contiene " , cadena ;
 
 (* ─────────────────────────── 4. Elementos ────────────────────────────────── *)
 
-elemento         = [ "exactamente " ] ,
-                 ( "el botón " , cadena
-                 | "el enlace " , cadena
-                 | "el título " , cadena
-                 | "el texto " , cadena
-                 | "el mensaje " , cadena          (* sinónimo de "el texto" *)
-                 | elemento_de_campo
-                 | elemento_de_casilla
-                 | elemento_por_rol
-                 | escape ) ;
-elemento_de_campo   = "el campo " , cadena | elemento_por_rol ;
-elemento_de_casilla = "la casilla " , cadena | "la opción " , cadena | elemento_por_rol ;
-elemento_por_rol    = "el elemento con rol " , cadena , " y nombre " , cadena ;
+(* "exactamente" vale con cualquier elemento salvo los escapes (sección 8.1). *)
+
+elemento         = elemento_de_texto | elemento_de_campo | elemento_de_casilla
+                 | elemento_por_rol | escape ;
+elemento_de_texto   = [ "exactamente " ] ,
+                      ( "el botón " | "el enlace " | "el título " | "el texto "
+                      | "el mensaje " ) , cadena ;    (* "el mensaje": sinónimo de "el texto" *)
+elemento_de_campo   = [ "exactamente " ] , "el campo " , cadena | elemento_por_rol ;
+elemento_de_casilla = [ "exactamente " ] , ( "la casilla " | "la opción " ) , cadena
+                    | elemento_por_rol ;
+elemento_por_rol    = [ "exactamente " ] , "el elemento con rol " , cadena , " y nombre " , cadena ;
 escape              = "el elemento con id de prueba " , cadena    (* advertencia CUS-W001 *)
                     | "el elemento con selector " , url ;         (* advertencia CUS-W001 *)
 
@@ -100,7 +106,7 @@ sufijo_de_ambito = " en la fila de " , cadena
 
 valor            = cadena
                  | "el código generado con el secreto " , cadena    (* TOTP, DSL-09 *)
-                 | "la fecha de hoy"
+                 | "la fecha de hoy" , [ " en formato " , cadena ]   (* sección 6.3 *)
                  | "un número único" ;
 
 (* ──────────────────────── 7. Frases de negocio ───────────────────────────── *)
@@ -132,9 +138,31 @@ declaracion      = "> produce: " , "{" , nombre , "}" , { ", {" , nombre , "}" }
 implementacion_sin_pasos = "> implementación: " , ( "pendiente" | "nativa" ) ,
                    [ " — " , texto_linea ] , salto ;
 
-(* ──────────────────────────── 9. Léxico ──────────────────────────────────── *)
+(* ──────────────────────── 9. Archivo de ambiente ────────────────────────── *)
+(* Solo nombres, nunca valores (sección 9.5 de la especificación).            *)
 
-cadena           = '"' , { caracter - '"' | variable | parametro_interno } , '"' ;
+archivo_de_ambiente = frontmatter_de_ambiente , { nota_libre } ,
+                      "## Variables" , salto , { linea_en_blanco } ,
+                      nombre_declarado , { nombre_declarado } , { nota_libre } ,
+                      [ "## Secretos" , salto , { linea_en_blanco } ,
+                        nombre_declarado , { nombre_declarado } , { nota_libre } ] ;
+frontmatter_de_ambiente = "---" , salto ,
+                      "ambiente:" , espacio , nombre_yaml , salto ,
+                      "dsl:" , espacio , semver , salto ,
+                      "producto:" , espacio , nombre_yaml , salto ,
+                      "desechable:" , espacio , ( "sí" | "no" ) , salto ,
+                      "---" , salto ;
+nombre_declarado = "- " , ( letra | "_" ) , { letra | digito | "_" } , [ "*" ] , salto ;
+                 (* "USUARIO_*" calza con cualquier final de letras, dígitos y "_" *)
+nota_libre       = ( texto_linea - ( "## " , texto_linea ) - ( "- " , texto_linea ) , salto )
+                 | linea_en_blanco ;
+
+(* ──────────────────────────── 10. Léxico ─────────────────────────────────── *)
+
+cadena           = '"' , { caracter_de_cadena | variable | parametro_interno } , '"' ;
+caracter_de_cadena = caracter - ( '"' | "\" )
+                 | "\" , ( '"' | "\" )                  (* \" es una comilla, \\ una barra *)
+                 | "\" , ( caracter - ( '"' | "\" ) ) ; (* otra barra es literal *)
 variable         = "${" , nombre_de_variable , "}" ;
 nombre_de_variable = ( letra | "_" ) , { letra | digito | "_" | parametro_interno } ;
                  (* Después de sustituir parámetros, solo letras, dígitos y "_" (CUS-E014) *)
