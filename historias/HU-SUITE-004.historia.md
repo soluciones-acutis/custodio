@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** fiel de la parroquia
+
 **Quiero** pedir una misa por un difunto desde el sitio de la parroquia
+
 **Para** encargarla sin tener que ir ni llamar a la secretaría en horario de oficina
 
 ## Escenario: petición enviada desde el sitio
@@ -42,5 +44,4 @@ vocabularios: [acutis-suite]
 - Y el libro de caja muestra un ingreso de "5.000" por la misa de "${PREFIJO}Marta"
 
 ## Limpieza
-- elimino las peticiones de misa con prefijo "${PREFIJO}"
-- elimino las misas del libro de intenciones con prefijo "${PREFIJO}" y sus ingresos en el libro de caja
+- elimino todo lo creado con prefijo "${PREFIJO}"

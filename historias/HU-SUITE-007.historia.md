@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** catequista
+
 **Quiero** marcar a los presentes en el encuentro y dejarlo como realizado
+
 **Para** que la parroquia sepa quién está asistiendo a la preparación de los sacramentos
 
 ## Antecedentes
@@ -34,4 +36,4 @@ vocabularios: [acutis-suite]
 
 ## Limpieza
 - elimino la asistencia registrada para "${PREFIJO}Sofía Rojas" y dejo el encuentro como por realizar
-- elimino las inscripciones y fichas con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

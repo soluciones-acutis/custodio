@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** párroco
+
 **Quiero** invitar a una persona nueva al panel con el rol que tendrá, y revocar la invitación si ya no corresponde
+
 **Para** decidir yo quién entra a la información de la parroquia y con qué permisos
 
 ## Antecedentes
@@ -44,4 +46,4 @@ vocabularios: [acutis-suite]
 - Y no veo el botón "Quitar el acceso" en la fila de "${USUARIO_parroco}"
 
 ## Limpieza
-- elimino las invitaciones con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

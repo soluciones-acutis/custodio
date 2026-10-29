@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** apoderado de la parroquia
+
 **Quiero** inscribir a mi hijo en catequesis desde el sitio web
+
 **Para** no tener que ir a la secretaría en horario de oficina
 
 ## Escenario: solicitud de inscripción enviada correctamente
@@ -36,4 +38,4 @@ vocabularios: [acutis-suite]
 - Y no veo el texto "${PREFIJO}Carlo" en "Solicitudes por revisar"
 
 ## Limpieza
-- elimino las inscripciones, solicitudes y fichas con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** párroco
+
 **Quiero** que cada persona del equipo vea en su panel solo los módulos de su rol
+
 **Para** que los sueldos, las cuentas y los libros sacramentales no queden a la vista de quien no los necesita
 
 ## Escenario: la catequista solo ve Catequesis

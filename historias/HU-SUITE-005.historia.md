@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** secretaria de la parroquia
+
 **Quiero** transcribir una partida de bautismo y emitir su certificado desde la partida
+
 **Para** entregarle a la familia un certificado fiel al libro, que cualquiera pueda verificar en el sitio de la parroquia
 
 ## Antecedentes
@@ -51,4 +53,4 @@ vocabularios: [acutis-suite]
 - Y no veo el botón "Corregir"
 
 ## Limpieza
-- elimino los certificados, partidas y fichas con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

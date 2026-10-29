@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** fiel con cuenta en Orar
+
 **Quiero** pedir oración a mi comunidad parroquial
+
 **Para** sentirme acompañado en la oración, sabiendo que la parroquia revisa cada petición antes de publicarla
 
 ## Escenario: la petición queda pendiente y no se publica sola
@@ -42,4 +44,4 @@ vocabularios: [acutis-suite]
 - Y no veo el texto "Peticiones de oración"
 
 ## Limpieza
-- elimino las peticiones de oración con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

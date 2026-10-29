@@ -54,8 +54,8 @@ Matías Peralta (Soluciones Tecnológicas Acutis SpA).
   los viernes se entrega el avance en un Pull Request revisado en GitHub.
 - **Decisiones de arquitectura:** en `docs/adr/`.
 - **El lenguaje (DSL):** la especificación, la gramática y el JSON Schema del AST en
-  `docs/dsl/`; las historias de la Suite en `docs/historias/` y sus frases de negocio en
-  `vocabularios/`.
+  `docs/dsl/`; las historias de la Suite en `historias/`, sus frases de negocio en
+  `vocabularios/` y las variables y secretos que declara su ambiente de pruebas en `ambientes/`.
 
 ## Licencia
 

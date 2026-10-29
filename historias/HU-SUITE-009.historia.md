@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** secretaria de la parroquia
+
 **Quiero** rendir la colecta de una misa con su arqueo por denominación y tres firmantes
+
 **Para** dejar respaldo transparente del dinero de la comunidad, con un ministro de fe del Consejo Económico
 
 ## Escenario: la colecta completa queda presentada con su total
@@ -40,4 +42,4 @@ vocabularios: [acutis-suite]
 - Y el asiento de "${PREFIJO}Colecta misa domingo" carga "Colectas por depositar" contra "Ingresos colectas"
 
 ## Limpieza
-- elimino las rendiciones y comprobantes con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

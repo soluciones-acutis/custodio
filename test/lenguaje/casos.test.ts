@@ -14,7 +14,7 @@ import { VERSION_AST } from '../../src/lenguaje/index.ts';
 
 const RAIZ = join(import.meta.dirname, '..', '..');
 const INVALIDOS = join(RAIZ, 'test', 'lenguaje', 'casos', 'invalidos');
-const HISTORIAS = join(RAIZ, 'docs', 'historias');
+const HISTORIAS = join(RAIZ, 'historias');
 const VOCABULARIO = join(RAIZ, 'vocabularios', 'acutis-suite.vocabulario.md');
 const ESPECIFICACION = join(RAIZ, 'docs', 'dsl', 'especificacion.md');
 
@@ -62,7 +62,7 @@ describe('casos inválidos (test/lenguaje/casos/invalidos)', () => {
   });
 });
 
-describe('casos válidos (docs/historias)', () => {
+describe('casos válidos (historias)', () => {
   const historias = readdirSync(HISTORIAS)
     .filter((n) => n.endsWith('.historia.md'))
     .map((nombre) => ({ nombre, texto: leer(join(HISTORIAS, nombre)) }));

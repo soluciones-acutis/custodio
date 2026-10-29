@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** encargado del sitio de la parroquia
+
 **Quiero** escribir una noticia, revisarla en borrador y publicarla cuando esté lista
+
 **Para** mantener informada a la comunidad sin que salga al sitio nada sin revisar
 
 ## Antecedentes
@@ -37,4 +39,4 @@ vocabularios: [acutis-suite]
 - Y veo el texto "Te esperamos este domingo en el patio de la parroquia"
 
 ## Limpieza
-- elimino las noticias con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

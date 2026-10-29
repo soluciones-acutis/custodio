@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** contadora de la parroquia
+
 **Quiero** contratar a una persona y cerrar el mes con su liquidación calculada
+
 **Para** pagar sueldos correctos según la legislación laboral chilena y dejar el mes fijo, sin cambios posteriores
 
 ## Antecedentes
@@ -50,5 +52,5 @@ vocabularios: [acutis-suite]
 - Y no veo el botón "Reabrir"
 
 ## Limpieza
-- elimino las liquidaciones, contratos y trabajadores con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"
 - reabro el mes "${MES_PRUEBA}" si quedó cerrado

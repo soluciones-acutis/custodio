@@ -11,7 +11,9 @@ vocabularios: [acutis-suite]
 
 ## Historia
 **Como** secretaria de la parroquia
+
 **Quiero** entrar al panel con mi contraseña y un código de seis dígitos de mi app de autenticación
+
 **Para** trabajar en la Suite con la certeza de que nadie más puede entrar con mi cuenta
 
 ## Antecedentes

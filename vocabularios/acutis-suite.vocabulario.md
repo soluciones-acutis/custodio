@@ -6,13 +6,13 @@ producto: suite-parroquial
 
 # Vocabulario `acutis-suite`
 
-Frases de negocio de la Suite Digital Acutis que usan las historias de `docs/historias/`. El formato está en la [especificación v0.1](../docs/dsl/especificacion.md#10-frases-de-negocio-y-vocabularios), sección 10.
+Frases de negocio de la Suite Digital Acutis que usan las historias de `historias/`. El formato está en la [especificación v0.1](../docs/dsl/especificacion.md#10-frases-de-negocio-y-vocabularios), sección 10.
 
 Cada frase declara cómo se implementa:
 
 - **Con pasos:** la frase tiene sus pasos y se puede ejecutar.
 - **`pendiente`:** se conocen su nombre y sus parámetros, pero no sus pantallas. La historia se valida (con la advertencia `CUS-W004`) y no se ejecuta: el escenario queda `incompleto`.
-- **`nativa`:** la implementará un puerto de datos de prueba (API o siembra), porque por pantalla es imposible o demasiado frágil. Hasta que exista ese puerto, se comporta como `pendiente`.
+- **`nativa`:** la implementará un puerto de datos de prueba (API o siembra), porque por pantalla es imposible o demasiado frágil. Hasta que exista ese puerto, se comporta como `pendiente`. En la `## Limpieza` hay una excepción (§11.3 de la especificación): en un ambiente desechable, el escenario se ejecuta igual y la limpieza se informa como `limpieza_pendiente`.
 
 Los parámetros son los `"{nombre}"` del patrón. Los pasos usan las mismas frases que las historias, sin fase.
 
@@ -37,6 +37,13 @@ Los parámetros son los `"{nombre}"` del patrón. Los pasos usan las mismas fras
 ## Frase: inicio sesión en Orar como "{rol}" en la parroquia "{parroquia}"
 > implementación: pendiente — falta confirmar cómo entra un fiel a Orar y si usa segundo factor.
 
+## Datos de prueba
+
+## Frase: elimino todo lo creado con prefijo "{prefijo}"
+> implementación: nativa — una sola operación del puerto de datos de prueba de la Suite borra todo registro que lleve el prefijo, y lo que depende de él (ingresos de caja, asientos, consentimientos).
+
+Todo dato que crea una prueba lleva `${PREFIJO}`, que es único por escenario (§9.3 de la especificación). Por eso basta una limpieza para todos los módulos, en vez de una por tipo de registro.
+
 ## Mi parroquia
 
 ## Frase: existe una invitación sin aceptar para "{correo}" con rol "{rol}" y guardo su link como "{guardarLinkComo}"
@@ -50,9 +57,6 @@ Los parámetros son los `"{nombre}"` del patrón. Los pasos usan las mismas fras
 - presiono el botón "Ya lo pasé"
 
 La etiqueta «Link de la invitación» hay que confirmarla en la Suite.
-
-## Frase: elimino las invitaciones con prefijo "{prefijo}"
-> implementación: nativa — borrar varias invitaciones necesita repetir pasos, y v0.1 no tiene repeticiones.
 
 ## Misas y ofrendas
 
@@ -74,12 +78,6 @@ La etiqueta «Link de la invitación» hay que confirmarla en la Suite.
 
 ## Frase: el libro de caja muestra un ingreso de "{monto}" por la misa de "{nombre}"
 > implementación: pendiente — falta la pantalla del libro de caja.
-
-## Frase: elimino las peticiones de misa con prefijo "{prefijo}"
-> implementación: nativa — necesita repetir sobre varios registros.
-
-## Frase: elimino las misas del libro de intenciones con prefijo "{prefijo}" y sus ingresos en el libro de caja
-> implementación: nativa — necesita repetir sobre varios registros, y los ingresos del libro de caja no se borran por pantalla.
 
 ## Comunidad y libros sacramentales
 
@@ -115,9 +113,6 @@ La etiqueta «Link de la invitación» hay que confirmarla en la Suite.
 
 ## Frase: el verificador del sitio de la parroquia "{parroquia}" acepta el código "{codigo}" con el apellido "{apellido}"
 > implementación: pendiente — se sabe que la página es «Verificar un certificado» del sitio; faltan sus campos.
-
-## Frase: elimino los certificados, partidas y fichas con prefijo "{prefijo}"
-> implementación: nativa — una partida cerrada y un certificado emitido no se pueden borrar por pantalla.
 
 ## Catequesis
 
@@ -170,15 +165,6 @@ La etiqueta «Link de la invitación» hay que confirmarla en la Suite.
 ## Frase: elimino la asistencia registrada para "{persona}" y dejo el encuentro como por realizar
 > implementación: nativa — necesita revertir un registro guardado.
 
-## Frase: elimino las inscripciones y fichas con prefijo "{prefijo}"
-> implementación: nativa — necesita repetir sobre varios registros.
-
-## Frase: elimino las inscripciones, consentimientos y fichas con prefijo "{prefijo}"
-> implementación: nativa — necesita repetir sobre varios registros.
-
-## Frase: elimino las inscripciones, solicitudes y fichas con prefijo "{prefijo}"
-> implementación: nativa — necesita repetir sobre varios registros.
-
 ## Remuneraciones
 
 ## Frase: paso al siguiente paso del asistente
@@ -198,9 +184,6 @@ La etiqueta «Link de la invitación» hay que confirmarla en la Suite.
 
 ## Frase: reabro el mes "{mes}" si quedó cerrado
 > implementación: nativa — la contadora no puede reabrir un mes cerrado por pantalla (lo verifica la propia HU-SUITE-008).
-
-## Frase: elimino las liquidaciones, contratos y trabajadores con prefijo "{prefijo}"
-> implementación: nativa — una liquidación cerrada no se borra por pantalla.
 
 ## Contabilidad y rendiciones
 
@@ -222,9 +205,6 @@ La etiqueta «Link de la invitación» hay que confirmarla en la Suite.
 ## Frase: el asiento de "{detalle}" carga "{debe}" contra "{haber}"
 > implementación: pendiente — falta la pantalla del libro diario.
 
-## Frase: elimino las rendiciones y comprobantes con prefijo "{prefijo}"
-> implementación: nativa — necesita repetir sobre varios registros, y un asiento aprobado no se borra por pantalla.
-
 ## Sitio, noticias y Orar
 
 ## Frase: existe la noticia en borrador "{titulo}"
@@ -238,14 +218,9 @@ La etiqueta «Link de la invitación» hay que confirmarla en la Suite.
 ## Frase: la noticia "{titulo}" no aparece en el sitio de la parroquia "{parroquia}"
 > implementación: pendiente — falta un elemento del sitio que confirme que la portada terminó de cargar; sin él, el `no veo` no tiene ancla (`CUS-W003`).
 
-## Frase: elimino las noticias con prefijo "{prefijo}"
-> implementación: nativa — necesita repetir sobre varios registros.
-
 ## Frase: existe la petición de oración pendiente "{peticion}" del fiel "{fiel}"
 > implementación: nativa — la petición tiene que quedar asociada a la cuenta de un fiel de prueba.
 
 ## Frase: la petición "{peticion}" no aparece en el muro público de Orar
 > implementación: pendiente — falta la dirección del muro público y un elemento que sirva de ancla.
 
-## Frase: elimino las peticiones de oración con prefijo "{prefijo}"
-> implementación: nativa — necesita repetir sobre varios registros.
