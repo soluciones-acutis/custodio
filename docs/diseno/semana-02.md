@@ -2,18 +2,18 @@
 
 - **Fecha:** 23 de octubre de 2026
 - **Rama:** `semana02/especificacion-dsl`
-- **Entrega:** PR #2 «Especificación v0.1»
-- **Estado:** Para la reunión de diseño
+- **Entrega:** PR #16 «Especificación v0.1»
+- **Estado:** Revisado en el PR #16 el 29 de octubre de 2026. Los ajustes de la revisión están en la sección 13.
 
 ## 1. Resumen
 
-El diseño del DSL v1 se aprobó como dirección. Este documento cierra lo que la revisión dejó pendiente y define el alcance del PR #2.
+El diseño del DSL v1 se aprobó como dirección. Este documento cierra lo que la revisión dejó pendiente y define el alcance del PR #16.
 
 - **Decisión central:** las personas escriben el `.historia.md`. El JSON del v1 pasa a ser el **AST**, la estructura que produce el analizador.
 - **Cómo se encuentran los elementos:** la coincidencia de texto, las varias coincidencias, qué es una sección y el ámbito anidado quedan definidos en la especificación, no en cada adaptador, para que la suite de contrato pueda probar que el motor no importa.
 - **Secretos:** los declara el ambiente, y el lenguaje prohíbe usarlos donde podrían terminar impresos.
 - **Datos de prueba:** la limpieza corre por escenario, `${PREFIJO}` es único por escenario e intento, y queda espacio en el diseño para frases nativas.
-- **El PR #2** entrega la especificación v0.1, la gramática, el JSON Schema y los tipos del AST, el vocabulario con las firmas de todas las frases, las 12 historias válidas y 17 casos inválidos.
+- **El PR #16** entrega la especificación v0.1, la gramática, el JSON Schema y los tipos del AST, el vocabulario con las firmas de todas las frases, las 12 historias válidas, 19 casos inválidos y el archivo de ambiente.
 
 ## 2. Punto de partida
 
@@ -21,9 +21,9 @@ La revisión del diseño v1 se **aprobó como dirección**:
 
 - Se queda: un paso como **localizador + acción**; `ver` y `noVer` separados; las frases de negocio nombradas explícitamente; los parámetros `{x}` al compilar y las variables `${X}` al ejecutar; y nada de esperas por tiempo.
 - Se pidió cerrar: la semántica de localización, los secretos, el TOTP, las capturas de las frases, la limpieza y los datos de prueba.
-- Para el PR #2: un JSON Schema del AST, semver desde `0.1.0`, la tabla completa de códigos y el paso normalizado en el AST.
+- Para el PR #16: un JSON Schema del AST, semver desde `0.1.0`, la tabla completa de códigos y el paso normalizado en el AST.
 
-Cada requisito tiene su issue (DSL-01 a DSL-12). El PR #2 los referencia con `Refs`, porque aquí se especifican y se implementan desde la S3.
+Cada requisito tiene su issue (DSL-01 a DSL-12). El PR #16 los referencia con `Refs`, porque aquí se especifican y se implementan desde la S3.
 
 ## 3. Decisión central: el markdown es la fuente, el JSON es el AST
 
@@ -46,7 +46,7 @@ En el AST cada paso queda **normalizado**, con claves fijas, para que el validad
   "objetivo": { "por": "boton", "texto": "Revocar" },
   "ambito": { "por": "fila", "texto": "${PREFIJO}revocar@ejemplo.test" },
   "valor": null,
-  "origen": { "linea": 34, "columna": 3 }
+  "origen": { "linea": 37, "columna": 3 }
 }
 ```
 
@@ -236,7 +236,7 @@ Con esto, `CUS-E011` revisa `${linkInvitacion}` antes de ejecutar.
 
 ## 7. Versión y gramática
 
-- **Versión:** semver sin la `v`, partiendo en **`0.1.0`**. Aplica a la especificación, al campo `dsl:` de las historias, al vocabulario y al JSON Schema. Hoy las historias dicen `dsl: v1.0`: se actualizan en el PR #2, y `v1.0` pasa a ser uno de los casos inválidos (`CUS-E015`).
+- **Versión:** semver sin la `v`, partiendo en **`0.1.0`**. Aplica a la especificación, al campo `dsl:` de las historias, al vocabulario y al JSON Schema. Hoy las historias dicen `dsl: v1.0`: se actualizan en el PR #16, y `v1.0` pasa a ser uno de los casos inválidos (`CUS-E015`).
 - **Gramática:** **EBNF del `.historia.md`** en `docs/dsl/` (DSL-11) y **JSON Schema del AST**. Ver la pregunta 1.
 
 ## 8. Diagnósticos: tabla provisoria de códigos
@@ -270,7 +270,7 @@ Que un objetivo sea ambiguo (4.2) no es un código `CUS`: solo se sabe al ejecut
 
 ### 8.1 Los casos inválidos
 
-Al menos uno por cada código de error. Son 17, más que los 15 que pide el PR #2:
+Al menos uno por cada código de error. Son 19, más que los 15 que pide el PR #16 (el 18 y el 19 llegaron con la revisión, sección 13):
 
 | # | Caso | Error esperado |
 |---|---|---|
@@ -291,16 +291,18 @@ Al menos uno por cada código de error. Son 17, más que los 15 que pide el PR #
 | 15 | `dsl: v1.0`. | `CUS-E015` |
 | 16 | Dos escenarios con el mismo nombre. | `CUS-E016` |
 | 17 | Un escenario sin pasos (lo pide el issue de DSL-04). | `CUS-E005` |
+| 18 | `${PARROQUA}`, una variable que el ambiente no declara. | `CUS-E011` |
+| 19 | Una frase que está en los dos vocabularios que importa la historia. | `CUS-E017` |
 
 ## 9. Inventario de frases de negocio
 
-Las 12 historias de `docs/historias/` tienen 262 pasos. Además de las frases base usan **53 frases de negocio**, que quedaron en [`vocabularios/acutis-suite.vocabulario.md`](../../vocabularios/acutis-suite.vocabulario.md) con su firma completa (parámetros, `produce` e implementación):
+Las 12 historias de `historias/` tienen 261 pasos. Además de las frases base usan **43 frases de negocio**, que quedaron en [`vocabularios/acutis-suite.vocabulario.md`](../../vocabularios/acutis-suite.vocabulario.md) con su firma completa (parámetros, `produce` e implementación):
 
 | Implementación | Frases | Ejemplos |
 |---|---:|---|
 | Con pasos | 13 | «inicio sesión como…», «visito el sitio de la parroquia…», «existe la partida de bautismo de…», «la secretaría ve la inscripción de…» |
 | `pendiente` | 23 | Las del asistente de inscripción, los firmantes de la colecta, el libro de caja, el verificador de certificados |
-| `nativa` | 17 | Todas las limpiezas «elimino … con prefijo», «reabro el mes…», y preparaciones como «existe la colecta presentada…» |
+| `nativa` | 7 | La limpieza única «elimino todo lo creado con prefijo…», «reabro el mes…», y preparaciones como «existe la colecta presentada…» |
 
 **Criterio.** Una frase tiene pasos solo cuando salen de etiquetas que ya aparecen en las historias, sin inventar pantallas. Es `nativa` cuando por pantalla es imposible (borrar una partida cerrada, reabrir un mes que la contadora no puede reabrir) o cuando prepararla por pantalla mezclaría lo que el escenario no prueba. Las demás son `pendiente`, con un motivo que dice qué falta averiguar.
 
@@ -308,7 +310,7 @@ Las 12 historias de `docs/historias/` tienen 262 pasos. Además de las frases ba
 
 `ELIMINAR` y `REABRIR` en mayúsculas no eran fases del lenguaje: las limpiezas pasaron a ser frases normales («elimino las invitaciones con prefijo…», «reabro el mes… si quedó cerrado»).
 
-## 10. Alcance del PR #2
+## 10. Alcance del PR #16
 
 ### 10.1 Entregables
 
@@ -320,13 +322,13 @@ Las 12 historias de `docs/historias/` tienen 262 pasos. Además de las frases ba
 | Tipos del AST en TypeScript | `src/lenguaje/` | DSL-11 |
 | Tabla de códigos y casos inválidos | `docs/dsl/especificacion.md`, `test/lenguaje/casos/` | DSL-12 |
 | Vocabulario `acutis-suite` con las firmas de todas las frases (`parametros`, `produce`, `implementacion`) | `vocabularios/acutis-suite.vocabulario.md` | DSL-07 |
-| Las 12 historias del inventario en v0.1 (`dsl: 0.1.0`) | `docs/historias/` | DSL-01 |
+| Las 12 historias del inventario en v0.1 (`dsl: 0.1.0`) | `historias/` | DSL-01 |
 | Este documento de diseño | `docs/diseno/semana-02.md` | — |
 
 ### 10.2 Lista de tareas
 
 **Historias**
-- [X] Subir las historias de usuario 007 a 012 en `docs/historias/`.
+- [X] Subir las historias de usuario 007 a 012 en `historias/`.
 - [x] Actualizar las 12 historias a `dsl: 0.1.0` y a las frases base de la sección 3.2. Las limpiezas pasan a ser frases normales, en vez de `ELIMINAR`.
 - [x] Completar el inventario de frases (sección 9) con las historias 007 a 012.
 
@@ -343,17 +345,17 @@ Las 12 historias de `docs/historias/` tienen 262 pasos. Además de las frases ba
 
 **Vocabulario y casos**
 - [x] `vocabularios/acutis-suite.vocabulario.md` con las firmas de todas las frases y sus pasos cuando se conocen.
-- [x] Los 17 casos inválidos de la sección 8.1 en `test/lenguaje/casos/invalidos/`, cada uno con su código esperado.
-- [x] Las 12 historias como casos válidos: se referencian desde `docs/historias/`, sin duplicarlas (`test/lenguaje/casos.test.ts`).
+- [x] Los 19 casos inválidos de la sección 8.1 en `test/lenguaje/casos/invalidos/`, cada uno con su código esperado.
+- [x] Las 12 historias como casos válidos: se referencian desde `historias/`, sin duplicarlas (`test/lenguaje/casos.test.ts`).
 
 **Revisión del diseño v1**
 - [x] Correcciones de redacción del diseño v1 (en `dsl_v1/`, fuera del repositorio): §8.1 y §9.1. La frase «la reunión de la semana pasada» del §4 no está en la versión actual del documento, y el índice ya no incluye el título.
 
 **Cierre**
 - [x] `npm run verificar` en verde.
-- [ ] Descripción del PR con la plantilla, `Refs #n` a los issues DSL-01 a DSL-12 y las casillas de especificación marcadas en cada issue.
+- [x] Descripción del PR con la plantilla, `Refs #n` a los issues DSL-01 a DSL-12 y las casillas de especificación marcadas en cada issue.
 
-### 10.3 Fuera del PR #2
+### 10.3 Fuera del PR #16
 
 - **HU-SUITE-002, acceso directo a la URL de un módulo:** S3, tiene su propio issue.
 - **Frases nativas:** solo se deja el espacio en el diseño (sección 5.4); el puerto se construye más adelante.
@@ -377,8 +379,8 @@ Al escribir la especificación y pasar las 12 historias por un analizador de pru
 
 ### 11.1 Cómo se comprobó
 
-- Un analizador de prueba, que no es parte del repositorio y no es el de la S3, leyó las 12 historias con las frases base de §3.2 y el vocabulario: **0 errores** en las 12. Las únicas advertencias son `CUS-W004` de las historias que usan frases sin pasos.
-- El mismo analizador corrió los 17 casos inválidos: **cada uno informa exactamente su error**, y ningún otro.
+- Un analizador de prueba, que no está en `main` y no es el de la S3, leyó las 12 historias con las frases base de §3.2, el vocabulario y el ambiente: **0 errores** en las 12. Las únicas advertencias son `CUS-W004` y `CUS-W005`, de las historias que usan frases sin pasos. El analizador está en la rama [`experimentos/analizador-s2`](https://github.com/soluciones-acutis/custodio/tree/experimentos/analizador-s2), como punto de partida para la S3.
+- El mismo analizador corrió los 19 casos inválidos: **cada uno informa exactamente su error**, y ningún otro.
 - Generó el AST de cinco historias y del vocabulario (`docs/dsl/ejemplos/`), y esos AST cumplen el JSON Schema (`test/lenguaje/ast.test.ts`).
 
 ## 12. Criterios de aceptación de la semana
@@ -391,3 +393,59 @@ Del documento técnico, para la S2:
 - [x] La especificación y la gramática están en `docs/dsl/`, y el modelo del AST tipado está en `src/lenguaje/`.
 
 Y la definición de terminado de cada PR: CI verde, pruebas para lo nuevo, sin secretos ni datos personales, documentación al día, descripción con evidencia y requisitos marcados en sus issues.
+
+## 13. Ajustes de la revisión del PR #16
+
+La revisión del 29 de octubre pidió cuatro cambios antes de fusionar, y seis arreglos menores. Cada uno quedó en la especificación.
+
+### 13.1 Limpieza nativa
+
+**Problema:** según el §10.3, una historia que usa una frase sin pasos no se ejecuta. Diez historias terminaban en una limpieza `nativa`, así que todas quedaban `incompleto`, incluso la HU-SUITE-003, cuyos escenarios tienen todos sus pasos.
+
+**Decisión:**
+
+- **Una sola frase nativa de limpieza:** «elimino todo lo creado con prefijo "{prefijo}"». Como `${PREFIJO}` es único por escenario y todo dato de prueba lo lleva, basta una operación del puerto de datos de prueba que la Suite tiene que ofrecer. Reemplaza las 11 frases «elimino … con prefijo», y el vocabulario pasa de 53 a 43 frases.
+- **Una limpieza sin pasos depende del ambiente** (especificación §11.3, advertencia nueva `CUS-W005`). En un ambiente `desechable: sí`, el escenario se ejecuta y la limpieza se informa como `limpieza_pendiente`. En uno `desechable: no`, el escenario no se ejecuta y queda `incompleto`.
+
+**Descartado:** escribir la regla de hoy explícitamente para la limpieza. Seguiría bloqueando historias completas hasta que exista el puerto, que no depende de nosotros.
+
+**Efecto:** la HU-SUITE-003 ya se puede ejecutar en `suite-pruebas`. Las otras nueve siguen `incompleto` por frases `pendiente` en sus escenarios, que es lo correcto mientras no se conozcan esas pantallas.
+
+### 13.2 El archivo de ambiente
+
+**Problema:** el caso 13 (`CUS-E013`) necesitaba saber qué nombres son secretos, y «variable no definida» (`CUS-E011`) qué variables existen. Las dos cosas las declara el ambiente, pero su archivo no existía, así que el caso 13 solo se podía detectar adivinando por el prefijo `CLAVE_`.
+
+**Decisión:** el formato queda definido ahora (especificación §9.5). Es un `ambientes/<nombre>.ambiente.md` con frontmatter (`ambiente`, `dsl`, `producto`, `desechable`) y dos listas de nombres, `## Variables` y `## Secretos`, nunca valores. Un nombre puede terminar en `*` (`CLAVE_*`), y `CUS-E011` y `CUS-E013` se revisan después de sustituir los parámetros de cada frase, así que `${CLAVE_{rol}}` se reconoce como secreto.
+
+- El ambiente de la Suite es [`ambientes/suite-pruebas.ambiente.md`](../../ambientes/suite-pruebas.ambiente.md).
+- Caso nuevo 18: una variable que el ambiente no declara. Cierra la casilla de DSL-08 que había quedado para la S4.
+- Una prueba comprueba que el ambiente declara cada variable en mayúsculas que usan las historias y el vocabulario.
+
+**Por qué markdown y no YAML o JSON:** es el mismo formato que las historias y los vocabularios, se lee en GitHub y lo lee el mismo analizador.
+
+### 13.3 La gramática
+
+| Problema | Decisión |
+|---|---|
+| No aceptaba las líneas en blanco después del frontmatter, de la narrativa ni entre los antecedentes y el primer escenario. | `{ linea_en_blanco }` entre los bloques y después de cada título. |
+| `cadena` no tenía cómo escribir una comilla. | `\"` es una comilla y `\\` una barra invertida (especificación §6.4). |
+| `exactamente` valía con `elemento` pero no con `elemento_de_campo`. | Vale con cualquier elemento salvo los escapes, también campos y casillas: `completo exactamente el campo "Nombre" con "…"`. Sirve para separar «Nombre» de «Nombre del apoderado» sin un ámbito. |
+
+### 13.4 Arreglos menores
+
+| Arreglo | Dónde |
+|---|---|
+| `fila` y `seccion` salieron de los objetivos: en el markdown solo son ámbitos. | `ast.ts`, `ast.schema.json` |
+| `la fecha de hoy` usa el formato que pide el campo, y lo resuelve el adaptador; `la fecha de hoy en formato "AAAA-MM-DD"` lo fija. En el AST, `formato: null` cuando lo resuelve el adaptador. | Especificación §6.3 |
+| La narrativa va con una línea en blanco entre `**Como**`, `**Quiero**` y `**Para**`, para que GitHub no la junte en un párrafo. La gramática acepta las dos formas, y el formateador escribe la canónica. | Las 12 historias, los casos, §4 |
+| El analizador de prueba quedó en la rama `experimentos/analizador-s2`, sin entrar a `main`. | Sección 11.1 |
+| Los ejemplos de AST se regeneraron con las líneas nuevas. Que sean la salida esperada del analizador real queda para la S3. | `docs/dsl/ejemplos/` |
+| Este documento decía «PR #2»; el PR es el #16. | Todo el documento |
+
+### 13.5 Las preguntas del §15 de la especificación
+
+| Pregunta | Respuesta |
+|---|---|
+| ¿`historias/` en la raíz o en `docs/historias/`? | En la raíz, junto a `vocabularios/` y `ambientes/`, como dice el documento técnico: son la entrada del producto. |
+| ¿`incompleto` como estado en SRV-04? | Sí, pero como **resultado** del escenario y de la ejecución (`aprobada`, `fallida`, `incompleto`, `limpieza_fallida`, `limpieza_pendiente`), no como estado de la cola (`pendiente`, `en_curso`, `terminada`). Especificación §11.5. |
+| ¿Una oración que calza con frases de dos vocabularios? | Es error, `CUS-E017`, por la misma razón que no existe «el primero» (§4.2). Caso nuevo 19. |
