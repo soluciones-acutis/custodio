@@ -1,0 +1,122 @@
+{
+  "$comment": "Cada caso inválido y el error que tiene que informar el validador (docs/dsl/especificacion.md, §13). Se validan contra el ambiente indicado y los vocabularios de vocabularios/; `vocabulario` agrega uno de esta carpeta.",
+  "ambiente": "ambientes/suite-pruebas.ambiente.md",
+  "casos": [
+    {
+      "archivo": "01-sin-frontmatter.historia.md",
+      "codigo": "CUS-E001",
+      "requisito": "DSL-01",
+      "descripcion": "La historia no tiene frontmatter."
+    },
+    {
+      "archivo": "02-sin-criticidad.historia.md",
+      "codigo": "CUS-E002",
+      "requisito": "DSL-01",
+      "descripcion": "Al frontmatter le falta `criticidad`."
+    },
+    {
+      "archivo": "03-id-mal-formado.historia.md",
+      "codigo": "CUS-E003",
+      "requisito": "DSL-02",
+      "descripcion": "El `id` no tiene la forma `HU-<PRODUCTO>-<NNN>`."
+    },
+    {
+      "archivo": "04-sin-para.historia.md",
+      "codigo": "CUS-E004",
+      "requisito": "DSL-03",
+      "descripcion": "A la narrativa le falta **Para**."
+    },
+    {
+      "archivo": "05-escenario-empieza-con-y.historia.md",
+      "codigo": "CUS-E005",
+      "requisito": "DSL-04",
+      "descripcion": "El escenario empieza con `Y`."
+    },
+    {
+      "archivo": "06-frase-desconocida.historia.md",
+      "codigo": "CUS-E006",
+      "requisito": "DSL-05",
+      "descripcion": "«presiona» en vez de «presiono»: la frase no existe y el error sugiere la correcta."
+    },
+    {
+      "archivo": "07-completar-un-boton.historia.md",
+      "codigo": "CUS-E007",
+      "requisito": "DSL-05",
+      "descripcion": "`completar` no acepta un botón como objetivo."
+    },
+    {
+      "archivo": "08-completar-sin-valor.historia.md",
+      "codigo": "CUS-E008",
+      "requisito": "DSL-05",
+      "descripcion": "`completar` sin el valor a escribir."
+    },
+    {
+      "archivo": "09-vocabulario-inexistente.historia.md",
+      "codigo": "CUS-E009",
+      "requisito": "DSL-07",
+      "descripcion": "Importa un vocabulario que no existe."
+    },
+    {
+      "archivo": "10-frase-sin-parametro.historia.md",
+      "codigo": "CUS-E010",
+      "requisito": "DSL-07",
+      "descripcion": "A «inicio sesión como…» le falta la parroquia."
+    },
+    {
+      "archivo": "11-captura-antes-de-hacerse.historia.md",
+      "codigo": "CUS-E011",
+      "requisito": "DSL-08",
+      "descripcion": "Usa `${linkInvitacion}` sin haberlo capturado antes."
+    },
+    {
+      "archivo": "12-frases-circulares.historia.md",
+      "codigo": "CUS-E012",
+      "requisito": "DSL-07",
+      "descripcion": "Usa una frase de un vocabulario donde dos frases se llaman entre sí.",
+      "vocabulario": "casos-ciclo.vocabulario.md"
+    },
+    {
+      "archivo": "13-secreto-en-verificacion.historia.md",
+      "codigo": "CUS-E013",
+      "requisito": "DSL-08",
+      "descripcion": "Un secreto en una verificación terminaría impreso en el informe. Es secreto porque el ambiente declara `CLAVE_*` en `## Secretos`."
+    },
+    {
+      "archivo": "14-parametro-invalido-en-nombre-de-variable.historia.md",
+      "codigo": "CUS-E014",
+      "requisito": "DSL-07, DSL-08",
+      "descripcion": "El rol «secretaria parroquial» arma `${USUARIO_secretaria parroquial}`, que no es un nombre de variable."
+    },
+    {
+      "archivo": "15-version-con-v.historia.md",
+      "codigo": "CUS-E015",
+      "requisito": "DSL-11",
+      "descripcion": "`dsl: v1.0`: la versión va en semver, sin la `v`."
+    },
+    {
+      "archivo": "16-escenarios-repetidos.historia.md",
+      "codigo": "CUS-E016",
+      "requisito": "DSL-04",
+      "descripcion": "Dos escenarios con el mismo nombre."
+    },
+    {
+      "archivo": "17-escenario-sin-pasos.historia.md",
+      "codigo": "CUS-E005",
+      "requisito": "DSL-04",
+      "descripcion": "Un escenario sin pasos."
+    },
+    {
+      "archivo": "18-variable-no-declarada.historia.md",
+      "codigo": "CUS-E011",
+      "requisito": "DSL-08",
+      "descripcion": "`${PARROQUA}`, mal escrita, no está declarada en el ambiente."
+    },
+    {
+      "archivo": "19-frase-en-dos-vocabularios.historia.md",
+      "codigo": "CUS-E017",
+      "requisito": "DSL-07",
+      "descripcion": "«visito el sitio de la parroquia…» está en los dos vocabularios que importa la historia.",
+      "vocabulario": "casos-repetida.vocabulario.md"
+    }
+  ]
+}

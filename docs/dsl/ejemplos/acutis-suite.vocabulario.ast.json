@@ -1,0 +1,1605 @@
+{
+  "ast": "0.1.0",
+  "archivo": "vocabularios/acutis-suite.vocabulario.md",
+  "vocabulario": "acutis-suite",
+  "dsl": "0.1.0",
+  "producto": "suite-parroquial",
+  "frases": [
+    {
+      "patron": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+      "parametros": ["rol", "parroquia"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "url",
+            "url": "https://{parroquia}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 22,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_{rol}}"
+          },
+          "origen": {
+            "linea": 23,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${CLAVE_{rol}}"
+          },
+          "origen": {
+            "linea": 24,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 25,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Verificación en dos pasos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 26,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+            "argumentos": {
+              "secreto": "${TOTP_{rol}}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 27,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 28,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 29,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 21,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+      "parametros": ["secreto"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Código de seis dígitos"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "totp",
+            "secreto": "{secreto}"
+          },
+          "origen": {
+            "linea": 32,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 31,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "visito el sitio de la parroquia \"{parroquia}\"",
+      "parametros": ["parroquia"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "url",
+            "url": "https://{parroquia}.${DOMINIO_PRUEBAS}"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 35,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 34,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "inicio sesión en Orar como \"{rol}\" en la parroquia \"{parroquia}\"",
+      "parametros": ["rol", "parroquia"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta confirmar cómo entra un fiel a Orar y si usa segundo factor.",
+      "pasos": [],
+      "origen": {
+        "linea": 37,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "elimino todo lo creado con prefijo \"{prefijo}\"",
+      "parametros": ["prefijo"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "una sola operación del puerto de datos de prueba de la Suite borra todo registro que lleve el prefijo, y lo que depende de él (ingresos de caja, asientos, consentimientos).",
+      "pasos": [],
+      "origen": {
+        "linea": 42,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+      "parametros": ["correo", "rol", "guardarLinkComo"],
+      "produce": ["{guardarLinkComo}"],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Mi parroquia", "El equipo"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 51,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Invitar a alguien"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 52,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "{correo}"
+          },
+          "origen": {
+            "linea": 53,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "seleccionar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Rol"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "{rol}"
+          },
+          "origen": {
+            "linea": 54,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Crear la invitación"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 55,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "capturar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Link de la invitación"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "captura",
+            "como": "{guardarLinkComo}"
+          },
+          "origen": {
+            "linea": 56,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Ya lo pasé"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 57,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 49,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "una persona pidió una misa desde el sitio a nombre de \"{nombre}\"",
+      "parametros": ["nombre"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "visito el sitio de la parroquia \"{parroquia}\"",
+            "argumentos": {
+              "parroquia": "${PARROQUIA}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 64,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Pedir una misa"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 65,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "seleccionar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "¿Por qué motivo pides la misa?"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "Por un difunto"
+          },
+          "origen": {
+            "linea": 66,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Intención"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${PREFIJO}Por el eterno descanso de Juan"
+          },
+          "origen": {
+            "linea": 67,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Tu nombre"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "{nombre}"
+          },
+          "origen": {
+            "linea": 68,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Teléfono"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "+56 9 0000 0000"
+          },
+          "origen": {
+            "linea": 69,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "marcar",
+          "objetivo": {
+            "por": "casilla",
+            "texto": "He leído y acepto el aviso de privacidad."
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 70,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Enviar petición"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 71,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Recibimos tu petición"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 72,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 63,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "la secretaría ve la petición de misa de \"{nombre}\"",
+      "parametros": ["nombre"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+            "argumentos": {
+              "rol": "secretaria",
+              "parroquia": "${PARROQUIA}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 75,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Misas y ofrendas"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 76,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "{nombre}"
+          },
+          "ambito": {
+            "por": "seccion",
+            "texto": "Esperando respuesta",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "linea": 77,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 74,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "el libro de caja muestra un ingreso de \"{monto}\" por la misa de \"{nombre}\"",
+      "parametros": ["monto", "nombre"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la pantalla del libro de caja.",
+      "pasos": [],
+      "origen": {
+        "linea": 79,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "existe la partida de bautismo de \"{persona}\"",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Comunidad", "Libros sacramentales"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 85,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "seleccionar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Libro"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "Bautismos"
+          },
+          "origen": {
+            "linea": 86,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Anotar bautismo"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 87,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Nombre"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "{persona}"
+          },
+          "origen": {
+            "linea": 88,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Crear la ficha"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 89,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Crear y elegir"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 90,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Fecha"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "13-09-2026"
+          },
+          "origen": {
+            "linea": 91,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Ministro"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${PREFIJO}P. Ministro"
+          },
+          "origen": {
+            "linea": 92,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Número"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "unico",
+            "unico": "numero"
+          },
+          "origen": {
+            "linea": 93,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Anotar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 94,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "enlace",
+            "texto": "Ver la partida"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 95,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 84,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "abro la partida de bautismo de \"{persona}\"",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Comunidad", "Libros sacramentales"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 98,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "seleccionar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Libro"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "Bautismos"
+          },
+          "origen": {
+            "linea": 99,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "enlace",
+            "texto": "Ver la partida"
+          },
+          "ambito": {
+            "por": "fila",
+            "texto": "{persona}",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "linea": 100,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 97,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "el libro de \"{libro}\" muestra la partida de \"{persona}\"",
+      "parametros": ["libro", "persona"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Comunidad", "Libros sacramentales"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 103,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "seleccionar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Libro"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "{libro}"
+          },
+          "origen": {
+            "linea": 104,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "{persona}"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 105,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 102,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "abro la ficha de \"{persona}\"",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta confirmar desde dónde se abre la ficha de una persona en «Comunidad».",
+      "pasos": [],
+      "origen": {
+        "linea": 107,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "capturo el código del certificado como \"{como}\"",
+      "parametros": ["como"],
+      "produce": ["{como}"],
+      "implementacion": "pendiente",
+      "motivo": "falta la etiqueta del código en «Certificados emitidos».",
+      "pasos": [],
+      "origen": {
+        "linea": 110,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "el verificador del sitio de la parroquia \"{parroquia}\" acepta el código \"{codigo}\" con el apellido \"{apellido}\"",
+      "parametros": ["parroquia", "codigo", "apellido"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "se sabe que la página es «Verificar un certificado» del sitio; faltan sus campos.",
+      "pasos": [],
+      "origen": {
+        "linea": 114,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "elijo el curso \"{curso}\" en el asistente de inscripción",
+      "parametros": ["curso"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta recorrer el asistente de inscripción.",
+      "pasos": [],
+      "origen": {
+        "linea": 119,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "inscribo a \"{persona}\" con una ficha nueva",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta recorrer el asistente de inscripción.",
+      "pasos": [],
+      "origen": {
+        "linea": 122,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "agrego como apoderada a \"{persona}\"",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta recorrer el asistente de inscripción.",
+      "pasos": [],
+      "origen": {
+        "linea": 125,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "existe la inscripción preinscrita de \"{persona}\" con apoderada \"{apoderado}\" en el curso \"{curso}\"",
+      "parametros": ["persona", "apoderado", "curso"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Catequesis", "Inscribir"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 129,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "elijo el curso \"{curso}\" en el asistente de inscripción",
+            "argumentos": {
+              "curso": "{curso}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 130,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "inscribo a \"{persona}\" con una ficha nueva",
+            "argumentos": {
+              "persona": "{persona}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 131,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "agrego como apoderada a \"{persona}\"",
+            "argumentos": {
+              "persona": "{apoderado}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 132,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Inscribir"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 133,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Preinscrita"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 134,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 128,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "existe la inscripción activa de \"{persona}\" en el curso \"{curso}\"",
+      "parametros": ["persona", "curso"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "prepararla por pantalla exige entrar como secretaria, inscribir y registrar el consentimiento antes de que la catequista inicie sesión.",
+      "pasos": [],
+      "origen": {
+        "linea": 136,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "\"{persona}\" aparece en el pase de lista del curso \"{curso}\"",
+      "parametros": ["persona", "curso"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "el pase de lista está en «Catequesis > Mis cursos y el pase de lista» (HU-SUITE-007), que es la vista de la catequista; falta confirmar dónde lo ve la secretaría.",
+      "pasos": [],
+      "origen": {
+        "linea": 139,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "\"{persona}\" no aparece en el pase de lista del curso \"{curso}\"",
+      "parametros": ["persona", "curso"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "igual que «aparece en el pase de lista», terminando con `no veo`.",
+      "pasos": [],
+      "origen": {
+        "linea": 142,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "la asistencia de \"{persona}\" quedó como presente en el encuentro",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la pantalla donde se consulta la asistencia guardada.",
+      "pasos": [],
+      "origen": {
+        "linea": 145,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "acepto el tratamiento de datos personales",
+      "parametros": [],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la etiqueta de la casilla en el formulario público de catequesis.",
+      "pasos": [],
+      "origen": {
+        "linea": 148,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "una familia envió desde el sitio la inscripción de \"{nombre}\" al curso \"{curso}\"",
+      "parametros": ["nombre", "curso"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "visito el sitio de la parroquia \"{parroquia}\"",
+            "argumentos": {
+              "parroquia": "${PARROQUIA}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 152,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Catequesis"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 153,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Inscribir"
+          },
+          "ambito": {
+            "por": "seccion",
+            "texto": "{curso}",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "linea": 154,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Nombre del niño o niña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "{nombre}"
+          },
+          "origen": {
+            "linea": 155,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "acepto el tratamiento de datos personales",
+            "argumentos": {}
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 156,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Enviar inscripción"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 157,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Recibimos tu inscripción"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 158,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 151,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "la secretaría ve la inscripción de \"{nombre}\"",
+      "parametros": ["nombre"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "frase",
+          "objetivo": {
+            "por": "frase",
+            "vocabulario": "acutis-suite",
+            "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+            "argumentos": {
+              "rol": "secretaria",
+              "parroquia": "${PARROQUIA}"
+            }
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 161,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Catequesis", "Escritorio"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 162,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "ver",
+          "objetivo": {
+            "por": "texto",
+            "texto": "{nombre}"
+          },
+          "ambito": {
+            "por": "seccion",
+            "texto": "Solicitudes por revisar",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "linea": 163,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 160,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "elimino la asistencia registrada para \"{persona}\" y dejo el encuentro como por realizar",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "necesita revertir un registro guardado.",
+      "pasos": [],
+      "origen": {
+        "linea": 165,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "paso al siguiente paso del asistente",
+      "parametros": [],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la etiqueta del botón que avanza el asistente de contratación.",
+      "pasos": [],
+      "origen": {
+        "linea": 170,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "confirmo la contratación de \"{persona}\"",
+      "parametros": ["persona"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta el último paso del asistente de contratación.",
+      "pasos": [],
+      "origen": {
+        "linea": 173,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "\"{persona}\" está contratado desde \"{fecha}\" con AFP y salud vigentes",
+      "parametros": ["persona", "fecha"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "contratar por pantalla son más de diez pasos que no son lo que el escenario prueba.",
+      "pasos": [],
+      "origen": {
+        "linea": 176,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "calculo las liquidaciones pendientes",
+      "parametros": [],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la pantalla de cálculo de liquidaciones.",
+      "pasos": [],
+      "origen": {
+        "linea": 179,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "confirmo el cierre del mes",
+      "parametros": [],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta el aviso de confirmación del cierre.",
+      "pasos": [],
+      "origen": {
+        "linea": 182,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "reabro el mes \"{mes}\" si quedó cerrado",
+      "parametros": ["mes"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "la contadora no puede reabrir un mes cerrado por pantalla (lo verifica la propia HU-SUITE-008).",
+      "pasos": [],
+      "origen": {
+        "linea": 185,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "completo la cantidad de billetes de \"{denominacion}\" con \"{cantidad}\"",
+      "parametros": ["denominacion", "cantidad"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta cómo se rotulan los campos del arqueo por denominación.",
+      "pasos": [],
+      "origen": {
+        "linea": 190,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "completo el primer firmante con \"{nombre}\"",
+      "parametros": ["nombre"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la etiqueta de los campos de firmantes.",
+      "pasos": [],
+      "origen": {
+        "linea": 193,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "completo el segundo firmante con \"{nombre}\"",
+      "parametros": ["nombre"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la etiqueta de los campos de firmantes.",
+      "pasos": [],
+      "origen": {
+        "linea": 196,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "completo el tercer firmante, del Consejo Económico, con \"{nombre}\"",
+      "parametros": ["nombre"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la etiqueta de los campos de firmantes.",
+      "pasos": [],
+      "origen": {
+        "linea": 199,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "existe la colecta presentada \"{detalle}\" por \"{monto}\"",
+      "parametros": ["detalle", "monto"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "por pantalla el monto sale del arqueo, así que no se puede preparar una colecta por un monto dado.",
+      "pasos": [],
+      "origen": {
+        "linea": 202,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "el asiento de \"{detalle}\" carga \"{debe}\" contra \"{haber}\"",
+      "parametros": ["detalle", "debe", "haber"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la pantalla del libro diario.",
+      "pasos": [],
+      "origen": {
+        "linea": 205,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "existe la noticia en borrador \"{titulo}\"",
+      "parametros": ["titulo"],
+      "produce": [],
+      "implementacion": "pasos",
+      "motivo": null,
+      "pasos": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Sitio y difusión", "Noticias"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 211,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Escribir una noticia"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 212,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Título"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "{titulo}"
+          },
+          "origen": {
+            "linea": 213,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Resumen"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "Te esperamos este domingo en el patio de la parroquia"
+          },
+          "origen": {
+            "linea": 214,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "completar",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Texto"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "Habrá juegos, comida y música para toda la familia."
+          },
+          "origen": {
+            "linea": 215,
+            "columna": 3
+          }
+        },
+        {
+          "fase": null,
+          "accion": "presionar",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Guardar como borrador"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 216,
+            "columna": 3
+          }
+        }
+      ],
+      "origen": {
+        "linea": 210,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "la noticia \"{titulo}\" no aparece en el sitio de la parroquia \"{parroquia}\"",
+      "parametros": ["titulo", "parroquia"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta un elemento del sitio que confirme que la portada terminó de cargar; sin él, el `no veo` no tiene ancla (`CUS-W003`).",
+      "pasos": [],
+      "origen": {
+        "linea": 218,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "existe la petición de oración pendiente \"{peticion}\" del fiel \"{fiel}\"",
+      "parametros": ["peticion", "fiel"],
+      "produce": [],
+      "implementacion": "nativa",
+      "motivo": "la petición tiene que quedar asociada a la cuenta de un fiel de prueba.",
+      "pasos": [],
+      "origen": {
+        "linea": 221,
+        "columna": 1
+      }
+    },
+    {
+      "patron": "la petición \"{peticion}\" no aparece en el muro público de Orar",
+      "parametros": ["peticion"],
+      "produce": [],
+      "implementacion": "pendiente",
+      "motivo": "falta la dirección del muro público y un elemento que sirva de ancla.",
+      "pasos": [],
+      "origen": {
+        "linea": 224,
+        "columna": 1
+      }
+    }
+  ]
+}

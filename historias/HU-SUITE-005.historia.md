@@ -1,16 +1,19 @@
 ---
-dsl: v1.0
+dsl: 0.1.0
 id: HU-SUITE-005
 producto: suite-parroquial
 titulo: La secretaría anota una partida de bautismo y emite un certificado que se puede verificar en el sitio
 actor: Secretaria parroquial
 criticidad: alta
 etiquetas: [comunidad, libros-sacramentales, certificados]
+vocabularios: [acutis-suite]
 ---
 
 ## Historia
 **Como** secretaria de la parroquia
+
 **Quiero** transcribir una partida de bautismo y emitir su certificado desde la partida
+
 **Para** entregarle a la familia un certificado fiel al libro, que cualquiera pueda verificar en el sitio de la parroquia
 
 ## Antecedentes
@@ -25,7 +28,7 @@ etiquetas: [comunidad, libros-sacramentales, certificados]
 - Y presiono el botón "Crear y elegir"
 - Y completo el campo "Fecha" con "13-09-2026"
 - Y completo el campo "Ministro" con "${PREFIJO}P. Ministro"
-- Y completo el campo "Número" con "999"
+- Y completo el campo "Número" con un número único
 - Y presiono el botón "Anotar"
 - ENTONCES veo el enlace "Ver la partida"
 - Y el libro de "Bautismos" muestra la partida de "${PREFIJO}Tomás Pérez"
@@ -50,4 +53,4 @@ etiquetas: [comunidad, libros-sacramentales, certificados]
 - Y no veo el botón "Corregir"
 
 ## Limpieza
-- ELIMINAR los certificados, partidas y fichas con prefijo "${PREFIJO}"
+- elimino todo lo creado con prefijo "${PREFIJO}"

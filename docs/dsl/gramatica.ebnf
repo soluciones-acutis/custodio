@@ -1,0 +1,185 @@
+(* Gramática del DSL de Custodio, versión 0.1.0                               *)
+(* Notación: EBNF ISO/IEC 14977, como el anexo A del documento técnico.       *)
+(*   ,  concatenación     |  alternativa     [ ]  opcional     { }  0 o más   *)
+(*   -  excepción         " "  terminal      (* *)  comentario                *)
+(* Significado de cada construcción: docs/dsl/especificacion.md               *)
+(* Forma del resultado (AST): docs/dsl/ast.schema.json                        *)
+
+(* ───────────────────────── 1. Archivo de historias ───────────────────────── *)
+
+archivo_de_historias = historia , { historia } ;
+
+historia         = frontmatter , { linea_en_blanco } ,
+                   seccion_historia , { linea_en_blanco } ,
+                   [ antecedentes , { linea_en_blanco } ] ,
+                   escenario , { escenario | nota } , [ limpieza ] , { nota } ;
+                 (* Entre dos bloques puede haber líneas en blanco (las de entre      *)
+                 (* escenarios y antes de la limpieza son notas vacías).              *)
+
+frontmatter      = "---" , salto , campo_yaml , { campo_yaml } , "---" , salto ;
+campo_yaml       = clave , ":" , espacio , valor_yaml , salto ;
+clave            = "dsl" | "id" | "producto" | "titulo" | "actor"
+                 | "criticidad" | "etiquetas" | "vocabularios" ;
+                 (* dsl, id, producto, titulo, actor y criticidad son obligatorios *)
+valor_yaml       = texto_linea | lista_yaml ;
+lista_yaml       = "[" , [ nombre_yaml , { "," , [ espacio ] , nombre_yaml } ] , "]" ;
+
+seccion_historia = "## Historia" , salto , { linea_en_blanco } ,
+                   "**Como**" , espacio , texto_linea , salto , { linea_en_blanco } ,
+                   "**Quiero**" , espacio , texto_linea , salto , { linea_en_blanco } ,
+                   "**Para**" , espacio , texto_linea , salto ;
+                 (* Forma canónica: una línea en blanco entre las tres partes, para  *)
+                 (* que GitHub las muestre como párrafos. El formateador la escribe. *)
+
+antecedentes     = "## Antecedentes" , salto , { linea_en_blanco } ,
+                   paso_sin_fase , { paso_sin_fase } ;
+escenario        = "## Escenario:" , espacio , texto_linea , salto , { linea_en_blanco } ,
+                   paso_inicial , { paso_con_fase } ;
+limpieza         = "## Limpieza" , salto , { linea_en_blanco } ,
+                   paso_sin_fase , { paso_sin_fase } ;
+
+nota             = ( "## " , texto_linea - titulo_reservado , salto )
+                 | ( texto_linea - ( "- " , texto_linea ) , salto )
+                 | linea_en_blanco ;
+                 (* Las notas no se ejecutan y el formateador las conserva (DSL-13) *)
+titulo_reservado = "Historia" | "Antecedentes" | "Limpieza" | ( "Escenario:" , texto_linea ) ;
+
+(* ───────────────────────────── 2. Fases ──────────────────────────────────── *)
+
+paso_inicial     = "- " , ( "DADO" | "CUANDO" ) , espacio , [ "que" , espacio ] , frase , salto ;
+paso_con_fase    = "- " , fase , espacio , [ "que" , espacio ] , frase , salto ;
+paso_sin_fase    = "- " , frase , salto ;
+fase             = "DADO" | "CUANDO" | "ENTONCES" | "Y" ;
+
+(* ────────────────────────── 3. Frases base ───────────────────────────────── *)
+(* Una frase es una frase base o una frase de negocio (sección 6).             *)
+(* Primero se intenta calzar con las frases base.                              *)
+
+frase            = frase_base | frase_de_negocio ;
+
+frase_base       = navegar | completar | seleccionar | marcar | presionar
+                 | esperar | ver | capturar ;
+
+navegar          = "navego a " , ( url | menu ) ;
+completar        = "completo " , elemento_de_campo , " con " , valor , [ ambito ] ;
+seleccionar      = "selecciono " , cadena , " en " , elemento_de_campo , [ ambito ] ;
+marcar           = ( "marco " | "desmarco " ) , elemento_de_casilla , [ ambito ] ;
+presionar        = "presiono " , elemento , [ ambito ] ;
+esperar          = "espero " , ( elemento | direccion ) , [ ambito ] ;
+ver              = [ "no " ] , "veo " , ( elemento | direccion ) , [ ambito ] ;
+capturar         = "capturo el valor del campo " , cadena , " como " , nombre_de_captura ,
+                   [ ambito ] ;
+                 (* capturo el valor del campo "Link" como "linkInvitacion" *)
+
+url              = "`" , { caracter - "`" } , "`" ;
+menu             = '"' , opcion_de_menu , { " > " , opcion_de_menu } , '"' ;
+opcion_de_menu   = { caracter - ( '"' | ">" ) } ;
+direccion        = "que la dirección contiene " , cadena ;
+
+(* ─────────────────────────── 4. Elementos ────────────────────────────────── *)
+
+(* "exactamente" vale con cualquier elemento salvo los escapes (sección 8.1). *)
+
+elemento         = elemento_de_texto | elemento_de_campo | elemento_de_casilla
+                 | elemento_por_rol | escape ;
+elemento_de_texto   = [ "exactamente " ] ,
+                      ( "el botón " | "el enlace " | "el título " | "el texto "
+                      | "el mensaje " ) , cadena ;    (* "el mensaje": sinónimo de "el texto" *)
+elemento_de_campo   = [ "exactamente " ] , "el campo " , cadena | elemento_por_rol ;
+elemento_de_casilla = [ "exactamente " ] , ( "la casilla " | "la opción " ) , cadena
+                    | elemento_por_rol ;
+elemento_por_rol    = [ "exactamente " ] , "el elemento con rol " , cadena , " y nombre " , cadena ;
+escape              = "el elemento con id de prueba " , cadena    (* advertencia CUS-W001 *)
+                    | "el elemento con selector " , url ;         (* advertencia CUS-W001 *)
+
+(* ─────────────────────────── 5. Ámbito ───────────────────────────────────── *)
+(* Se anida: el primer sufijo es el ámbito inmediato y los siguientes lo       *)
+(* contienen ("en la fila de "x" en "Sección").                                *)
+
+ambito           = sufijo_de_ambito , { sufijo_de_ambito } ;
+sufijo_de_ambito = " en la fila de " , cadena
+                 | " en el aviso de confirmación"
+                 | " en el aviso " , cadena
+                 | " en " , cadena ;
+
+(* ─────────────────────────── 6. Valores ──────────────────────────────────── *)
+
+valor            = cadena
+                 | "el código generado con el secreto " , cadena    (* TOTP, DSL-09 *)
+                 | "la fecha de hoy" , [ " en formato " , cadena ]   (* sección 6.3 *)
+                 | "un número único" ;
+
+(* ──────────────────────── 7. Frases de negocio ───────────────────────────── *)
+(* Una frase de negocio es una oración que calza con el patrón de una frase   *)
+(* de un vocabulario importado, con una cadena en lugar de cada parámetro.     *)
+
+frase_de_negocio = palabra_o_cadena , { espacio , palabra_o_cadena } ;
+palabra_o_cadena = palabra | cadena ;
+
+(* ──────────────────────── 8. Archivo de vocabulario ──────────────────────── *)
+
+archivo_de_vocabulario = frontmatter_de_vocabulario , { nota } ,
+                         definicion , { definicion | nota } ;
+frontmatter_de_vocabulario = "---" , salto ,
+                         "vocabulario:" , espacio , nombre_yaml , salto ,
+                         "dsl:" , espacio , semver , salto ,
+                         "producto:" , espacio , nombre_yaml , salto ,
+                         "---" , salto ;
+
+definicion       = "## Frase:" , espacio , patron , salto ,
+                   { declaracion } , ( paso_sin_fase , { paso_sin_fase } | implementacion_sin_pasos ) ;
+                 (* Sin "implementación", la frase tiene al menos un paso *)
+
+patron           = elemento_de_patron , { espacio , elemento_de_patron } ;
+elemento_de_patron = palabra | parametro ;
+parametro        = '"{' , nombre , '}"' ;
+
+declaracion      = "> produce: " , "{" , nombre , "}" , { ", {" , nombre , "}" } , salto ;
+implementacion_sin_pasos = "> implementación: " , ( "pendiente" | "nativa" ) ,
+                   [ " — " , texto_linea ] , salto ;
+
+(* ──────────────────────── 9. Archivo de ambiente ────────────────────────── *)
+(* Solo nombres, nunca valores (sección 9.5 de la especificación).            *)
+
+archivo_de_ambiente = frontmatter_de_ambiente , { nota_libre } ,
+                      "## Variables" , salto , { linea_en_blanco } ,
+                      nombre_declarado , { nombre_declarado } , { nota_libre } ,
+                      [ "## Secretos" , salto , { linea_en_blanco } ,
+                        nombre_declarado , { nombre_declarado } , { nota_libre } ] ;
+frontmatter_de_ambiente = "---" , salto ,
+                      "ambiente:" , espacio , nombre_yaml , salto ,
+                      "dsl:" , espacio , semver , salto ,
+                      "producto:" , espacio , nombre_yaml , salto ,
+                      "desechable:" , espacio , ( "sí" | "no" ) , salto ,
+                      "---" , salto ;
+nombre_declarado = "- " , ( letra | "_" ) , { letra | digito | "_" } , [ "*" ] , salto ;
+                 (* "USUARIO_*" calza con cualquier final de letras, dígitos y "_" *)
+nota_libre       = ( texto_linea - ( "## " , texto_linea ) - ( "- " , texto_linea ) , salto )
+                 | linea_en_blanco ;
+
+(* ──────────────────────────── 10. Léxico ─────────────────────────────────── *)
+
+cadena           = '"' , { caracter_de_cadena | variable | parametro_interno } , '"' ;
+caracter_de_cadena = caracter - ( '"' | "\" )
+                 | "\" , ( '"' | "\" )                  (* \" es una comilla, \\ una barra *)
+                 | "\" , ( caracter - ( '"' | "\" ) ) ; (* otra barra es literal *)
+variable         = "${" , nombre_de_variable , "}" ;
+nombre_de_variable = ( letra | "_" ) , { letra | digito | "_" | parametro_interno } ;
+                 (* Después de sustituir parámetros, solo letras, dígitos y "_" (CUS-E014) *)
+parametro_interno = "{" , nombre , "}" ;           (* solo dentro de un vocabulario *)
+nombre_de_captura = '"' , letra_minuscula , { letra | digito } , '"' ;   (* camelCase *)
+
+semver           = entero , "." , entero , "." , entero ;   (* sin "v" (CUS-E015) *)
+entero           = digito , { digito } ;
+nombre           = letra , { letra | digito | "_" } ;
+nombre_yaml      = { letra | digito | "-" | "_" } ;
+palabra          = ( caracter - ( espacio | '"' | "`" ) ) , { caracter - ( espacio | '"' | "`" ) } ;
+texto_linea      = { caracter } ;
+linea_en_blanco  = salto ;
+
+caracter         = ? cualquier carácter Unicode salvo el salto de línea ? ;
+letra            = ? una letra Unicode ? ;
+letra_minuscula  = ? una letra minúscula Unicode ? ;
+digito           = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+espacio          = " " ;
+salto            = ? fin de línea LF ? ;

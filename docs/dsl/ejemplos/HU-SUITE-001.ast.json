@@ -1,0 +1,492 @@
+{
+  "ast": "0.1.0",
+  "archivo": "historias/HU-SUITE-001.historia.md",
+  "historias": [
+    {
+      "dsl": "0.1.0",
+      "id": "HU-SUITE-001",
+      "producto": "suite-parroquial",
+      "titulo": "La secretaría entra al panel con su contraseña y el código de su app de autenticación",
+      "actor": "Secretaria parroquial",
+      "criticidad": "alta",
+      "etiquetas": ["acceso", "segundo-factor", "panel"],
+      "vocabularios": ["acutis-suite"],
+      "narrativa": {
+        "como": "secretaria de la parroquia",
+        "origen": {
+          "linea": 13,
+          "columna": 1
+        },
+        "quiero": "entrar al panel con mi contraseña y un código de seis dígitos de mi app de autenticación",
+        "para": "trabajar en la Suite con la certeza de que nadie más puede entrar con mi cuenta"
+      },
+      "antecedentes": [
+        {
+          "fase": null,
+          "accion": "navegar",
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "linea": 20,
+            "columna": 3
+          }
+        }
+      ],
+      "escenarios": [
+        {
+          "nombre": "entrada exitosa con contraseña y segundo factor",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Correo"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${USUARIO_secretaria}"
+              },
+              "origen": {
+                "linea": 23,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Contraseña"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${CLAVE_secretaria}"
+              },
+              "origen": {
+                "linea": 24,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Entrar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 25,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Verificación en dos pasos"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 26,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "cuando",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+                "argumentos": {
+                  "secreto": "${TOTP_secretaria}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 27,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Entrar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 28,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Tus módulos"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 29,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Secretaría"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 30,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 22,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "contraseña incorrecta",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Correo"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${USUARIO_secretaria}"
+              },
+              "origen": {
+                "linea": 33,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Contraseña"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "clave-que-no-es"
+              },
+              "origen": {
+                "linea": 34,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Entrar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 35,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Correo o contraseña incorrectos"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 36,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Verificación en dos pasos"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 37,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 32,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "código de segundo factor incorrecto",
+          "pasos": [
+            {
+              "fase": "cuando",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Correo"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${USUARIO_secretaria}"
+              },
+              "origen": {
+                "linea": 40,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Contraseña"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "${CLAVE_secretaria}"
+              },
+              "origen": {
+                "linea": 41,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Entrar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 42,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "completar",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Código de seis dígitos"
+              },
+              "ambito": null,
+              "valor": {
+                "tipo": "texto",
+                "texto": "000000"
+              },
+              "origen": {
+                "linea": 43,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Entrar"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 44,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "texto",
+                "texto": "El código no es válido"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 45,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Tus módulos"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 46,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 39,
+            "columna": 1
+          }
+        },
+        {
+          "nombre": "salir del panel cierra la sesión",
+          "pasos": [
+            {
+              "fase": "dado",
+              "accion": "frase",
+              "objetivo": {
+                "por": "frase",
+                "vocabulario": "acutis-suite",
+                "nombre": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "argumentos": {
+                  "rol": "secretaria",
+                  "parroquia": "${PARROQUIA}"
+                }
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 49,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "cuando",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "${USUARIO_secretaria}"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 50,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "presionar",
+              "objetivo": {
+                "por": "boton",
+                "texto": "Salir"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 51,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Contraseña"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 52,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "cuando",
+              "accion": "navegar",
+              "objetivo": {
+                "por": "url",
+                "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 53,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "entonces",
+              "accion": "ver",
+              "objetivo": {
+                "por": "campo",
+                "texto": "Contraseña"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 54,
+                "columna": 3
+              }
+            },
+            {
+              "fase": "y",
+              "accion": "noVer",
+              "objetivo": {
+                "por": "texto",
+                "texto": "Tus módulos"
+              },
+              "ambito": null,
+              "valor": null,
+              "origen": {
+                "linea": 55,
+                "columna": 3
+              }
+            }
+          ],
+          "origen": {
+            "linea": 48,
+            "columna": 1
+          }
+        }
+      ],
+      "limpieza": [],
+      "origen": {
+        "linea": 1,
+        "columna": 1
+      }
+    }
+  ]
+}

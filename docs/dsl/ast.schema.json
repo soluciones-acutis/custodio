@@ -1,0 +1,440 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/ast.schema.json",
+  "title": "AST del DSL de Custodio",
+  "description": "Estructura que produce el analizador a partir de un .historia.md o un .vocabulario.md. Versión 0.1.0. Ver docs/dsl/especificacion.md, sección 12.",
+  "$comment": "Versión 0.1.0. Los enums de este archivo y las constantes de src/lenguaje/ast.ts se verifican entre sí en test/lenguaje/ast.test.ts.",
+  "oneOf": [{ "$ref": "#/$defs/ArchivoDeHistorias" }, { "$ref": "#/$defs/ArchivoDeVocabulario" }],
+
+  "$defs": {
+    "VersionAst": { "const": "0.1.0" },
+    "Semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "Origen": {
+      "description": "Posición en el archivo fuente, para los diagnósticos (DSL-12).",
+      "type": "object",
+      "required": ["linea", "columna"],
+      "additionalProperties": false,
+      "properties": {
+        "linea": { "type": "integer", "minimum": 1 },
+        "columna": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "ArchivoDeHistorias": {
+      "type": "object",
+      "required": ["ast", "archivo", "historias"],
+      "additionalProperties": false,
+      "properties": {
+        "ast": { "$ref": "#/$defs/VersionAst" },
+        "archivo": { "type": "string" },
+        "historias": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Historia" } }
+      }
+    },
+
+    "Historia": {
+      "type": "object",
+      "required": [
+        "dsl",
+        "id",
+        "producto",
+        "titulo",
+        "actor",
+        "criticidad",
+        "etiquetas",
+        "vocabularios",
+        "narrativa",
+        "antecedentes",
+        "escenarios",
+        "limpieza",
+        "origen"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dsl": { "$ref": "#/$defs/Semver" },
+        "id": { "type": "string", "pattern": "^HU-[A-Z]+-\\d{3}$" },
+        "producto": { "type": "string", "minLength": 1 },
+        "titulo": { "type": "string", "minLength": 1 },
+        "actor": { "type": "string", "minLength": 1 },
+        "criticidad": { "enum": ["alta", "media", "baja"] },
+        "etiquetas": { "type": "array", "items": { "type": "string" } },
+        "vocabularios": { "type": "array", "items": { "type": "string" } },
+        "narrativa": { "$ref": "#/$defs/Narrativa" },
+        "antecedentes": { "type": "array", "items": { "$ref": "#/$defs/PasoSinFase" } },
+        "escenarios": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Escenario" } },
+        "limpieza": { "type": "array", "items": { "$ref": "#/$defs/PasoSinFase" } },
+        "origen": { "$ref": "#/$defs/Origen" }
+      }
+    },
+
+    "Narrativa": {
+      "type": "object",
+      "required": ["como", "quiero", "para", "origen"],
+      "additionalProperties": false,
+      "properties": {
+        "como": { "type": "string", "minLength": 1 },
+        "quiero": { "type": "string", "minLength": 1 },
+        "para": { "type": "string", "minLength": 1 },
+        "origen": { "$ref": "#/$defs/Origen" }
+      }
+    },
+
+    "Escenario": {
+      "type": "object",
+      "required": ["nombre", "pasos", "origen"],
+      "additionalProperties": false,
+      "properties": {
+        "nombre": { "type": "string", "minLength": 1 },
+        "pasos": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/PasoDeEscenario" } },
+        "origen": { "$ref": "#/$defs/Origen" }
+      }
+    },
+
+    "Fase": { "enum": ["dado", "cuando", "entonces", "y"] },
+    "Accion": {
+      "enum": [
+        "navegar",
+        "completar",
+        "seleccionar",
+        "marcar",
+        "desmarcar",
+        "presionar",
+        "esperar",
+        "ver",
+        "noVer",
+        "capturar",
+        "frase"
+      ]
+    },
+
+    "PasoDeEscenario": {
+      "allOf": [
+        { "$ref": "#/$defs/Paso" },
+        { "type": "object", "properties": { "fase": { "$ref": "#/$defs/Fase" } } }
+      ]
+    },
+    "PasoSinFase": {
+      "allOf": [
+        { "$ref": "#/$defs/Paso" },
+        { "type": "object", "properties": { "fase": { "type": "null" } } }
+      ]
+    },
+
+    "Paso": {
+      "description": "Paso normalizado: siempre las mismas claves, para que el validador no dependa de su orden.",
+      "type": "object",
+      "required": ["fase", "accion", "objetivo", "ambito", "valor", "origen"],
+      "additionalProperties": false,
+      "properties": {
+        "fase": { "anyOf": [{ "$ref": "#/$defs/Fase" }, { "type": "null" }] },
+        "accion": { "$ref": "#/$defs/Accion" },
+        "objetivo": { "$ref": "#/$defs/Objetivo" },
+        "ambito": { "anyOf": [{ "$ref": "#/$defs/Ambito" }, { "type": "null" }] },
+        "valor": { "anyOf": [{ "$ref": "#/$defs/Valor" }, { "type": "null" }] },
+        "origen": { "$ref": "#/$defs/Origen" }
+      },
+      "$comment": "Objetivos y valores que acepta cada acción (especificación, sección 7).",
+      "allOf": [
+        {
+          "if": { "properties": { "accion": { "const": "navegar" } } },
+          "then": {
+            "properties": {
+              "objetivo": {
+                "anyOf": [{ "$ref": "#/$defs/ObjetivoUrl" }, { "$ref": "#/$defs/ObjetivoMenu" }]
+              },
+              "valor": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "accion": { "const": "completar" } } },
+          "then": {
+            "properties": {
+              "objetivo": { "$ref": "#/$defs/LocalizadorDeCampo" },
+              "valor": {
+                "anyOf": [
+                  { "$ref": "#/$defs/ValorTexto" },
+                  { "$ref": "#/$defs/ValorTotp" },
+                  { "$ref": "#/$defs/ValorFecha" },
+                  { "$ref": "#/$defs/ValorUnico" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "accion": { "const": "seleccionar" } } },
+          "then": {
+            "properties": {
+              "objetivo": { "$ref": "#/$defs/LocalizadorDeCampo" },
+              "valor": { "$ref": "#/$defs/ValorTexto" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "accion": { "enum": ["marcar", "desmarcar"] } } },
+          "then": {
+            "properties": {
+              "objetivo": { "$ref": "#/$defs/LocalizadorDeCasilla" },
+              "valor": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "accion": { "const": "presionar" } } },
+          "then": {
+            "properties": {
+              "objetivo": { "$ref": "#/$defs/Localizador" },
+              "valor": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "accion": { "enum": ["esperar", "ver", "noVer"] } } },
+          "then": {
+            "properties": {
+              "objetivo": {
+                "anyOf": [{ "$ref": "#/$defs/Localizador" }, { "$ref": "#/$defs/ObjetivoUrl" }]
+              },
+              "valor": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "accion": { "const": "capturar" } } },
+          "then": {
+            "properties": {
+              "objetivo": { "$ref": "#/$defs/Localizador" },
+              "valor": { "$ref": "#/$defs/ValorCaptura" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "accion": { "const": "frase" } } },
+          "then": {
+            "properties": {
+              "objetivo": { "$ref": "#/$defs/ObjetivoFrase" },
+              "ambito": { "type": "null" },
+              "valor": { "type": "null" }
+            }
+          }
+        }
+      ]
+    },
+
+    "Objetivo": {
+      "oneOf": [
+        { "$ref": "#/$defs/Localizador" },
+        { "$ref": "#/$defs/ObjetivoUrl" },
+        { "$ref": "#/$defs/ObjetivoMenu" },
+        { "$ref": "#/$defs/ObjetivoFrase" }
+      ]
+    },
+
+    "Localizador": {
+      "oneOf": [
+        { "$ref": "#/$defs/LocalizadorPorTexto" },
+        { "$ref": "#/$defs/LocalizadorDeDialogo" },
+        { "$ref": "#/$defs/LocalizadorPorRol" },
+        { "$ref": "#/$defs/LocalizadorPorIdDePrueba" },
+        { "$ref": "#/$defs/LocalizadorPorCss" }
+      ]
+    },
+    "LocalizadorPorTexto": {
+      "type": "object",
+      "required": ["por", "texto"],
+      "additionalProperties": false,
+      "properties": {
+        "por": {
+          "enum": ["boton", "enlace", "campo", "casilla", "opcion", "titulo", "texto"]
+        },
+        "texto": { "type": "string" },
+        "exacto": { "type": "boolean" }
+      }
+    },
+    "LocalizadorDeDialogo": {
+      "type": "object",
+      "required": ["por", "texto"],
+      "additionalProperties": false,
+      "properties": {
+        "por": { "const": "dialogo" },
+        "texto": { "type": ["string", "null"] },
+        "exacto": { "type": "boolean" }
+      }
+    },
+    "LocalizadorPorRol": {
+      "type": "object",
+      "required": ["por", "rol", "texto"],
+      "additionalProperties": false,
+      "properties": {
+        "por": { "const": "rol" },
+        "rol": { "type": "string", "minLength": 1 },
+        "texto": { "type": "string" },
+        "exacto": { "type": "boolean" }
+      }
+    },
+    "LocalizadorPorIdDePrueba": {
+      "description": "Escape: genera la advertencia CUS-W001.",
+      "type": "object",
+      "required": ["por", "id"],
+      "additionalProperties": false,
+      "properties": { "por": { "const": "idDePrueba" }, "id": { "type": "string", "minLength": 1 } }
+    },
+    "LocalizadorPorCss": {
+      "description": "Escape: genera la advertencia CUS-W001.",
+      "type": "object",
+      "required": ["por", "selector"],
+      "additionalProperties": false,
+      "properties": { "por": { "const": "css" }, "selector": { "type": "string", "minLength": 1 } }
+    },
+    "LocalizadorDeCampo": {
+      "anyOf": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/LocalizadorPorTexto" },
+            { "type": "object", "properties": { "por": { "const": "campo" } } }
+          ]
+        },
+        { "$ref": "#/$defs/LocalizadorPorRol" }
+      ]
+    },
+    "LocalizadorDeCasilla": {
+      "anyOf": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/LocalizadorPorTexto" },
+            { "type": "object", "properties": { "por": { "enum": ["casilla", "opcion"] } } }
+          ]
+        },
+        { "$ref": "#/$defs/LocalizadorPorRol" }
+      ]
+    },
+
+    "ObjetivoUrl": {
+      "description": "Con ver o noVer significa «la URL actual contiene».",
+      "type": "object",
+      "required": ["por", "url"],
+      "additionalProperties": false,
+      "properties": { "por": { "const": "url" }, "url": { "type": "string", "minLength": 1 } }
+    },
+    "ObjetivoMenu": {
+      "type": "object",
+      "required": ["por", "ruta"],
+      "additionalProperties": false,
+      "properties": {
+        "por": { "const": "menu" },
+        "ruta": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "ObjetivoFrase": {
+      "type": "object",
+      "required": ["por", "vocabulario", "nombre", "argumentos"],
+      "additionalProperties": false,
+      "properties": {
+        "por": { "const": "frase" },
+        "vocabulario": { "type": "string", "minLength": 1 },
+        "nombre": { "type": "string", "minLength": 1 },
+        "argumentos": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+
+    "Ambito": {
+      "description": "Dónde buscar el objetivo. Se anida: el ámbito de un ámbito lo contiene.",
+      "type": "object",
+      "required": ["por", "texto", "ambito"],
+      "additionalProperties": false,
+      "properties": {
+        "por": { "enum": ["fila", "seccion", "dialogo"] },
+        "texto": { "type": ["string", "null"] },
+        "ambito": { "anyOf": [{ "$ref": "#/$defs/Ambito" }, { "type": "null" }] }
+      },
+      "if": { "properties": { "por": { "enum": ["fila", "seccion"] } } },
+      "then": { "properties": { "texto": { "type": "string" } } }
+    },
+
+    "Valor": {
+      "oneOf": [
+        { "$ref": "#/$defs/ValorTexto" },
+        { "$ref": "#/$defs/ValorTotp" },
+        { "$ref": "#/$defs/ValorFecha" },
+        { "$ref": "#/$defs/ValorUnico" },
+        { "$ref": "#/$defs/ValorCaptura" }
+      ]
+    },
+    "ValorTexto": {
+      "type": "object",
+      "required": ["tipo", "texto"],
+      "additionalProperties": false,
+      "properties": { "tipo": { "const": "texto" }, "texto": { "type": "string" } }
+    },
+    "ValorTotp": {
+      "type": "object",
+      "required": ["tipo", "secreto"],
+      "additionalProperties": false,
+      "properties": { "tipo": { "const": "totp" }, "secreto": { "type": "string", "minLength": 1 } }
+    },
+    "ValorFecha": {
+      "type": "object",
+      "required": ["tipo", "fecha", "formato"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "fecha" },
+        "fecha": { "const": "hoy" },
+        "formato": {
+          "description": "null: el adaptador usa el formato que pide el campo (especificación, sección 6.3).",
+          "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+        }
+      }
+    },
+    "ValorUnico": {
+      "type": "object",
+      "required": ["tipo", "unico"],
+      "additionalProperties": false,
+      "properties": { "tipo": { "const": "unico" }, "unico": { "const": "numero" } }
+    },
+    "ValorCaptura": {
+      "type": "object",
+      "required": ["tipo", "como"],
+      "additionalProperties": false,
+      "properties": { "tipo": { "const": "captura" }, "como": { "type": "string", "minLength": 1 } }
+    },
+
+    "ArchivoDeVocabulario": {
+      "type": "object",
+      "required": ["ast", "archivo", "vocabulario", "dsl", "producto", "frases"],
+      "additionalProperties": false,
+      "properties": {
+        "ast": { "$ref": "#/$defs/VersionAst" },
+        "archivo": { "type": "string" },
+        "vocabulario": { "type": "string", "minLength": 1 },
+        "dsl": { "$ref": "#/$defs/Semver" },
+        "producto": { "type": "string", "minLength": 1 },
+        "frases": { "type": "array", "items": { "$ref": "#/$defs/FraseDeVocabulario" } }
+      }
+    },
+    "FraseDeVocabulario": {
+      "type": "object",
+      "required": [
+        "patron",
+        "parametros",
+        "produce",
+        "implementacion",
+        "motivo",
+        "pasos",
+        "origen"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "patron": { "type": "string", "minLength": 1 },
+        "parametros": { "type": "array", "items": { "type": "string", "pattern": "^\\w+$" } },
+        "produce": { "type": "array", "items": { "type": "string" } },
+        "implementacion": { "enum": ["pasos", "pendiente", "nativa"] },
+        "motivo": { "type": ["string", "null"] },
+        "pasos": { "type": "array", "items": { "$ref": "#/$defs/PasoSinFase" } },
+        "origen": { "$ref": "#/$defs/Origen" }
+      },
+      "if": { "properties": { "implementacion": { "const": "pasos" } } },
+      "then": { "properties": { "pasos": { "type": "array", "minItems": 1 } } },
+      "else": { "properties": { "pasos": { "type": "array", "maxItems": 0 } } }
+    }
+  }
+}
