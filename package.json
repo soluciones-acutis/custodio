@@ -5,6 +5,9 @@
   "description": "Servicio web de pruebas end-to-end con lenguaje propio para historias de usuario.",
   "license": "Apache-2.0",
   "type": "module",
+  "bin": {
+    "custodio": "src/arranque/cli/custodio.ts"
+  },
   "engines": {
     "node": ">=24"
   },
@@ -12,13 +15,15 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . && prettier --check .",
     "formatear": "eslint . --fix && prettier --write .",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "arquitectura": "depcruise src --config .dependency-cruiser.cjs",
-    "verificar": "npm run typecheck && npm run lint && npm test && npm run arquitectura"
+    "validar": "node src/arranque/cli/custodio.ts validar",
+    "verificar": "npm run typecheck && npm run lint && npm test && npm run arquitectura && npm run validar -- historias/"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.19.1",
+    "@vitest/coverage-v8": "^5.0.3",
     "ajv": "^8.20.0",
     "dependency-cruiser": "^18.5.0",
     "eslint": "^10.12.0",
