@@ -305,6 +305,15 @@ producto: suite-parroquial
 - Se pueden combinar: `${USUARIO_{rol}}` con `rol = "secretaria"` queda `${USUARIO_secretaria}`. Un parámetro que arma un nombre de variable solo admite letras, números y `_`. Si no, es `CUS-E014`.
 - Si a una frase le faltan o le sobran parámetros, es `CUS-E010`. Si no calza con ninguna frase, es `CUS-E006`, con sugerencias tomadas de las frases base y de los vocabularios.
 - Si una oración calza con frases de **dos vocabularios importados**, es `CUS-E017`, y no gana ninguno, por la misma razón que no existe «el primero» (§8.2): si ganara uno, la historia podría pasar por la frase equivocada sin que nadie lo note. Se resuelve cambiando el patrón en uno de los vocabularios. Las frases base siempre ganan: se buscan antes.
+- Por lo mismo, un patrón que **es una frase base** (`## Frase: presiono el botón "{nombre}"`) nunca se alcanzaría, y es `CUS-E017` en el vocabulario. También lo es un patrón repetido dentro del mismo vocabulario.
+
+**Cómo se compara una oración con un patrón.** Se comparan palabra por palabra, y cada parámetro calza con una cadena:
+
+- Las palabras **no distinguen mayúsculas**, y **las tildes cuentan**, como el texto en pantalla (§8.1): «Presiono» calza con «presiono», pero «presionó» no. Se comparan en Unicode NFC, así que una tilde combinada y una compuesta son la misma letra.
+- Las palabras tienen que ser **iguales**, no «contener»: una frase es una oración completa.
+- Los espacios entre palabras no cuentan.
+- Un patrón puede empezar con un parámetro, como «"{persona}" aparece en el pase de lista…».
+- En el AST, `nombre` es el patrón tal como está en el vocabulario, no como se escribió en la historia.
 
 ### 10.2 Lo que declara una frase
 
@@ -316,7 +325,7 @@ Debajo del título, en líneas que empiezan con `>`:
 | `> implementación: pendiente — motivo` | Se conocen el nombre y los parámetros, pero no los pasos. |
 | `> implementación: nativa — motivo` | La implementará un puerto de datos de prueba (API o siembra). |
 
-Sin `implementación`, la frase tiene pasos y tiene que tener al menos uno.
+Sin `implementación`, la frase tiene pasos y tiene que tener al menos uno; y una frase `pendiente` o `nativa` no tiene pasos. Si no, es `CUS-E005`, igual que un paso de una frase con fase o una implementación que no es `pendiente` ni `nativa`. Un `produce` que no es una lista de parámetros, o un patrón con una cadena que no es un parámetro, es `CUS-E010`.
 
 ### 10.3 Frases sin pasos
 
@@ -404,38 +413,45 @@ El Schema exige lo de §7: por ejemplo, rechaza un `completar` con un `boton` co
 
 ## 13. Diagnósticos
 
-El validador informa **todos** los problemas del archivo, no solo el primero. Cada diagnóstico trae su código estable, el archivo, la línea, la columna, un mensaje en español y, cuando puede, una sugerencia (DSL-12). Los errores (`CUS-E`) impiden ejecutar; las advertencias (`CUS-W`) no.
+El validador informa **todos** los problemas del archivo, no solo el primero, y cada causa produce un solo error. Cada diagnóstico trae su código estable, el archivo, la línea, la columna, un mensaje en español y, cuando puede, una sugerencia (DSL-12). Los errores (`CUS-E`) impiden ejecutar; las advertencias (`CUS-W`) no.
+
+- **Posiciones.** La línea y la columna empiezan en 1. La columna cuenta puntos de código sobre el texto original, sin normalizarlo, y apunta a la causa del problema, no al inicio de la línea.
+- **La unidad es la historia.** Una historia con errores no tiene AST; las demás historias de su archivo sí.
+- **Errores entre archivos.** Un `id` repetido se informa en su segunda aparición, que es la que pierde el AST. Un vocabulario importado que no existe o tiene errores se informa una sola vez por importación, con `CUS-E009`, y las oraciones de esa historia que no calzan con ninguna frase no se informan: la causa es el vocabulario.
+- **Etapas.** La **sintaxis** detecta lo que se decide mirando una frase o un archivo; la **semántica**, lo que necesita seguir referencias (expandir frases, variables, el ambiente, el flujo del escenario). La columna «Etapa» de la tabla dice cuál.
 
 Tabla provisoria para v0.1:
 
-| Código | Problema | Requisito |
-|---|---|---|
-| `CUS-E001` | Falta el frontmatter o su YAML es inválido. | DSL-01 |
-| `CUS-E002` | Falta un campo obligatorio del frontmatter. | DSL-01 |
-| `CUS-E003` | El `id` tiene un formato inválido o está repetido. | DSL-02 |
-| `CUS-E004` | Falta la narrativa o una de sus partes. | DSL-03 |
-| `CUS-E005` | Escenario mal formado: sin pasos, empieza con `Y` o `ENTONCES`, o la fase no está en mayúsculas. | DSL-04 |
-| `CUS-E006` | Frase desconocida: no calza con ninguna frase base ni del vocabulario. | DSL-05, DSL-07 |
-| `CUS-E007` | La acción no acepta ese objetivo. | DSL-05 |
-| `CUS-E008` | Falta un valor obligatorio. | DSL-05 |
-| `CUS-E009` | El vocabulario importado no existe. | DSL-07 |
-| `CUS-E010` | A una frase de negocio le faltan o le sobran parámetros. | DSL-07 |
-| `CUS-E011` | Variable que el ambiente no declara, captura usada antes de hacerse, o `produce` que no coincide con las capturas de la frase. | DSL-08 |
-| `CUS-E012` | Referencia circular entre frases. | DSL-07 |
-| `CUS-E013` | Secreto en un lugar no permitido. | DSL-08 |
-| `CUS-E014` | Nombre de variable inválido después de sustituir parámetros. | DSL-07, DSL-08 |
-| `CUS-E015` | Versión `dsl:` mal escrita o no soportada. | DSL-11 |
-| `CUS-E016` | Dos escenarios con el mismo nombre. | DSL-04 |
-| `CUS-E017` | Una oración calza con frases de dos vocabularios importados. | DSL-07 |
-| `CUS-W001` | Elemento ubicado con un escape (`id de prueba` o `selector`): deuda de accesibilidad. | DSL-06 |
-| `CUS-W002` | Escenario sin ninguna verificación. | DSL-04 |
-| `CUS-W003` | `no veo` sin ancla (§11.2). | DSL-05 |
-| `CUS-W004` | La historia usa una frase sin pasos en los antecedentes o en un escenario: no se puede ejecutar todavía. | DSL-07 |
-| `CUS-W005` | La limpieza usa una frase sin pasos: el escenario solo se ejecuta en un ambiente desechable (§11.3). | DSL-10 |
+| Código | Problema | Requisito | Etapa |
+|---|---|---|---|
+| `CUS-E001` | Falta el frontmatter o su YAML es inválido. | DSL-01 | sintaxis |
+| `CUS-E002` | Falta un campo obligatorio del frontmatter, o su valor no es válido. | DSL-01 | sintaxis |
+| `CUS-E003` | El `id` tiene un formato inválido o está repetido. | DSL-02 | sintaxis |
+| `CUS-E004` | Falta la narrativa o una de sus partes. | DSL-03 | sintaxis |
+| `CUS-E005` | Escenario o pasos mal formados: la historia no tiene escenarios; un escenario sin pasos o sin nombre, que empieza con `Y` o `ENTONCES`, o con la fase en minúsculas; un paso con fase en `## Antecedentes`, en `## Limpieza` o en un vocabulario; secciones fuera de orden. | DSL-04 | sintaxis |
+| `CUS-E006` | Frase desconocida: no calza con ninguna frase base ni del vocabulario. | DSL-05, DSL-07 | sintaxis |
+| `CUS-E007` | La acción no acepta ese objetivo. | DSL-05 | sintaxis |
+| `CUS-E008` | Falta un valor obligatorio. | DSL-05 | sintaxis |
+| `CUS-E009` | El vocabulario importado no existe o tiene errores. | DSL-07 | sintaxis |
+| `CUS-E010` | A una frase de negocio le faltan o le sobran parámetros. | DSL-07 | sintaxis |
+| `CUS-E011` | Variable que el ambiente no declara, captura usada antes de hacerse, o `produce` que no coincide con las capturas de la frase. | DSL-08 | semántica |
+| `CUS-E012` | Referencia circular entre frases. | DSL-07 | semántica |
+| `CUS-E013` | Secreto en un lugar no permitido. | DSL-08 | semántica |
+| `CUS-E014` | Nombre de variable inválido después de sustituir parámetros. | DSL-07, DSL-08 | semántica |
+| `CUS-E015` | Versión `dsl:` mal escrita o no soportada. | DSL-11 | sintaxis |
+| `CUS-E016` | Dos escenarios con el mismo nombre. | DSL-04 | sintaxis |
+| `CUS-E017` | Una oración calza con dos frases: de dos vocabularios importados, o un patrón igual a una frase base o repetido (§10.1). | DSL-07 | sintaxis |
+| `CUS-W001` | Elemento ubicado con un escape (`id de prueba` o `selector`): deuda de accesibilidad. | DSL-06 | sintaxis |
+| `CUS-W002` | Escenario sin ninguna verificación. | DSL-04 | semántica |
+| `CUS-W003` | `no veo` sin ancla (§11.2). | DSL-05 | semántica |
+| `CUS-W004` | La historia usa una frase sin pasos en los antecedentes o en un escenario: no se puede ejecutar todavía. | DSL-07 | semántica |
+| `CUS-W005` | La limpieza usa una frase sin pasos: el escenario solo se ejecuta en un ambiente desechable (§11.3). | DSL-10 | semántica |
+| `CUS-W006` | Un título `##` parecido a una sección del lenguaje (`## Escenarios: …`, `## Limpiza`): se trata como nota. | DSL-04 | sintaxis |
+| `CUS-W007` | Una clave desconocida en el frontmatter. | DSL-01 | sintaxis |
 
 Que un objetivo coincida con varios elementos (§8.2) no es un código `CUS`: se sabe al ejecutar y se informa como fallo del paso.
 
-**Casos inválidos.** En [`test/lenguaje/casos/invalidos/`](../../test/lenguaje/casos/invalidos/) hay al menos un caso por cada código de error (19 casos: `CUS-E005` tiene dos, un escenario que empieza con `Y` y uno sin pasos, y `CUS-E011` también, una captura usada antes de hacerse y una variable que el ambiente no declara). Los casos se validan contra el ambiente [`suite-pruebas`](../../ambientes/suite-pruebas.ambiente.md). [`esperados.json`](../../test/lenguaje/casos/invalidos/esperados.json) dice qué error tiene que informar cada uno. La prueba `test/lenguaje/casos.test.ts` comprueba que cada código de esta tabla tenga su caso.
+**Casos inválidos.** En [`test/lenguaje/casos/invalidos/`](../../test/lenguaje/casos/invalidos/) hay al menos un caso por cada código de error (20 casos: `CUS-E005`, `CUS-E011` y `CUS-E017` tienen dos cada uno). Los casos se validan contra el ambiente [`suite-pruebas`](../../ambientes/suite-pruebas.ambiente.md). [`esperados.json`](../../test/lenguaje/casos/invalidos/esperados.json) dice qué error tiene que informar cada uno, en qué etapa, y en qué línea y columna. La prueba `test/lenguaje/casos.test.ts` comprueba que cada código de esta tabla tenga su caso.
 
 ## 14. Versiones
 

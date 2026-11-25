@@ -31,15 +31,16 @@ npm ci
 npm run verificar
 ```
 
-`verificar` corre las mismas cuatro revisiones que el CI (`.github/workflows/ci.yml`)
+`verificar` corre las mismas cinco revisiones que el CI (`.github/workflows/ci.yml`)
 en cada PR:
 
 | Script | Qué revisa |
 |---|---|
 | `npm run typecheck` | Tipos con TypeScript en modo `strict` (`tsc --noEmit`). |
 | `npm run lint` | ESLint (`typescript-eslint` con reglas que usan tipos) y formato con Prettier. |
-| `npm test` | Pruebas con Vitest. |
+| `npm test` | Pruebas con Vitest, con cobertura de al menos 85 % de líneas en `src/lenguaje/`. |
 | `npm run arquitectura` | Reglas de dependencia de la arquitectura (ADR-002) con `dependency-cruiser`. |
+| `npm run validar -- historias/` | Las historias del repositorio cumplen la especificación del DSL. |
 
 `npm run formatear` corrige lo que ESLint y Prettier pueden arreglar solos.
 
@@ -49,13 +50,26 @@ Este repositorio es el proyecto de práctica profesional de **Vicente Saud Lagos
 (Ingeniería en Informática, Duoc UC sede Puente Alto), supervisado por
 Matías Peralta (Soluciones Tecnológicas Acutis SpA).
 
-- **Hoja de ruta:** 9 entregas semanales, una por semana, como Pull Requests.
-- **Seguimiento:** los martes se presenta el diseño de la semana (`docs/diseno/`);
-  los viernes se entrega el avance en un Pull Request revisado en GitHub.
+- **Hoja de ruta:** desde el 11 de noviembre, el plan de cierre: tres iteraciones y una
+  semana de cierre, con la versión v1.0.0 el 4 de diciembre.
+- **Seguimiento:** el diseño de cada iteración está en `docs/diseno/` y se cierra en la
+  reunión de los martes; el avance se entrega en Pull Requests pequeños, revisados en GitHub.
 - **Decisiones de arquitectura:** en `docs/adr/`.
 - **El lenguaje (DSL):** la especificación, la gramática y el JSON Schema del AST en
   `docs/dsl/`; las historias de la Suite en `historias/`, sus frases de negocio en
   `vocabularios/` y las variables y secretos que declara su ambiente de pruebas en `ambientes/`.
+
+### Validar historias
+
+```bash
+npm run validar -- historias/
+```
+
+Revisa cada historia y cada vocabulario contra la especificación, e informa los errores con
+su archivo, línea, columna y una sugerencia. Con `--json` la salida es para máquinas
+(`docs/dsl/diagnosticos.schema.json`). Dentro del repositorio también sirve
+`npx --no-install custodio validar historias/`: el `--no-install` evita que `npx` descargue
+un paquete ajeno de npm que se llama igual.
 
 ## Licencia
 

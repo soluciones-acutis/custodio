@@ -32,6 +32,8 @@ jobs:
             script: test
           - nombre: Arquitectura
             script: arquitectura
+          - nombre: Historias
+            script: validar -- historias/
     steps:
       - uses: actions/checkout@v5
 

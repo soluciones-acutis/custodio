@@ -418,7 +418,7 @@ La revisión del 29 de octubre pidió cuatro cambios antes de fusionar, y seis a
 **Decisión:** el formato queda definido ahora (especificación §9.5). Es un `ambientes/<nombre>.ambiente.md` con frontmatter (`ambiente`, `dsl`, `producto`, `desechable`) y dos listas de nombres, `## Variables` y `## Secretos`, nunca valores. Un nombre puede terminar en `*` (`CLAVE_*`), y `CUS-E011` y `CUS-E013` se revisan después de sustituir los parámetros de cada frase, así que `${CLAVE_{rol}}` se reconoce como secreto.
 
 - El ambiente de la Suite es [`ambientes/suite-pruebas.ambiente.md`](../../ambientes/suite-pruebas.ambiente.md).
-- Caso nuevo 18: una variable que el ambiente no declara. Cierra la casilla de DSL-08 que había quedado para la S4.
+- Caso nuevo 18: una variable que el ambiente no declara. Cierra la casilla de **especificación** de DSL-08 que había quedado para la S4. Leer el archivo de ambiente y detectar el caso 18 es del validador semántico (diseño de la semana 3, §10.5).
 - Una prueba comprueba que el ambiente declara cada variable en mayúsculas que usan las historias y el vocabulario.
 
 **Por qué markdown y no YAML o JSON:** es el mismo formato que las historias y los vocabularios, se lee en GitHub y lo lee el mismo analizador.

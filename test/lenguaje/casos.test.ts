@@ -1,16 +1,20 @@
 /**
  * Los casos del lenguaje v0.1 (docs/dsl/especificacion.md, §13):
  * - cada código de error de la especificación tiene su caso inválido, y al revés;
+ * - el analizador informa el error de cada caso de sintaxis, en su línea y su
+ *   columna, y ningún otro; los de semántica esperan al validador semántico;
  * - las historias del inventario son los casos válidos;
  * - todo lo del lenguaje comparte una sola versión.
- *
- * El validador llega en la S3. Esta prueba asegura, desde ya, que los casos
- * contra los que se va a medir existen y están completos.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { VERSION_AST } from '../../src/lenguaje/index.ts';
+import {
+  analizar,
+  CATALOGO,
+  VERSION_AST,
+  type CodigoDeDiagnostico,
+} from '../../src/lenguaje/index.ts';
 
 const RAIZ = join(import.meta.dirname, '..', '..');
 const INVALIDOS = join(RAIZ, 'test', 'lenguaje', 'casos', 'invalidos');
@@ -20,9 +24,14 @@ const ESPECIFICACION = join(RAIZ, 'docs', 'dsl', 'especificacion.md');
 
 interface Caso {
   readonly archivo: string;
-  readonly codigo: string;
+  readonly codigo: CodigoDeDiagnostico;
   readonly requisito: string;
   readonly descripcion: string;
+  readonly etapa: 'sintaxis' | 'semantica';
+  readonly linea?: number;
+  readonly columna?: number;
+  /** El archivo del diagnóstico cuando no es la historia. */
+  readonly en?: string;
   readonly vocabulario?: string;
 }
 
@@ -53,13 +62,51 @@ describe('casos inválidos (test/lenguaje/casos/invalidos)', () => {
   });
 
   it('cada código de error de la especificación tiene un caso', () => {
-    const cubiertos = new Set(casos.map((c) => c.codigo));
+    const cubiertos = new Set<string>(casos.map((c) => c.codigo));
     expect(codigosDeError.filter((c) => c && !cubiertos.has(c))).toEqual([]);
   });
 
   it('cada caso espera un código que está en la especificación', () => {
     expect(casos.filter((c) => !codigosDeError.includes(c.codigo))).toEqual([]);
   });
+
+  it.each(casos)('$archivo está en la etapa de su código', ({ codigo, etapa }) => {
+    expect(etapa).toBe(CATALOGO[codigo].etapa);
+  });
+});
+
+describe('el analizador con los casos inválidos', () => {
+  const fuente = (carpeta: string, nombre: string) => ({
+    ruta: nombre,
+    texto: leer(join(carpeta, nombre)),
+  });
+  const deSintaxis = casos.filter((c) => c.etapa === 'sintaxis');
+
+  it.each(deSintaxis)(
+    '$archivo informa $codigo en su línea y su columna, y ningún otro error',
+    ({ archivo, codigo, linea, columna, en, vocabulario }) => {
+      const { diagnosticos, historias } = analizar({
+        historias: [fuente(INVALIDOS, archivo)],
+        vocabularios: [
+          { ruta: 'acutis-suite.vocabulario.md', texto: leer(VOCABULARIO) },
+          ...(vocabulario ? [fuente(INVALIDOS, vocabulario)] : []),
+        ],
+      });
+      const errores = diagnosticos
+        .filter((d) => d.severidad === 'error')
+        .map(({ codigo, archivo, linea, columna }) => ({ codigo, archivo, linea, columna }));
+      const esperados: unknown[] = [{ codigo, archivo: en ?? archivo, linea, columna }];
+      // Un error en un vocabulario deja a la historia que lo importa con un CUS-E009 (regla 2 de §6.3).
+      if (en) esperados.push(expect.objectContaining({ codigo: 'CUS-E009', archivo }));
+      expect(errores).toHaveLength(esperados.length);
+      expect(errores).toEqual(expect.arrayContaining(esperados));
+      expect(historias).toEqual([]);
+    },
+  );
+
+  for (const { archivo } of casos.filter((c) => c.etapa === 'semantica')) {
+    it.todo(`${archivo}: con el validador semántico`);
+  }
 });
 
 describe('casos válidos (historias)', () => {

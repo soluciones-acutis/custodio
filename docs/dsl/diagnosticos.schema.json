@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/diagnosticos.schema.json",
+  "title": "Salida --json de custodio validar",
+  "description": "Los diagnósticos del analizador, en el formato custodio-diagnosticos/0.1.0. Es el contrato que lee el workflow de GitHub Actions (SRV-13). Ver docs/dsl/especificacion.md, sección 13.",
+  "type": "object",
+  "required": ["formato", "archivos", "errores", "advertencias", "diagnosticos"],
+  "additionalProperties": false,
+  "properties": {
+    "formato": { "const": "custodio-diagnosticos/0.1.0" },
+    "archivos": {
+      "description": "Historias y vocabularios analizados.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "errores": { "type": "integer", "minimum": 0 },
+    "advertencias": { "type": "integer", "minimum": 0 },
+    "diagnosticos": { "type": "array", "items": { "$ref": "#/$defs/Diagnostico" } }
+  },
+  "$defs": {
+    "Diagnostico": {
+      "type": "object",
+      "required": ["codigo", "severidad", "archivo", "linea", "columna", "mensaje", "sugerencia"],
+      "additionalProperties": false,
+      "properties": {
+        "codigo": { "type": "string", "pattern": "^CUS-[EW]\\d{3}$" },
+        "severidad": { "enum": ["error", "advertencia"] },
+        "archivo": { "type": "string", "minLength": 1 },
+        "linea": { "type": "integer", "minimum": 1 },
+        "columna": {
+          "description": "Desde 1, en puntos de código del texto original.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "mensaje": { "type": "string", "minLength": 1 },
+        "sugerencia": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
