@@ -14,7 +14,9 @@
 import type { Fase, Paso } from './ast.ts';
 import type { Diagnosticos } from './diagnosticos.ts';
 import { fraseBase, VERBOS } from './frases-base.ts';
+import { COLUMNA_DEL_PASO } from './lineas.ts';
 import { firmaDelPatron, type IndiceDePatrones, type Patron } from './patrones.ts';
+import { tokensDelPaso } from './rastros.ts';
 import { masParecido } from './sugerencias.ts';
 import type { Linea } from './texto.ts';
 import { firma, tokenizar, type Token } from './tokens.ts';
@@ -27,6 +29,8 @@ export interface FraseConocida {
 
 export interface ContextoDeOraciones {
   readonly frases: IndiceDePatrones<FraseConocida>;
+  /** Las frases de los vocabularios disponibles que la historia no importa: solo para sugerir. */
+  readonly otras: IndiceDePatrones<FraseConocida>;
   /**
    * Si un vocabulario importado no existe o tiene errores, las oraciones que no
    * calzan no se informan: la causa es el vocabulario (diseño, §6.3, regla 2).
@@ -64,7 +68,12 @@ export function analizarOracion(
     diagnosticos.agregar('CUS-E005', posicion, 'El paso está vacío.');
     return null;
   }
-  const origen = { linea: linea.numero, columna: 3 };
+  // El origen de un paso es donde empieza su texto, después de `- `, no donde empieza la oración.
+  const origen = { linea: linea.numero, columna: COLUMNA_DEL_PASO };
+  const conTokens = (paso: Paso): Paso => {
+    tokensDelPaso.set(paso, tokens);
+    return paso;
+  };
 
   const base = fraseBase(tokens);
   if (base.tipo === 'completa') {
@@ -75,14 +84,14 @@ export function analizarOracion(
         'El elemento se ubica con un escape: es deuda de accesibilidad. Prefiere su rol, su etiqueta o su texto.',
       );
     }
-    return {
+    return conTokens({
       fase,
       accion: base.accion,
       objetivo: base.objetivo,
       ambito: base.ambito,
       valor: base.valor,
       origen,
-    } as Paso;
+    } as Paso);
   }
 
   const calzan = contexto.frases.calzan(tokens);
@@ -97,7 +106,7 @@ export function analizarOracion(
   }
   const calce = calzan[0];
   if (calce) {
-    return {
+    return conTokens({
       fase,
       accion: 'frase',
       objetivo: {
@@ -109,7 +118,7 @@ export function analizarOracion(
       ambito: null,
       valor: null,
       origen,
-    };
+    });
   }
 
   if (base.tipo === 'incompleta') {
@@ -163,6 +172,14 @@ function sugerencia(
   tokens: readonly Token[],
   contexto: ContextoDeOraciones,
 ): string | null {
+  // La frase existe, pero en un vocabulario que la historia no importa (issue #22).
+  const enOtros = [...new Set(contexto.otras.calzan(tokens).map((c) => c.entrada.vocabulario))];
+  if (enOtros.length === 1) {
+    return `La frase está en el vocabulario «${enOtros[0] ?? ''}»: agrégalo a \`vocabularios:\`.`;
+  }
+  if (enOtros.length > 1) {
+    return `La frase está en los vocabularios ${enOtros.map((v) => `«${v}»`).join(', ')}: agrega uno a \`vocabularios:\`.`;
+  }
   const primera = tokens[0];
   if (primera?.tipo === 'palabra' && !(VERBOS as readonly string[]).includes(primera.comparable)) {
     const verbo = masParecido(primera.comparable, VERBOS, 2);

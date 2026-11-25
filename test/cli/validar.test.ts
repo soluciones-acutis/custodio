@@ -1,83 +1,41 @@
 /**
- * `custodio validar` (diseño de la semana 3, §8): rutas, vocabularios, salida
- * legible y `--json`, y códigos de salida. Casi todas las pruebas usan un
- * sistema de archivos en memoria; una sola lanza el proceso real.
+ * `custodio validar` (diseño de la semana 3, §8): rutas, vocabularios,
+ * ambiente, salida legible y `--json`, y códigos de salida. Casi todas las
+ * pruebas usan un sistema de archivos en memoria; las últimas lanzan el proceso real.
  */
 import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import { describe, expect, it } from 'vitest';
+import { SALIDA } from '../../src/arranque/cli/proyecto.ts';
+import { validar } from '../../src/arranque/cli/validar.ts';
 import {
-  SALIDA,
-  validar,
-  type Consola,
-  type SistemaDeArchivos,
-} from '../../src/arranque/cli/validar.ts';
+  AMBIENTE,
+  correr as correrComando,
+  enMemoria,
+  historia,
+  PROYECTO,
+  VOCABULARIO,
+} from './memoria.ts';
 
 const RAIZ = join(import.meta.dirname, '..', '..');
-
-const VOCABULARIO =
-  '---\nvocabulario: v\ndsl: 0.1.0\nproducto: x\n---\n\n## Frase: entro\n- navego a `https://x`\n';
-const historia = (id: string, paso = '- CUANDO entro'): string =>
-  `---\ndsl: 0.1.0\nid: ${id}\nproducto: x\ntitulo: t\nactor: a\ncriticidad: media\nvocabularios: [v]\n---\n\n## Historia\n**Como** a\n\n**Quiero** b\n\n**Para** c\n\n## Escenario: e\n${paso}\n`;
-
-/** Un sistema de archivos en memoria: las carpetas salen de las rutas de los archivos. */
-function enMemoria(archivos: Readonly<Record<string, string>>): SistemaDeArchivos {
-  const carpetas = new Set(['.']);
-  for (const ruta of Object.keys(archivos)) {
-    const partes = ruta.split('/');
-    for (let i = 1; i < partes.length; i++) carpetas.add(partes.slice(0, i).join('/'));
-  }
-  return {
-    tipo: (ruta) => (ruta in archivos ? 'archivo' : carpetas.has(ruta) ? 'carpeta' : null),
-    listar: (carpeta) => {
-      const prefijo = carpeta === '.' ? '' : `${carpeta}/`;
-      const nombres = [...Object.keys(archivos), ...carpetas]
-        .filter(
-          (r) => r.startsWith(prefijo) && r !== carpeta && !r.slice(prefijo.length).includes('/'),
-        )
-        .map((r) => r.slice(prefijo.length));
-      return [...new Set(nombres)].filter((n) => n !== '' && n !== '.');
-    },
-    leer: (ruta) => archivos[ruta] ?? '',
-  };
-}
-
-function correr(
+const correr = (
   argumentos: readonly string[],
   archivos: Readonly<Record<string, string>>,
-  colores = false,
-) {
-  let salida = '';
-  let errores = '';
-  const consola: Consola = {
-    escribir: (t) => (salida += t),
-    error: (t) => (errores += t),
-    colores,
-  };
-  const codigo = validar(argumentos, enMemoria(archivos), consola);
-  return { codigo, salida, errores };
-}
-
-const PROYECTO = {
-  'vocabularios/v.vocabulario.md': VOCABULARIO,
-  'historias/a.historia.md': historia('HU-X-001'),
-  'historias/sub/b.historia.md': historia('HU-X-002'),
-  'node_modules/p/c.historia.md': 'no se lee',
-  'README.md': '# no se lee',
-};
+  opciones?: Parameters<typeof correrComando>[3],
+) => correrComando(validar, argumentos, archivos, opciones);
 
 describe('custodio validar', () => {
-  it('sin errores sale con 0 y dice cuántos archivos revisó', () => {
+  it('sin errores sale con 0 y dice cuántos archivos revisó, con el vocabulario y el ambiente', () => {
     const r = correr(['historias/'], PROYECTO);
     expect(r.codigo).toBe(SALIDA.sinErrores);
-    expect(r.salida).toBe('0 errores y 0 advertencias en 3 archivos.\n');
+    expect(r.salida).toBe('0 errores y 0 advertencias en 4 archivos.\n');
     expect(r.errores).toBe('');
   });
 
   it('por defecto recorre la carpeta actual, sin entrar a node_modules', () => {
-    expect(correr([], PROYECTO).salida).toBe('0 errores y 0 advertencias en 3 archivos.\n');
+    expect(correr([], PROYECTO).salida).toBe('0 errores y 0 advertencias en 4 archivos.\n');
   });
 
   it('con errores sale con 1 y muestra la línea con una marca bajo la columna', () => {
@@ -88,13 +46,13 @@ describe('custodio validar', () => {
     expect(r.codigo).toBe(SALIDA.conErrores);
     expect(r.salida).toBe(
       [
-        'historias/a.historia.md:19:10  error  CUS-E006',
+        'historias/a.historia.md:20:10  error  CUS-E006',
         '  Frase desconocida: «presiona el botón "Entrar"».',
-        '    19 │ - CUANDO presiona el botón "Entrar"',
+        '    20 │ - CUANDO presiona el botón "Entrar"',
         '       │          ^',
         '  ¿Quisiste decir «presiono el botón "Entrar"»?',
         '',
-        '1 error y 0 advertencias en 2 archivos.',
+        '1 error y 0 advertencias en 3 archivos.',
         '',
       ].join('\n'),
     );
@@ -104,35 +62,84 @@ describe('custodio validar', () => {
     const r = correr(
       ['historias/a.historia.md'],
       { ...PROYECTO, 'historias/a.historia.md': `${historia('HU-X-001')}\n## Limpiza\n` },
-      true,
+      { colores: true },
     );
     expect(r.codigo).toBe(SALIDA.sinErrores);
     expect(r.salida).toContain('\u001b[33madvertencia\u001b[0m  CUS-W006');
-    expect(r.salida).toContain('0 errores y 1 advertencia en 2 archivos.');
+    expect(r.salida).toContain('0 errores y 1 advertencia en 3 archivos.');
   });
 
-  it('--vocabularios cambia la carpeta de los vocabularios', () => {
+  it('revisa la semántica con el ambiente de ./ambientes', () => {
+    const r = correr(['historias/a.historia.md'], {
+      ...PROYECTO,
+      'historias/a.historia.md': historia(
+        'HU-X-001',
+        '- CUANDO navego a `https://${OTRO}`\n- ENTONCES veo el texto "x"',
+      ),
+    });
+    expect(r.codigo).toBe(SALIDA.conErrores);
+    expect(r.salida).toContain('historias/a.historia.md:20:19  error  CUS-E011');
+  });
+
+  it('--vocabularios y --ambiente cambian dónde se buscan', () => {
     const archivos = {
       'h.historia.md': historia('HU-X-001'),
       'otros/v.vocabulario.md': VOCABULARIO,
+      'config/x.ambiente.md': AMBIENTE,
     };
     expect(correr(['h.historia.md'], archivos).codigo).toBe(SALIDA.conErrores);
-    expect(correr(['h.historia.md', '--vocabularios', 'otros'], archivos).codigo).toBe(
-      SALIDA.sinErrores,
+    const r = correr(
+      ['h.historia.md', '--vocabularios', 'otros', '--ambiente', 'config/x.ambiente.md'],
+      archivos,
     );
+    expect(r.codigo).toBe(SALIDA.sinErrores);
+    expect(r.salida).toBe('0 errores y 0 advertencias en 3 archivos.\n');
+  });
+
+  it('un .ambiente.md en las rutas es el ambiente', () => {
+    const r = correr(['historias', 'ambientes/a.ambiente.md'], PROYECTO);
+    expect(r.salida).toBe('0 errores y 0 advertencias en 4 archivos.\n');
   });
 
   it.each([
-    [['no-existe'], 'La ruta «no-existe» no existe.'],
-    [['README.md'], '«README.md» no es un .historia.md ni un .vocabulario.md.'],
-    [['--vocabularios', 'nada'], 'La carpeta de vocabularios «nada» no existe.'],
-    [['--otra'], "Unknown option '--otra'"],
-  ])('uso inválido %j: sale con 2 y explica el uso', (argumentos, mensaje) => {
-    const r = correr(argumentos, PROYECTO);
+    [['no-existe'], {}, 'La ruta «no-existe» no existe.'],
+    [
+      ['README.md'],
+      {},
+      '«README.md» no es un .historia.md, un .vocabulario.md ni un .ambiente.md.',
+    ],
+    [['--vocabularios', 'nada'], {}, 'La carpeta «nada» no existe.'],
+    [['--ambiente', 'nada.ambiente.md'], {}, 'El ambiente «nada.ambiente.md» no existe.'],
+    [
+      [],
+      { 'ambientes/b.ambiente.md': AMBIENTE },
+      'Hay varios ambientes (ambientes/a.ambiente.md, ambientes/b.ambiente.md): elige uno con --ambiente.',
+    ],
+    [['--otra'], {}, "Unknown option '--otra'"],
+  ])('uso inválido %j: sale con 2 y explica el uso', (argumentos, extra, mensaje) => {
+    const r = correr(argumentos, { ...PROYECTO, ...extra });
     expect(r.codigo).toBe(SALIDA.usoInvalido);
     expect(r.errores).toContain(mensaje);
     expect(r.errores).toContain('Uso: custodio validar');
     expect(r.salida).toBe('');
+  });
+
+  it('--help muestra el uso y sale con 0', () => {
+    const r = correr(['--help'], PROYECTO);
+    expect(r.codigo).toBe(SALIDA.sinErrores);
+    expect(r.salida).toContain('Uso: custodio validar');
+  });
+
+  it('un fallo interno, como un archivo que no se puede leer, sale con 3', () => {
+    const sistema = {
+      ...enMemoria(PROYECTO),
+      leer: () => {
+        throw new Error('permiso denegado');
+      },
+    };
+    const r = correr(['historias'], PROYECTO, { sistema });
+    expect(r.codigo).toBe(SALIDA.falloInterno);
+    expect(r.errores).toBe('Error interno: permiso denegado');
   });
 
   describe('--json', () => {
@@ -157,7 +164,7 @@ describe('custodio validar', () => {
       const archivos = { ...PROYECTO, 'historias/a.historia.md': historia('HU-X-002') };
       expect(JSON.parse(correr(['--json'], archivos).salida)).toMatchObject({
         formato: 'custodio-diagnosticos/0.1.0',
-        archivos: 3,
+        archivos: 4,
         errores: 1,
         advertencias: 0,
         diagnosticos: [
@@ -181,12 +188,17 @@ describe('el proceso real', () => {
     const proceso = custodio('validar', 'historias', '--json');
     expect(proceso.stderr).toBe('');
     expect(proceso.status).toBe(SALIDA.sinErrores);
-    expect(JSON.parse(proceso.stdout)).toMatchObject({ archivos: 13, errores: 0, advertencias: 0 });
+    // 12 historias, el vocabulario y el ambiente; las advertencias son las frases sin pasos.
+    expect(JSON.parse(proceso.stdout)).toMatchObject({
+      archivos: 14,
+      errores: 0,
+      advertencias: 19,
+    });
   });
 
   it('sin comando, o con uno desconocido, sale con 2; con ayuda, con 0', () => {
     expect(custodio().status).toBe(SALIDA.usoInvalido);
-    expect(custodio('compilar').stderr).toContain('Comando desconocido: «compilar».');
+    expect(custodio('ejecutar').stderr).toContain('Comando desconocido: «ejecutar».');
     expect(custodio('ayuda').status).toBe(SALIDA.sinErrores);
   });
 });

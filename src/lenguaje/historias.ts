@@ -14,8 +14,9 @@ import {
   texto,
   type Frontmatter,
 } from './frontmatter.ts';
-import { claseDeLinea, pareceCampo } from './lineas.ts';
+import { claseDeLinea, COLUMNA_DEL_PASO, pareceCampo } from './lineas.ts';
 import { analizarOracion, type ContextoDeOraciones } from './oraciones.ts';
+import { posicionDeLosVocabularios } from './rastros.ts';
 import { distancia } from './sugerencias.ts';
 import { comparable, lineasDe, saltarEspacios, type Linea } from './texto.ts';
 
@@ -99,7 +100,7 @@ function leerHistoria(
 
   const datos = frontmatter
     ? revisarFrontmatter(frontmatter, vocabularios, diagnosticos, origen.linea)
-    : { id: null, nombres: [], callar: false, valores: {} };
+    : { id: null, nombres: [], callar: false, valores: {}, posicionDeLosVocabularios: null };
   const contexto = vocabularios.contexto(datos.nombres, datos.callar);
   const cuerpoLeido = leerCuerpo(lineas.slice(cuerpo, fin), origen, contexto, diagnosticos);
 
@@ -111,6 +112,9 @@ function leerHistoria(
     limpieza: cuerpoLeido.limpieza,
     origen,
   } as unknown as Historia;
+  if (datos.posicionDeLosVocabularios) {
+    posicionDeLosVocabularios.set(historia, datos.posicionDeLosVocabularios);
+  }
   return { historia: { historia, id: datos.id, desde: origen.linea, hasta }, siguiente: fin };
 }
 
@@ -124,6 +128,7 @@ function revisarFrontmatter(
   nombres: readonly string[];
   callar: boolean;
   valores: Record<string, unknown>;
+  posicionDeLosVocabularios: Posicion | null;
 } {
   // Si una línea del frontmatter no se entendió, no se informan los campos que faltan:
   // la causa es esa línea (regla 1 contra las cascadas).
@@ -174,10 +179,24 @@ function revisarFrontmatter(
     /^[a-z0-9]+(-[a-z0-9]+)*$/,
     'Las etiquetas van en una lista `[a, b]`, en minúsculas con guiones.',
   );
-  const nombres = lista('vocabularios', /^[\w-]+$/, 'Los vocabularios van en una lista `[a, b]`.');
+  const importados = lista(
+    'vocabularios',
+    /^[\w-]+$/,
+    'Los vocabularios van en una lista `[a, b]`.',
+  );
+  const campoVocabularios = campos.get('vocabularios');
+  const nombres = [...new Set(importados)];
+  for (const repetido of new Set(importados.filter((n, i) => importados.indexOf(n) !== i))) {
+    if (campoVocabularios) {
+      diagnosticos.agregar(
+        'CUS-W009',
+        campoVocabularios.posicion,
+        `El vocabulario «${repetido}» está importado más de una vez.`,
+      );
+    }
+  }
 
   let callar = false;
-  const campoVocabularios = campos.get('vocabularios');
   for (const nombre of nombres) {
     const estado = vocabularios.estado(nombre);
     if (estado === 'valido' || !campoVocabularios) continue;
@@ -205,6 +224,7 @@ function revisarFrontmatter(
       etiquetas,
       vocabularios: nombres,
     },
+    posicionDeLosVocabularios: campoVocabularios?.posicion ?? null,
   };
 }
 
@@ -283,7 +303,9 @@ function leerCuerpo(
       continue;
     }
     if (clase !== 'paso') continue;
-    if (seccion === 'escenario' && actual) {
+    if (seccion === 'antes' || seccion === 'historia' || seccion === 'nota') {
+      avisarPasoSuelto(linea, diagnosticos);
+    } else if (seccion === 'escenario' && actual) {
       const paso = leerPasoDeEscenario(linea, actual, contexto, diagnosticos);
       if (paso) actual.pasos.push(paso);
     } else if (seccion === 'antecedentes' || seccion === 'limpieza') {
@@ -429,6 +451,21 @@ function cerrarNarrativa(
   return { como: como.texto, quiero: quiero.texto, para: para.texto, origen: como.origen };
 }
 
+/**
+ * `CUS-W008`: un paso con fase fuera de un escenario es una nota (especificación §4),
+ * pero casi siempre es un error de quien escribe: no se va a ejecutar.
+ */
+function avisarPasoSuelto(linea: Linea, diagnosticos: Diagnosticos): void {
+  const fase = faseDe(linea);
+  if (!fase || !(fase.palabra in FASE_DEL_PASO)) return;
+  diagnosticos.agregar(
+    'CUS-W008',
+    { linea: linea.numero, columna: COLUMNA_DEL_PASO },
+    'Este paso no está en ningún escenario y no se va a ejecutar.',
+    'Ponlo debajo de un `## Escenario: …`.',
+  );
+}
+
 /** La fase con que empieza un paso, si la tiene: la palabra y la columna donde sigue la frase. */
 function faseDe(linea: Linea): { palabra: string; columnaDeLaFrase: number } | null {
   const caracteres = linea.caracteres;
@@ -450,7 +487,7 @@ function leerPasoDeEscenario(
   contexto: ContextoDeOraciones,
   diagnosticos: Diagnosticos,
 ): Paso | null {
-  const posicion = { linea: linea.numero, columna: 3 };
+  const posicion = { linea: linea.numero, columna: COLUMNA_DEL_PASO };
   const primero = escenario.lineasDePasos === 0;
   escenario.lineasDePasos++;
   const fase = faseDe(linea);
@@ -458,7 +495,9 @@ function leerPasoDeEscenario(
     diagnosticos.agregar(
       'CUS-E005',
       posicion,
-      'El paso de un escenario empieza con DADO, CUANDO, ENTONCES o Y.',
+      /^- \s/.test(linea.texto)
+        ? 'Sobra un espacio después del guion: `- CUANDO …`.'
+        : 'El paso de un escenario empieza con DADO, CUANDO, ENTONCES o Y.',
     );
     return null;
   }
@@ -498,10 +537,10 @@ function leerPasoSinFase(
     const nombre = seccion === 'antecedentes' ? 'Antecedentes' : 'Limpieza';
     diagnosticos.agregar(
       'CUS-E005',
-      { linea: linea.numero, columna: 3 },
+      { linea: linea.numero, columna: COLUMNA_DEL_PASO },
       `En \`## ${nombre}\` los pasos no llevan fase.`,
     );
     return null;
   }
-  return analizarOracion(linea, 3, null, contexto, diagnosticos);
+  return analizarOracion(linea, COLUMNA_DEL_PASO, null, contexto, diagnosticos);
 }
