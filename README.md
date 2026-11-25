@@ -65,11 +65,20 @@ Matías Peralta (Soluciones Tecnológicas Acutis SpA).
 npm run validar -- historias/
 ```
 
-Revisa cada historia y cada vocabulario contra la especificación, e informa los errores con
-su archivo, línea, columna y una sugerencia. Con `--json` la salida es para máquinas
+Revisa cada historia y cada vocabulario contra la especificación, la sintaxis y la semántica
+(con el ambiente de `ambientes/`), e informa los errores con su archivo, línea, columna y una
+sugerencia. Con `--json` la salida es para máquinas
 (`docs/dsl/diagnosticos.schema.json`). Dentro del repositorio también sirve
 `npx --no-install custodio validar historias/`: el `--no-install` evita que `npx` descargue
 un paquete ajeno de npm que se llama igual.
+
+```bash
+npx --no-install custodio compilar historias/ --id HU-SUITE-001
+```
+
+Escribe en JSON el plan de ejecución de cada historia (`docs/dsl/plan.schema.json`): las frases
+expandidas y las variables sin resolver. `--id`, `--etiqueta`, `--producto` y `--criticidad`
+eligen qué historias compilar.
 
 ## Licencia
 
