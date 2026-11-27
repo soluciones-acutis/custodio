@@ -192,7 +192,7 @@ describe('el proceso real', () => {
     expect(JSON.parse(proceso.stdout)).toMatchObject({
       archivos: 14,
       errores: 0,
-      advertencias: 19,
+      advertencias: 39,
     });
   });
 

@@ -198,6 +198,16 @@ describe('el flujo de cada escenario (especificación §11)', () => {
       ['h.historia.md CUS-E013@20:29'],
     ],
     [
+      'una frase en Y después de CUANDO es una acción: CUS-W002',
+      '- CUANDO navego a `https://x`\n- Y guardo el link como "l"',
+      ['h.historia.md CUS-W002@18:1'],
+    ],
+    [
+      'una frase en Y después de ENTONCES sí verifica',
+      '- CUANDO navego a `https://x`\n- ENTONCES guardo el link como "a"\n- Y guardo el link como "b"',
+      [],
+    ],
+    [
       '`no veo` justo después de cambiar la página: CUS-W003',
       '- CUANDO navego a `https://x`\n- ENTONCES no veo el texto "x"',
       ['h.historia.md CUS-W003@20:3'],
@@ -214,6 +224,16 @@ describe('el flujo de cada escenario (especificación §11)', () => {
     ],
   ])('%s', (_, pasos, esperado) => {
     expect(validar(pasos)).toEqual(esperado);
+  });
+
+  it('cada frase sin pasos se avisa una vez, aunque se use más de una vez', () => {
+    const vocabulario = `${VOCABULARIO}\n## Frase: espero mi turno\n> implementación: pendiente — prueba\n`;
+    const pasos =
+      '- CUANDO limpio todo\n- Y espero mi turno\n- Y limpio todo\n- ENTONCES veo el texto "x"';
+    expect(validar(pasos, { vocabulario })).toEqual([
+      'h.historia.md CUS-W004@19:3',
+      'h.historia.md CUS-W004@20:3',
+    ]);
   });
 
   it('una frase sin pasos en la limpieza: CUS-W005, que dice qué pasa según el ambiente', () => {

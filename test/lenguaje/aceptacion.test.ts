@@ -36,26 +36,33 @@ describe('las 12 historias del inventario', () => {
     expect(resultado.historias).toHaveLength(historias.length);
   });
 
-  it('solo avisan las frases sin pasos: CUS-W004 en los escenarios y CUS-W005 en la limpieza', () => {
+  it('solo avisan las frases sin pasos, una vez por frase: CUS-W004 en los escenarios y CUS-W005 en la limpieza', () => {
     const avisos = Object.groupBy(resultado.diagnosticos, (d) =>
-      d.archivo.slice('historias/'.length),
+      d.archivo.slice('historias/'.length, 'historias/HU-SUITE-000'.length),
     );
-    const porHistoria = Object.fromEntries(
-      Object.entries(avisos).map(([archivo, lista]) => [
-        archivo,
-        (lista ?? []).map((d) => d.codigo),
-      ]),
+    const cuantos = Object.fromEntries(
+      Object.entries(avisos).map(([historia, lista]) => {
+        const codigos = (lista ?? []).map((d) => d.codigo);
+        const contar = (codigo: string): number => codigos.filter((c) => c === codigo).length;
+        return [historia, [contar('CUS-W004'), contar('CUS-W005')]];
+      }),
     );
-    const ambos = ['CUS-W004', 'CUS-W005'];
-    expect(porHistoria).toEqual({
-      'HU-SUITE-003.historia.md': ['CUS-W005'],
-      ...Object.fromEntries(
-        [4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => [
-          `HU-SUITE-${String(n).padStart(3, '0')}.historia.md`,
-          ambos,
-        ]),
-      ),
+    // [CUS-W004, CUS-W005]: cada frase pendiente o nativa es una pantalla que falta conocer.
+    expect(cuantos).toEqual({
+      'HU-SUITE-003': [0, 1],
+      'HU-SUITE-004': [1, 1],
+      'HU-SUITE-005': [3, 1],
+      'HU-SUITE-006': [5, 1],
+      'HU-SUITE-007': [2, 2],
+      'HU-SUITE-008': [5, 2],
+      'HU-SUITE-009': [6, 1],
+      'HU-SUITE-010': [1, 1],
+      'HU-SUITE-011': [3, 1],
+      'HU-SUITE-012': [1, 1],
     });
+    expect(
+      resultado.diagnosticos.every((d) => d.codigo === 'CUS-W004' || d.codigo === 'CUS-W005'),
+    ).toBe(true);
   });
 
   it.each(resultado.historias.map((a) => [a.archivo, a] as const))(

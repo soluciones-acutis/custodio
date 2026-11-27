@@ -108,16 +108,17 @@ export function revisarHistoria(
     diagnosticos.agregar(codigo, posicion, mensaje, sugerencia);
   };
   const reporte: Reporte = { informar: unaVez, ambiente };
-  // La primera frase sin pasos, en los antecedentes o los escenarios, y en la limpieza.
-  const sinPasos: { antes?: SinPasos; limpieza?: SinPasos } = {};
+  // Cada frase sin pasos, en su primer uso: en los antecedentes o los escenarios, y en la
+  // limpieza. Es la lista de pantallas que falta conocer, así que se avisa una por una.
+  const sinPasos = { antes: new Map<string, SinPasos>(), limpieza: new Map<string, SinPasos>() };
   for (const escenario of historia.escenarios) {
     const capturas = new Set<string>();
     const recorrer = (pasos: readonly Paso[], enLimpieza: boolean): void => {
       for (const raiz of pasos) {
         for (const evento of expandir(raiz, vocabularios)) {
           if (evento.tipo === 'sin-pasos') {
-            if (enLimpieza) sinPasos.limpieza ??= evento;
-            else sinPasos.antes ??= evento;
+            const lista = enLimpieza ? sinPasos.limpieza : sinPasos.antes;
+            if (!lista.has(evento.frase.patron)) lista.set(evento.frase.patron, evento);
           } else if (evento.tipo === 'produce') {
             for (const nombre of evento.nombres) capturas.add(nombre);
           } else {
@@ -137,20 +138,19 @@ export function revisarHistoria(
     );
   }
 
-  if (sinPasos.antes) {
-    const { frase, raiz } = sinPasos.antes;
-    unaVez(
+  // Ya hay una por frase: dos frases distintas que salen del mismo paso se avisan las dos.
+  for (const { frase, raiz } of sinPasos.antes.values()) {
+    diagnosticos.agregar(
       'CUS-W004',
       raiz.origen,
       `«${frase.patron}» no tiene pasos (\`${frase.implementacion}\`): los escenarios que la usan quedan \`incompleto\`.`,
     );
   }
-  if (sinPasos.limpieza) {
-    const { frase, raiz } = sinPasos.limpieza;
+  for (const { frase, raiz } of sinPasos.limpieza.values()) {
     const efecto = ambiente?.desechable
       ? `en «${ambiente.ambiente}», que es desechable, los escenarios se ejecutan y la limpieza queda \`limpieza_pendiente\``
       : 'los escenarios no se ejecutan, porque el ambiente no es desechable';
-    unaVez(
+    diagnosticos.agregar(
       'CUS-W005',
       raiz.origen,
       `La limpieza usa «${frase.patron}», que no tiene pasos: ${efecto}.`,
@@ -280,7 +280,10 @@ function revisarFlujo(
 ): void {
   let cambioSinAncla = false;
   let verifica = false;
+  // Una `Y` hereda la fase del paso anterior (§5): `CUANDO …` + `Y <frase>` es una acción.
+  let faseEfectiva: Paso['fase'] = null;
   for (const paso of pasos) {
+    if (paso.fase !== 'y') faseEfectiva = paso.fase;
     if (paso.accion === 'navegar' || paso.accion === 'presionar' || paso.accion === 'frase') {
       cambioSinAncla = true;
     }
@@ -288,7 +291,7 @@ function revisarFlujo(
     if (
       paso.accion === 'ver' ||
       paso.accion === 'noVer' ||
-      (paso.accion === 'frase' && (paso.fase === 'entonces' || paso.fase === 'y'))
+      (paso.accion === 'frase' && faseEfectiva === 'entonces')
     ) {
       verifica = true;
     }
