@@ -64,6 +64,7 @@ export const CATALOGO = {
   'CUS-E015': error('sintaxis', 'DSL-11', 'Versión dsl mal escrita o no soportada.'),
   'CUS-E016': error('sintaxis', 'DSL-04', 'Dos escenarios con el mismo nombre.'),
   'CUS-E017': error('sintaxis', 'DSL-07', 'Una oración calza con dos frases.'),
+  'CUS-E018': error('sintaxis', 'DSL-07', 'Dos vocabularios con el mismo nombre.'),
   'CUS-W001': advertencia('sintaxis', 'DSL-06', 'Elemento ubicado con un escape.'),
   'CUS-W002': advertencia('semantica', 'DSL-04', 'Escenario sin ninguna verificación.'),
   'CUS-W003': advertencia('semantica', 'DSL-05', '`no veo` sin ancla.'),
@@ -71,6 +72,9 @@ export const CATALOGO = {
   'CUS-W005': advertencia('semantica', 'DSL-10', 'La limpieza usa una frase sin pasos.'),
   'CUS-W006': advertencia('sintaxis', 'DSL-04', 'Título parecido a una sección del lenguaje.'),
   'CUS-W007': advertencia('sintaxis', 'DSL-01', 'Clave desconocida en el frontmatter.'),
+  'CUS-W008': advertencia('sintaxis', 'DSL-04', 'Paso con fase fuera de un escenario.'),
+  'CUS-W009': advertencia('sintaxis', 'DSL-07', 'Vocabulario importado más de una vez.'),
+  'CUS-W010': advertencia('sintaxis', 'DSL-07', 'Parámetro de una frase que ningún paso usa.'),
 } as const satisfies Record<string, EntradaDelCatalogo>;
 
 export type CodigoDeDiagnostico = keyof typeof CATALOGO;

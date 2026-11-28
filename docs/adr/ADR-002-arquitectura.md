@@ -59,7 +59,7 @@ Cada módulo tiene una estructura según lo que hace:
 | `lenguaje` | Analizador, validador, formateador y compilador del DSL; el AST y los tipos del plan. | Plano | Son funciones puras sin E/S (regla 6). No tiene puertos ni adaptadores, así que las capas solo agregarían carpetas. |
 | `historias` | Registro de historias y su historial de versiones (SRV-02). | `dominio/`, `aplicacion/`, `infraestructura/postgres/` | Tiene reglas de negocio y necesita persistencia. |
 | `ejecuciones` | Ejecutor del plan, estados de una ejecución, cola, evidencias y limpieza (SRV-04 a SRV-09). | `dominio/`, `aplicacion/`, `infraestructura/motores/{playwright,alternativo,simulado}/` | Es el centro del hexágono: aquí viven los motores. |
-| `ambientes` | Productos, ambientes, variables y referencias a secretos (SRV-01). | `dominio/`, `aplicacion/`, `infraestructura/` | Necesita persistencia y la bóveda de secretos. |
+| `ambientes` | Productos, ambientes, los **valores** de las variables y las referencias a secretos (SRV-01). La **declaración** del ambiente (qué nombres son variables y cuáles secretos) es de `lenguaje`. | `dominio/`, `aplicacion/`, `infraestructura/` | Necesita persistencia y la bóveda de secretos. |
 | `informes` | Ver abajo. | Plano | Ver abajo. |
 | `compartido` | Tipos base que usan varios módulos. | Plano | Ver «Dominios aislados y `compartido`». |
 | `arranque` | Las entradas `http/`, `cli/` y `trabajador/`, y el armado de dependencias. | Una carpeta por entrada | Es la raíz de composición (regla 5). |
@@ -119,8 +119,9 @@ Cambiar o agregar una regla es una decisión de arquitectura: se propone en un A
 |---|---|
 | Los puertos `Reloj` y `GeneradorDeIds` | `Historia`, `Version` → `historias` |
 | `Resultado<T, E>` para devolver éxito o error sin excepciones | `Ejecucion`, `EstadoDeEjecucion`, `ResultadoDePaso` → `ejecuciones` |
-| Tipos de identificador (`IdDeHistoria`, `IdDeEjecucion`) | `Ambiente`, `ReferenciaDeSecreto` → `ambientes` |
+| Tipos de identificador (`IdDeHistoria`, `IdDeEjecucion`) | `Ambiente`, `ReferenciaDeSecreto` → `ambientes` (los valores) |
 | | `Localizador`, `Plan`, `Instruccion` → `lenguaje` (son parte del plan) |
+| | `DeclaracionDeAmbiente` → `lenguaje` (los nombres y los secretos que declara el `.ambiente.md`) |
 
 **Reglas de `compartido/`**, verificadas en CI:
 
@@ -129,6 +130,8 @@ Cambiar o agregar una regla es una decisión de arquitectura: se propone en un A
 - Se usa solo por su `index.ts` (reglas 4 y 7).
 
 Si algo "se usa en dos lados" pero tiene reglas de negocio, le pertenece a uno de los dos módulos y el otro lo consume por su `index.ts`, desde la capa de aplicación.
+
+**La declaración del ambiente es de `lenguaje`** (diseño de la semana 4, §1). El `.ambiente.md` es texto, su gramática está en la EBNF y el validador la necesita para revisar las variables y los secretos (`CUS-E011`, `CUS-E013`), así que la lee `lenguaje`, que no puede importar `ambientes` (regla 6). `ambientes` queda para los valores: de dónde sale cada variable y cada secreto al ejecutar.
 
 ### El plan
 

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/plan.schema.json",
+  "title": "Plan de ejecución de Custodio",
+  "description": "Lo que produce custodio compilar: un plan por historia, con instrucciones neutrales, sin frases y sin valores de secretos. Versión 0.1.0. Ver docs/dsl/especificacion.md, sección 12.1.",
+  "$comment": "Versión 0.1.0. Los enums de este archivo y las constantes de src/lenguaje/plan.ts se verifican entre sí en test/lenguaje/plan.test.ts. Los localizadores, ámbitos y valores son los del AST.",
+  "$ref": "#/$defs/Plan",
+
+  "$defs": {
+    "VersionPlan": { "const": "0.1.0" },
+
+    "Plan": {
+      "type": "object",
+      "required": ["plan", "historia", "ambiente", "escenarios"],
+      "additionalProperties": false,
+      "properties": {
+        "plan": { "$ref": "#/$defs/VersionPlan" },
+        "historia": {
+          "type": "object",
+          "required": ["id", "titulo", "producto", "criticidad", "etiquetas", "archivo"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "type": "string", "pattern": "^HU-[A-Z]+-\\d{3}$" },
+            "titulo": { "type": "string", "minLength": 1 },
+            "producto": { "type": "string", "minLength": 1 },
+            "criticidad": { "enum": ["alta", "media", "baja"] },
+            "etiquetas": { "type": "array", "items": { "type": "string" } },
+            "archivo": { "type": "string", "minLength": 1 }
+          }
+        },
+        "ambiente": { "type": ["string", "null"] },
+        "escenarios": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Escenario" } }
+      }
+    },
+
+    "EstadoDeCompilacion": { "enum": ["ejecutable", "incompleto", "limpieza_pendiente"] },
+
+    "Escenario": {
+      "type": "object",
+      "required": ["nombre", "estado", "motivo", "instrucciones", "limpieza", "linea"],
+      "additionalProperties": false,
+      "properties": {
+        "nombre": { "type": "string", "minLength": 1 },
+        "estado": { "$ref": "#/$defs/EstadoDeCompilacion" },
+        "motivo": { "type": ["string", "null"] },
+        "instrucciones": { "type": "array", "items": { "$ref": "#/$defs/Instruccion" } },
+        "limpieza": { "type": "array", "items": { "$ref": "#/$defs/Instruccion" } },
+        "linea": { "type": "integer", "minimum": 1 }
+      },
+      "$comment": "Un escenario incompleto no tiene instrucciones; uno ejecutable tiene al menos una.",
+      "if": { "properties": { "estado": { "const": "incompleto" } } },
+      "then": {
+        "properties": {
+          "motivo": { "type": "string" },
+          "instrucciones": { "type": "array", "maxItems": 0 },
+          "limpieza": { "type": "array", "maxItems": 0 }
+        }
+      },
+      "else": { "properties": { "instrucciones": { "type": "array", "minItems": 1 } } }
+    },
+
+    "AccionDelPlan": {
+      "enum": [
+        "navegar",
+        "completar",
+        "seleccionar",
+        "marcar",
+        "desmarcar",
+        "presionar",
+        "esperar",
+        "ver",
+        "noVer",
+        "capturar"
+      ]
+    },
+
+    "Instruccion": {
+      "type": "object",
+      "required": ["accion", "fase", "objetivo", "ambito", "valor", "origen"],
+      "additionalProperties": false,
+      "properties": {
+        "accion": { "$ref": "#/$defs/AccionDelPlan" },
+        "fase": {
+          "anyOf": [
+            {
+              "$ref": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/ast.schema.json#/$defs/Fase"
+            },
+            { "type": "null" }
+          ]
+        },
+        "objetivo": {
+          "anyOf": [
+            {
+              "$ref": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/ast.schema.json#/$defs/Localizador"
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/ast.schema.json#/$defs/ObjetivoUrl"
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/ast.schema.json#/$defs/ObjetivoMenu"
+            }
+          ]
+        },
+        "ambito": {
+          "anyOf": [
+            {
+              "$ref": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/ast.schema.json#/$defs/Ambito"
+            },
+            { "type": "null" }
+          ]
+        },
+        "valor": {
+          "anyOf": [
+            {
+              "$ref": "https://raw.githubusercontent.com/soluciones-acutis/custodio/main/docs/dsl/ast.schema.json#/$defs/Valor"
+            },
+            { "type": "null" }
+          ]
+        },
+        "origen": { "$ref": "#/$defs/OrigenDeInstruccion" }
+      }
+    },
+
+    "OrigenDeInstruccion": {
+      "description": "El paso de la historia y, si vino de una frase, cada frase por la que pasó, de afuera hacia adentro.",
+      "type": "object",
+      "required": ["archivo", "linea", "columna", "via"],
+      "additionalProperties": false,
+      "properties": {
+        "archivo": { "type": "string", "minLength": 1 },
+        "linea": { "type": "integer", "minimum": 1 },
+        "columna": { "type": "integer", "minimum": 1 },
+        "via": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["vocabulario", "frase", "archivo", "linea", "columna"],
+            "additionalProperties": false,
+            "properties": {
+              "vocabulario": { "type": "string", "minLength": 1 },
+              "frase": { "type": "string", "minLength": 1 },
+              "archivo": { "type": "string", "minLength": 1 },
+              "linea": { "type": "integer", "minimum": 1 },
+              "columna": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

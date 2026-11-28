@@ -1,0 +1,1172 @@
+{
+  "plan": "0.1.0",
+  "historia": {
+    "id": "HU-SUITE-003",
+    "titulo": "El párroco invita a una persona al equipo con su rol y revoca la invitación que ya no corresponde",
+    "producto": "suite-parroquial",
+    "criticidad": "alta",
+    "etiquetas": ["acceso", "equipo", "mi-parroquia"],
+    "archivo": "historias/HU-SUITE-003.historia.md"
+  },
+  "ambiente": "suite-pruebas",
+  "escenarios": [
+    {
+      "nombre": "invitar a una catequista",
+      "linea": 22,
+      "estado": "limpieza_pendiente",
+      "motivo": "elimino todo lo creado con prefijo \"{prefijo}\"",
+      "instrucciones": [
+        {
+          "accion": "navegar",
+          "fase": null,
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 22,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 23,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${CLAVE_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 24,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": null,
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 25,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": null,
+          "objetivo": {
+            "por": "texto",
+            "texto": "Verificación en dos pasos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 26,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Código de seis dígitos"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "totp",
+            "secreto": "${TOTP_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 27,
+                "columna": 3
+              },
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 32,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": null,
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 28,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": null,
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 29,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Mi parroquia", "El equipo"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 23,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Invitar a alguien"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 24,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "y",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${PREFIJO}catequista@ejemplo.test"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 25,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "seleccionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Rol"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "Catequista"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 26,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Crear la invitación"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 27,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Ya lo pasé"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 28,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "y",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Mi parroquia", "El equipo"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 29,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "texto",
+            "texto": "${PREFIJO}catequista@ejemplo.test"
+          },
+          "ambito": {
+            "por": "seccion",
+            "texto": "Invitaciones sin aceptar",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 30,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "y",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Catequista"
+          },
+          "ambito": {
+            "por": "fila",
+            "texto": "${PREFIJO}catequista@ejemplo.test",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 31,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "noVer",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Copiar el link"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 32,
+            "columna": 3,
+            "via": []
+          }
+        }
+      ],
+      "limpieza": []
+    },
+    {
+      "nombre": "una invitación revocada deja de servir",
+      "linea": 34,
+      "estado": "limpieza_pendiente",
+      "motivo": "elimino todo lo creado con prefijo \"{prefijo}\"",
+      "instrucciones": [
+        {
+          "accion": "navegar",
+          "fase": null,
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 22,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 23,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${CLAVE_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 24,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": null,
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 25,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": null,
+          "objetivo": {
+            "por": "texto",
+            "texto": "Verificación en dos pasos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 26,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Código de seis dígitos"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "totp",
+            "secreto": "${TOTP_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 27,
+                "columna": 3
+              },
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 32,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": null,
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 28,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": null,
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 29,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Mi parroquia", "El equipo"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 51,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Invitar a alguien"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 52,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${PREFIJO}revocar@ejemplo.test"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 53,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "seleccionar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Rol"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "Catequista"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 54,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Crear la invitación"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 55,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "capturar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Link de la invitación"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "captura",
+            "como": "linkInvitacion"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 56,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Ya lo pasé"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "existe una invitación sin aceptar para \"{correo}\" con rol \"{rol}\" y guardo su link como \"{guardarLinkComo}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 57,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Mi parroquia", "El equipo"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 36,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Revocar"
+          },
+          "ambito": {
+            "por": "fila",
+            "texto": "${PREFIJO}revocar@ejemplo.test",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 37,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Sí, revocar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 38,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "y",
+          "objetivo": {
+            "por": "url",
+            "url": "${linkInvitacion}"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 39,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Esta invitación ya no es válida"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 40,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "noVer",
+          "fase": "y",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 41,
+            "columna": 3,
+            "via": []
+          }
+        }
+      ],
+      "limpieza": []
+    },
+    {
+      "nombre": "nadie puede restablecer su propio acceso",
+      "linea": 43,
+      "estado": "limpieza_pendiente",
+      "motivo": "elimino todo lo creado con prefijo \"{prefijo}\"",
+      "instrucciones": [
+        {
+          "accion": "navegar",
+          "fase": null,
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 22,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 23,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${CLAVE_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 24,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": null,
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 25,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": null,
+          "objetivo": {
+            "por": "texto",
+            "texto": "Verificación en dos pasos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 26,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": null,
+          "objetivo": {
+            "por": "campo",
+            "texto": "Código de seis dígitos"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "totp",
+            "secreto": "${TOTP_parroco}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 27,
+                "columna": 3
+              },
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 32,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": null,
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 28,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": null,
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 29,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "menu",
+            "ruta": ["Mi parroquia", "El equipo"]
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 44,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "texto",
+            "texto": "No disponible"
+          },
+          "ambito": {
+            "por": "fila",
+            "texto": "${USUARIO_parroco}",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 45,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "noVer",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Quitar el acceso"
+          },
+          "ambito": {
+            "por": "fila",
+            "texto": "${USUARIO_parroco}",
+            "ambito": null
+          },
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-003.historia.md",
+            "linea": 46,
+            "columna": 3,
+            "via": []
+          }
+        }
+      ],
+      "limpieza": []
+    }
+  ]
+}

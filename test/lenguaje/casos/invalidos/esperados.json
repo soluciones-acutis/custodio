@@ -1,5 +1,5 @@
 {
-  "$comment": "Cada caso inválido y el error que tiene que informar el validador (docs/dsl/especificacion.md, §13), en su línea y su columna. `etapa` dice qué parte del sistema lo detecta: la sintaxis o la semántica. Se validan contra el ambiente indicado y los vocabularios de vocabularios/; `vocabulario` agrega uno de esta carpeta. `en` nombra el archivo del diagnóstico cuando no es la historia; entonces la historia recibe además el CUS-E009 de su importación.",
+  "$comment": "Cada caso inválido y el error que tiene que informar el validador (docs/dsl/especificacion.md, §13), en su línea y su columna. `etapa` dice qué parte del sistema lo detecta: la sintaxis o la semántica. Se validan contra el ambiente indicado y los vocabularios de vocabularios/; `vocabulario` agrega uno de esta carpeta. `en` nombra el archivo del diagnóstico cuando no es la historia; con `importa`, la historia importa ese vocabulario y recibe además el CUS-E009 de su importación.",
   "ambiente": "ambientes/suite-pruebas.ambiente.md",
   "casos": [
     {
@@ -97,7 +97,9 @@
       "codigo": "CUS-E011",
       "requisito": "DSL-08",
       "descripcion": "Usa `${linkInvitacion}` sin haberlo capturado antes.",
-      "etapa": "semantica"
+      "etapa": "semantica",
+      "linea": 20,
+      "columna": 19
     },
     {
       "archivo": "12-frases-circulares.historia.md",
@@ -105,7 +107,10 @@
       "requisito": "DSL-07",
       "descripcion": "Usa una frase de un vocabulario donde dos frases se llaman entre sí.",
       "etapa": "semantica",
+      "linea": 11,
+      "columna": 11,
       "en": "casos-ciclo.vocabulario.md",
+      "importa": true,
       "vocabulario": "casos-ciclo.vocabulario.md"
     },
     {
@@ -113,14 +118,18 @@
       "codigo": "CUS-E013",
       "requisito": "DSL-08",
       "descripcion": "Un secreto en una verificación terminaría impreso en el informe. Es secreto porque el ambiente declara `CLAVE_*` en `## Secretos`.",
-      "etapa": "semantica"
+      "etapa": "semantica",
+      "linea": 21,
+      "columna": 25
     },
     {
       "archivo": "14-parametro-invalido-en-nombre-de-variable.historia.md",
       "codigo": "CUS-E014",
       "requisito": "DSL-07, DSL-08",
       "descripcion": "El rol «secretaria parroquial» arma `${USUARIO_secretaria parroquial}`, que no es un nombre de variable.",
-      "etapa": "semantica"
+      "etapa": "semantica",
+      "linea": 20,
+      "columna": 29
     },
     {
       "archivo": "15-version-con-v.historia.md",
@@ -154,7 +163,9 @@
       "codigo": "CUS-E011",
       "requisito": "DSL-08",
       "descripcion": "`${PARROQUA}`, mal escrita, no está declarada en el ambiente.",
-      "etapa": "semantica"
+      "etapa": "semantica",
+      "linea": 20,
+      "columna": 19
     },
     {
       "archivo": "19-frase-en-dos-vocabularios.historia.md",
@@ -175,7 +186,19 @@
       "linea": 11,
       "columna": 11,
       "en": "casos-base.vocabulario.md",
+      "importa": true,
       "vocabulario": "casos-base.vocabulario.md"
+    },
+    {
+      "archivo": "21-vocabularios-con-el-mismo-nombre.historia.md",
+      "codigo": "CUS-E018",
+      "requisito": "DSL-07",
+      "descripcion": "Un segundo vocabulario se llama `acutis-suite`, igual que el de `vocabularios/`: no gana ninguno sin avisar.",
+      "etapa": "sintaxis",
+      "linea": 2,
+      "columna": 14,
+      "en": "casos-duplicado.vocabulario.md",
+      "vocabulario": "casos-duplicado.vocabulario.md"
     }
   ]
 }

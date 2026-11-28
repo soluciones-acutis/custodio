@@ -16,9 +16,10 @@ import {
 import type { Diagnosticos, Posicion } from './diagnosticos.ts';
 import { fraseBase } from './frases-base.ts';
 import { leerFrontmatter, revisarClaves, revisarVersion, texto } from './frontmatter.ts';
-import { claseDeLinea } from './lineas.ts';
+import { claseDeLinea, COLUMNA_DEL_PASO } from './lineas.ts';
 import { analizarOracion, type FraseConocida } from './oraciones.ts';
 import { ejemplo, firmaDelPatron, IndiceDePatrones, leerPatron, type Patron } from './patrones.ts';
+import { posicionDelPatron, posicionDelProduce } from './rastros.ts';
 import { lineasDe, saltarEspacios, type Linea } from './texto.ts';
 
 const CLAVES = ['vocabulario', 'dsl', 'producto'];
@@ -26,6 +27,8 @@ const CLAVES = ['vocabulario', 'dsl', 'producto'];
 interface FraseLeida {
   readonly patron: Patron;
   readonly origen: Posicion;
+  readonly posicionDelPatron: Posicion;
+  posicionDelProduce: Posicion | null;
   produce: string[];
   implementacion: Implementacion;
   motivo: string | null;
@@ -35,12 +38,21 @@ interface FraseLeida {
 
 export interface VocabularioLeido {
   readonly nombre: string | null;
+  /** Dónde está el nombre, en el frontmatter: para un nombre repetido (`CUS-E018`). */
+  readonly posicionDelNombre: Posicion | null;
   /** Las frases con un patrón válido, para reconocer oraciones con ellas. */
   readonly frases: readonly FraseConocida[];
   readonly diagnosticos: Diagnosticos;
-  /** El AST, si el vocabulario no tiene errores. */
+  /**
+   * El AST. Vale solo si el vocabulario no tiene errores, y puede tenerlos después:
+   * un nombre repetido (`CUS-E018`) o los de la semántica (`CUS-E011`, `CUS-E012`).
+   */
   readonly ast: ArchivoDeVocabulario | null;
 }
+
+/** Si el vocabulario tiene algún error, de la sintaxis o de la semántica. */
+export const tieneErrores = (vocabulario: VocabularioLeido): boolean =>
+  vocabulario.diagnosticos.lista.some((d) => d.severidad === 'error');
 
 /** Lee un vocabulario completo. */
 export function leerVocabulario(
@@ -56,7 +68,7 @@ export function leerVocabulario(
       { linea: 1, columna: 1 },
       'Falta el frontmatter: el vocabulario empieza con `---`.',
     );
-    return { nombre: null, frases: [], diagnosticos, ast: null };
+    return { nombre: null, posicionDelNombre: null, frases: [], diagnosticos, ast: null };
   }
   const frontmatter = leerFrontmatter(lineas, inicio, diagnosticos);
   const yaMal = diagnosticos.lista.some((d) => d.codigo === 'CUS-E001');
@@ -83,46 +95,65 @@ export function leerVocabulario(
       if (/^- (DADO|CUANDO|ENTONCES|Y)\s/.test(linea.texto)) {
         diagnosticos.agregar(
           'CUS-E005',
-          { linea: linea.numero, columna: 3 },
+          { linea: linea.numero, columna: COLUMNA_DEL_PASO },
           'Los pasos de una frase no llevan fase.',
         );
         continue;
       }
       const paso = analizarOracion(
         linea,
-        3,
+        COLUMNA_DEL_PASO,
         null,
-        { frases: indice, callarDesconocidas: false },
+        { frases: indice, otras: new IndiceDePatrones(), callarDesconocidas: false },
         diagnosticos,
       );
       if (paso) frase.pasos.push(paso as PasoSinFase);
     }
+    avisarParametrosSinUso(frase, diagnosticos);
   }
 
-  const conErrores = diagnosticos.lista.some((d) => d.severidad === 'error');
   return {
     nombre,
+    posicionDelNombre: campoNombre?.posicion ?? null,
     frases: conocidas,
     diagnosticos,
-    ast: conErrores
-      ? null
-      : {
-          ast: VERSION_AST,
-          archivo: ruta,
-          vocabulario,
-          dsl: texto(frontmatter, 'dsl') ?? '',
-          producto: texto(frontmatter, 'producto') ?? '',
-          frases: frases.map((f): FraseDeVocabulario => ({
-            patron: f.patron.texto,
-            parametros: f.patron.parametros,
-            produce: f.produce,
-            implementacion: f.implementacion,
-            motivo: f.motivo,
-            pasos: f.pasos,
-            origen: f.origen,
-          })),
-        },
+    ast: {
+      ast: VERSION_AST,
+      archivo: ruta,
+      vocabulario,
+      dsl: texto(frontmatter, 'dsl') ?? '',
+      producto: texto(frontmatter, 'producto') ?? '',
+      frases: frases.map((f) => {
+        const ast: FraseDeVocabulario = {
+          patron: f.patron.texto,
+          parametros: f.patron.parametros,
+          produce: f.produce,
+          implementacion: f.implementacion,
+          motivo: f.motivo,
+          pasos: f.pasos,
+          origen: f.origen,
+        };
+        posicionDelPatron.set(ast, f.posicionDelPatron);
+        if (f.posicionDelProduce) posicionDelProduce.set(ast, f.posicionDelProduce);
+        return ast;
+      }),
+    },
   };
+}
+
+/** `CUS-W010`: un parámetro que ningún paso de la frase usa (issue #24). */
+function avisarParametrosSinUso(frase: FraseLeida, diagnosticos: Diagnosticos): void {
+  // Sin pasos ya es CUS-E005 (o una frase pendiente o nativa): no hay dónde usar el parámetro.
+  if (frase.implementacion !== 'pasos' || frase.lineasDePasos.length === 0) return;
+  const pasos = frase.lineasDePasos.map((l) => l.texto).join(' ');
+  for (const parte of frase.patron.partes) {
+    if (parte.tipo !== 'parametro' || pasos.includes(`{${parte.nombre}}`)) continue;
+    diagnosticos.agregar(
+      'CUS-W010',
+      { linea: frase.origen.linea, columna: parte.columna },
+      `El parámetro \`{${parte.nombre}}\` no se usa en ningún paso de la frase.`,
+    );
+  }
 }
 
 /** Primera pasada: los títulos `## Frase:`, sus declaraciones y las líneas de sus pasos. */
@@ -197,6 +228,8 @@ function abrirFrase(
   return {
     patron,
     origen: { linea: linea.numero, columna: 1 },
+    posicionDelPatron: posicion,
+    posicionDelProduce: null,
     produce: [],
     implementacion: 'pasos',
     motivo: null,
@@ -207,9 +240,10 @@ function abrirFrase(
 
 /** `> produce: {a}, {b}` y `> implementación: pendiente|nativa — motivo`. Otro `>` es una nota. */
 function leerDeclaracion(linea: Linea, frase: FraseLeida, diagnosticos: Diagnosticos): void {
-  const posicion = { linea: linea.numero, columna: 3 };
+  const posicion = { linea: linea.numero, columna: '> '.length + 1 };
   const produce = /^> produce:\s*(.*)$/.exec(linea.texto);
   if (produce) {
+    frase.posicionDelProduce = posicion;
     const nombres = (produce[1] ?? '').split(',').map((p) => p.trim());
     if (nombres.some((n) => !/^\{\w+\}$/.test(n))) {
       diagnosticos.agregar(

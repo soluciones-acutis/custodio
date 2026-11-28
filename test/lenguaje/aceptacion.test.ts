@@ -1,6 +1,7 @@
 /**
  * El analizador contra lo que dejó la semana 2 (diseño de la semana 3, §9):
- * - las 12 historias se analizan sin diagnósticos;
+ * - las 12 historias se validan sin errores, y con las advertencias de sus frases
+ *   sin pasos (`CUS-W004`, `CUS-W005`) en el ambiente de la Suite;
  * - su AST es igual a los ejemplos de docs/dsl/ejemplos/ y cumple el Schema;
  * - nunca lanza una excepción, por raro que sea el archivo;
  * - analiza 100 historias en menos de 2 segundos (RNF-05).
@@ -23,15 +24,45 @@ const vocabulario = leer('vocabularios/acutis-suite.vocabulario.md');
 const historias = readdirSync(join(RAIZ, 'historias'))
   .filter((n) => n.endsWith('.historia.md'))
   .map((n) => leer(`historias/${n}`));
-const resultado = analizar({ historias, vocabularios: [vocabulario] });
+const ambiente = leer('ambientes/suite-pruebas.ambiente.md');
+const resultado = analizar({ historias, vocabularios: [vocabulario], ambiente });
 
 const ajv = new Ajv2020({ allErrors: true, strictTypes: true });
 const validar = ajv.compile(leerJson(join(RAIZ, 'docs', 'dsl', 'ast.schema.json')) as object);
 
 describe('las 12 historias del inventario', () => {
-  it('se analizan sin diagnósticos', () => {
-    expect(resultado.diagnosticos).toEqual([]);
+  it('se validan sin errores', () => {
+    expect(resultado.diagnosticos.filter((d) => d.severidad === 'error')).toEqual([]);
     expect(resultado.historias).toHaveLength(historias.length);
+  });
+
+  it('solo avisan las frases sin pasos, una vez por frase: CUS-W004 en los escenarios y CUS-W005 en la limpieza', () => {
+    const avisos = Object.groupBy(resultado.diagnosticos, (d) =>
+      d.archivo.slice('historias/'.length, 'historias/HU-SUITE-000'.length),
+    );
+    const cuantos = Object.fromEntries(
+      Object.entries(avisos).map(([historia, lista]) => {
+        const codigos = (lista ?? []).map((d) => d.codigo);
+        const contar = (codigo: string): number => codigos.filter((c) => c === codigo).length;
+        return [historia, [contar('CUS-W004'), contar('CUS-W005')]];
+      }),
+    );
+    // [CUS-W004, CUS-W005]: cada frase pendiente o nativa es una pantalla que falta conocer.
+    expect(cuantos).toEqual({
+      'HU-SUITE-003': [0, 1],
+      'HU-SUITE-004': [1, 1],
+      'HU-SUITE-005': [3, 1],
+      'HU-SUITE-006': [5, 1],
+      'HU-SUITE-007': [2, 2],
+      'HU-SUITE-008': [5, 2],
+      'HU-SUITE-009': [6, 1],
+      'HU-SUITE-010': [1, 1],
+      'HU-SUITE-011': [3, 1],
+      'HU-SUITE-012': [1, 1],
+    });
+    expect(
+      resultado.diagnosticos.every((d) => d.codigo === 'CUS-W004' || d.codigo === 'CUS-W005'),
+    ).toBe(true);
   });
 
   it.each(resultado.historias.map((a) => [a.archivo, a] as const))(
@@ -47,7 +78,9 @@ describe('las 12 historias del inventario', () => {
 });
 
 describe('los ejemplos del AST son la salida esperada', () => {
-  const ejemplos = readdirSync(EJEMPLOS).filter((n) => n.startsWith('HU-'));
+  const ejemplos = readdirSync(EJEMPLOS).filter(
+    (n) => n.startsWith('HU-') && n.endsWith('.ast.json'),
+  );
 
   it.each(ejemplos)('%s', (nombre) => {
     const archivo = `historias/${nombre.replace('.ast.json', '.historia.md')}`;
@@ -111,7 +144,7 @@ describe('robustez', () => {
 });
 
 describe('rendimiento (RNF-05)', () => {
-  it('analiza 100 historias en menos de 2 segundos', () => {
+  it('valida 100 historias, con las dos etapas, en menos de 2 segundos', () => {
     const cien = Array.from({ length: 100 }, (_, i) => {
       const original = historias[i % historias.length] ?? { ruta: '', texto: '' };
       return {
@@ -120,8 +153,8 @@ describe('rendimiento (RNF-05)', () => {
       };
     });
     const inicio = performance.now();
-    const { diagnosticos } = analizar({ historias: cien, vocabularios: [vocabulario] });
+    const { diagnosticos } = analizar({ historias: cien, vocabularios: [vocabulario], ambiente });
     expect(performance.now() - inicio).toBeLessThan(2000);
-    expect(diagnosticos).toEqual([]);
+    expect(diagnosticos.filter((d) => d.severidad === 'error')).toEqual([]);
   });
 });

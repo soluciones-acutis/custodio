@@ -1,0 +1,770 @@
+{
+  "plan": "0.1.0",
+  "historia": {
+    "id": "HU-SUITE-001",
+    "titulo": "La secretaría entra al panel con su contraseña y el código de su app de autenticación",
+    "producto": "suite-parroquial",
+    "criticidad": "alta",
+    "etiquetas": ["acceso", "segundo-factor", "panel"],
+    "archivo": "historias/HU-SUITE-001.historia.md"
+  },
+  "ambiente": "suite-pruebas",
+  "escenarios": [
+    {
+      "nombre": "entrada exitosa con contraseña y segundo factor",
+      "linea": 22,
+      "estado": "ejecutable",
+      "motivo": null,
+      "instrucciones": [
+        {
+          "accion": "navegar",
+          "fase": null,
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 23,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "y",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${CLAVE_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 24,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 25,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Verificación en dos pasos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 26,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Código de seis dígitos"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "totp",
+            "secreto": "${TOTP_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 27,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 32,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 28,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 29,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "y",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Secretaría"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 30,
+            "columna": 3,
+            "via": []
+          }
+        }
+      ],
+      "limpieza": []
+    },
+    {
+      "nombre": "contraseña incorrecta",
+      "linea": 32,
+      "estado": "ejecutable",
+      "motivo": null,
+      "instrucciones": [
+        {
+          "accion": "navegar",
+          "fase": null,
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 33,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "y",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "clave-que-no-es"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 34,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 35,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Correo o contraseña incorrectos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 36,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "noVer",
+          "fase": "y",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Verificación en dos pasos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 37,
+            "columna": 3,
+            "via": []
+          }
+        }
+      ],
+      "limpieza": []
+    },
+    {
+      "nombre": "código de segundo factor incorrecto",
+      "linea": 39,
+      "estado": "ejecutable",
+      "motivo": null,
+      "instrucciones": [
+        {
+          "accion": "navegar",
+          "fase": null,
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 40,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "y",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${CLAVE_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 41,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 42,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "y",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Código de seis dígitos"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "000000"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 43,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 44,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "texto",
+            "texto": "El código no es válido"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 45,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "noVer",
+          "fase": "y",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 46,
+            "columna": 3,
+            "via": []
+          }
+        }
+      ],
+      "limpieza": []
+    },
+    {
+      "nombre": "salir del panel cierra la sesión",
+      "linea": 48,
+      "estado": "ejecutable",
+      "motivo": null,
+      "instrucciones": [
+        {
+          "accion": "navegar",
+          "fase": null,
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 20,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 22,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Correo"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${USUARIO_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 23,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "texto",
+            "texto": "${CLAVE_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 24,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 25,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "dado",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Verificación en dos pasos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 26,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "completar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Código de seis dígitos"
+          },
+          "ambito": null,
+          "valor": {
+            "tipo": "totp",
+            "secreto": "${TOTP_secretaria}"
+          },
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 27,
+                "columna": 3
+              },
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "ingreso el código de segundo factor generado con el secreto \"{secreto}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 32,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "dado",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Entrar"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 28,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "dado",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 49,
+            "columna": 3,
+            "via": [
+              {
+                "vocabulario": "acutis-suite",
+                "frase": "inicio sesión como \"{rol}\" en la parroquia \"{parroquia}\"",
+                "archivo": "vocabularios/acutis-suite.vocabulario.md",
+                "linea": 29,
+                "columna": 3
+              }
+            ]
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "boton",
+            "texto": "${USUARIO_secretaria}"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 50,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "presionar",
+          "fase": "y",
+          "objetivo": {
+            "por": "boton",
+            "texto": "Salir"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 51,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 52,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "navegar",
+          "fase": "cuando",
+          "objetivo": {
+            "por": "url",
+            "url": "https://${PARROQUIA}.${DOMINIO_PRUEBAS}/admin"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 53,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "ver",
+          "fase": "entonces",
+          "objetivo": {
+            "por": "campo",
+            "texto": "Contraseña"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 54,
+            "columna": 3,
+            "via": []
+          }
+        },
+        {
+          "accion": "noVer",
+          "fase": "y",
+          "objetivo": {
+            "por": "texto",
+            "texto": "Tus módulos"
+          },
+          "ambito": null,
+          "valor": null,
+          "origen": {
+            "archivo": "historias/HU-SUITE-001.historia.md",
+            "linea": 55,
+            "columna": 3,
+            "via": []
+          }
+        }
+      ],
+      "limpieza": []
+    }
+  ]
+}

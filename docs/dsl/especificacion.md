@@ -271,7 +271,8 @@ desechable: sí
 - Un nombre puede terminar en `*`, que calza con cualquier final hecho de letras, dígitos y `_`: `USUARIO_*` declara `USUARIO_secretaria` y `USUARIO_parroco`.
 - `PREFIJO` no se declara: lo genera el ejecutor (§9.3).
 - Lo demás del archivo (títulos `#`, párrafos) son notas, como en una historia.
-- Al validar se elige un ambiente; si no se indica, el validador usa el único que hay en `ambientes/`. Otras opciones del ambiente, como el plazo de las esperas (§11.1) o la ventana del TOTP (§11.4), llegan con SRV-01.
+- Al validar se elige un ambiente con `--ambiente`; si no se indica, el validador usa el único que hay en `ambientes/`, y si hay más de uno, pide elegir. Sin ningún ambiente no se revisan las variables en mayúsculas ni los secretos, y una limpieza sin pasos se trata como en un ambiente que no es desechable.
+- La declaración es de `lenguaje`; los valores, de `ambientes` (ADR-002).
 
 ## 10. Frases de negocio y vocabularios
 
@@ -411,14 +412,35 @@ Cada paso queda **normalizado**, siempre con las mismas claves:
 
 El Schema exige lo de §7: por ejemplo, rechaza un `completar` con un `boton` como objetivo o sin `valor`. En [`ejemplos/`](ejemplos/) hay AST de las historias [HU-SUITE-001](ejemplos/HU-SUITE-001.ast.json), [002](ejemplos/HU-SUITE-002.ast.json), [003](ejemplos/HU-SUITE-003.ast.json), [005](ejemplos/HU-SUITE-005.ast.json) y [006](ejemplos/HU-SUITE-006.ast.json), y del [vocabulario](ejemplos/acutis-suite.vocabulario.ast.json).
 
+### 12.1 El plan de ejecución
+
+`custodio compilar` convierte cada historia válida en un **plan**, con la forma de [`plan.schema.json`](plan.schema.json) (versión `0.1.0`, propia: puede cambiar sin cambiar el AST). Los tipos están en [`src/lenguaje/plan.ts`](../../src/lenguaje/plan.ts). Es el único contrato entre `lenguaje` y `ejecuciones` (DSL-14).
+
+- **Un plan por historia**, con un bloque por escenario.
+- **Las frases de negocio se expanden**: cada instrucción es una acción base (`navegar`, `completar`, …), nunca `frase`, con el mismo `objetivo`, `ambito` y `valor` del AST y los parámetros sustituidos.
+- **Las variables siguen como `${…}`**: se resuelven al ejecutar. El plan nunca tiene el valor de un secreto.
+- **`origen`** dice el paso de la historia (archivo, línea y columna) y, en `via`, cada frase por la que pasó la instrucción, de afuera hacia adentro, con la posición del paso dentro de la frase.
+- **El estado de cada escenario:**
+
+| Estado | Cuándo | Instrucciones y limpieza |
+|---|---|---|
+| `ejecutable` | Todas sus frases tienen pasos. | Las dos. |
+| `incompleto` | Una frase sin pasos en los antecedentes o el escenario (`CUS-W004`), o en la limpieza con un ambiente que no es desechable (`CUS-W005`). | Ninguna. `motivo` dice la frase. |
+| `limpieza_pendiente` | Una frase sin pasos en la limpieza, con un ambiente desechable (`CUS-W005`, §11.3). | Las instrucciones, sin limpieza. `motivo` dice la frase. |
+
+**Selección (DSL-15).** `--id`, `--etiqueta`, `--producto` y `--criticidad` eligen qué historias compilar. Cada criterio que se indica tiene que cumplirse, y dentro de un criterio basta con uno de sus valores. La selección es la misma para `compilar` y `ejecutar`.
+
+En [`ejemplos/`](ejemplos/) están los planes de [HU-SUITE-001](ejemplos/HU-SUITE-001.plan.json) y [HU-SUITE-003](ejemplos/HU-SUITE-003.plan.json).
+
 ## 13. Diagnósticos
 
 El validador informa **todos** los problemas del archivo, no solo el primero, y cada causa produce un solo error. Cada diagnóstico trae su código estable, el archivo, la línea, la columna, un mensaje en español y, cuando puede, una sugerencia (DSL-12). Los errores (`CUS-E`) impiden ejecutar; las advertencias (`CUS-W`) no.
 
 - **Posiciones.** La línea y la columna empiezan en 1. La columna cuenta puntos de código sobre el texto original, sin normalizarlo, y apunta a la causa del problema, no al inicio de la línea.
 - **La unidad es la historia.** Una historia con errores no tiene AST; las demás historias de su archivo sí.
-- **Errores entre archivos.** Un `id` repetido se informa en su segunda aparición, que es la que pierde el AST. Un vocabulario importado que no existe o tiene errores se informa una sola vez por importación, con `CUS-E009`, y las oraciones de esa historia que no calzan con ninguna frase no se informan: la causa es el vocabulario.
+- **Errores entre archivos.** Un `id` repetido se informa en su segunda aparición, que es la que pierde el AST; un nombre de vocabulario repetido, en el segundo archivo (`CUS-E018`). Un vocabulario importado que no existe o tiene errores, de sintaxis o de semántica, se informa una sola vez por importación, con `CUS-E009`, y las oraciones de esa historia que no calzan con ninguna frase no se informan: la causa es el vocabulario.
 - **Etapas.** La **sintaxis** detecta lo que se decide mirando una frase o un archivo; la **semántica**, lo que necesita seguir referencias (expandir frases, variables, el ambiente, el flujo del escenario). La columna «Etapa» de la tabla dice cuál.
+- **La semántica revisa los pasos ya expandidos** (§9.2). Una variable se informa en la cadena o el código de la historia que la contiene; si salió de un argumento de una frase, en la cadena de ese argumento; y si la escribió el vocabulario tal cual, en el vocabulario. Un ciclo de frases se informa una vez, en el patrón de su primera frase.
 
 Tabla provisoria para v0.1:
 
@@ -441,6 +463,7 @@ Tabla provisoria para v0.1:
 | `CUS-E015` | Versión `dsl:` mal escrita o no soportada. | DSL-11 | sintaxis |
 | `CUS-E016` | Dos escenarios con el mismo nombre. | DSL-04 | sintaxis |
 | `CUS-E017` | Una oración calza con dos frases: de dos vocabularios importados, o un patrón igual a una frase base o repetido (§10.1). | DSL-07 | sintaxis |
+| `CUS-E018` | Dos vocabularios con el mismo nombre: se informa en el segundo archivo. | DSL-07 | sintaxis |
 | `CUS-W001` | Elemento ubicado con un escape (`id de prueba` o `selector`): deuda de accesibilidad. | DSL-06 | sintaxis |
 | `CUS-W002` | Escenario sin ninguna verificación. | DSL-04 | semántica |
 | `CUS-W003` | `no veo` sin ancla (§11.2). | DSL-05 | semántica |
@@ -448,10 +471,13 @@ Tabla provisoria para v0.1:
 | `CUS-W005` | La limpieza usa una frase sin pasos: el escenario solo se ejecuta en un ambiente desechable (§11.3). | DSL-10 | semántica |
 | `CUS-W006` | Un título `##` parecido a una sección del lenguaje (`## Escenarios: …`, `## Limpiza`): se trata como nota. | DSL-04 | sintaxis |
 | `CUS-W007` | Una clave desconocida en el frontmatter. | DSL-01 | sintaxis |
+| `CUS-W008` | Un paso con fase fuera de un escenario (debajo de `## Historia` o en una nota): no se va a ejecutar. | DSL-04 | sintaxis |
+| `CUS-W009` | Un vocabulario importado más de una vez en `vocabularios:`. | DSL-07 | sintaxis |
+| `CUS-W010` | Un parámetro de una frase que ningún paso de la frase usa. | DSL-07 | sintaxis |
 
 Que un objetivo coincida con varios elementos (§8.2) no es un código `CUS`: se sabe al ejecutar y se informa como fallo del paso.
 
-**Casos inválidos.** En [`test/lenguaje/casos/invalidos/`](../../test/lenguaje/casos/invalidos/) hay al menos un caso por cada código de error (20 casos: `CUS-E005`, `CUS-E011` y `CUS-E017` tienen dos cada uno). Los casos se validan contra el ambiente [`suite-pruebas`](../../ambientes/suite-pruebas.ambiente.md). [`esperados.json`](../../test/lenguaje/casos/invalidos/esperados.json) dice qué error tiene que informar cada uno, en qué etapa, y en qué línea y columna. La prueba `test/lenguaje/casos.test.ts` comprueba que cada código de esta tabla tenga su caso.
+**Casos inválidos.** En [`test/lenguaje/casos/invalidos/`](../../test/lenguaje/casos/invalidos/) hay al menos un caso por cada código de error (21 casos: `CUS-E005`, `CUS-E011` y `CUS-E017` tienen dos cada uno). Los casos se validan contra el ambiente [`suite-pruebas`](../../ambientes/suite-pruebas.ambiente.md). [`esperados.json`](../../test/lenguaje/casos/invalidos/esperados.json) dice qué error tiene que informar cada uno, en qué etapa, y en qué línea y columna. La prueba `test/lenguaje/casos.test.ts` comprueba que cada código de esta tabla tenga su caso.
 
 ## 14. Versiones
 

@@ -9,8 +9,8 @@
 import { tokenizar, type Token } from './tokens.ts';
 
 type Parte =
-  | { readonly tipo: 'palabra'; readonly comparable: string }
-  | { readonly tipo: 'parametro'; readonly nombre: string };
+  | { readonly tipo: 'palabra'; readonly comparable: string; readonly columna: number }
+  | { readonly tipo: 'parametro'; readonly nombre: string; readonly columna: number };
 
 export interface Patron {
   /** El patrón tal como está en el vocabulario. */
@@ -36,7 +36,7 @@ export function leerPatron(caracteres: readonly string[], desde: number): Result
   const partes: Parte[] = [];
   for (const token of tokens.tokens) {
     if (token.tipo === 'palabra') {
-      partes.push({ tipo: 'palabra', comparable: token.comparable });
+      partes.push({ tipo: 'palabra', comparable: token.comparable, columna: token.columna });
       continue;
     }
     const nombre = token.tipo === 'cadena' ? PARAMETRO.exec(token.texto)?.[1] : undefined;
@@ -54,7 +54,7 @@ export function leerPatron(caracteres: readonly string[], desde: number): Result
         mensaje: `El parámetro \`{${nombre}}\` está repetido.`,
       };
     }
-    partes.push({ tipo: 'parametro', nombre });
+    partes.push({ tipo: 'parametro', nombre, columna: token.columna });
   }
   return {
     ok: true,

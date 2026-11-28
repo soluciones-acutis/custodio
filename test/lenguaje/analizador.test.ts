@@ -1,11 +1,27 @@
 /**
  * El analizador por partes (diseño de la semana 3, §9): cada regla de la
  * gramática tiene al menos un caso que la acepta y uno que la rechaza.
+ *
+ * Son pruebas de la sintaxis: miran solo los diagnósticos de esa etapa. La
+ * semántica (variables, capturas, el flujo de cada escenario) tiene las suyas.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { analizar, type Diagnostico, type Paso } from '../../src/lenguaje/index.ts';
+import {
+  analizar as validar,
+  CATALOGO,
+  type Diagnostico,
+  type Paso,
+} from '../../src/lenguaje/index.ts';
+
+const analizar: typeof validar = (entrada) => {
+  const resultado = validar(entrada);
+  return {
+    ...resultado,
+    diagnosticos: resultado.diagnosticos.filter((d) => CATALOGO[d.codigo].etapa === 'sintaxis'),
+  };
+};
 
 const RAIZ = join(import.meta.dirname, '..', '..');
 const VOCABULARIO = {
@@ -524,12 +540,12 @@ describe('vocabularios (especificación §10)', () => {
     ['patrón vacío', '## Frase:\n', ['CUS-E010@7:10']],
     [
       'patrón repetido',
-      '## Frase: algo "{a}"\n- navego a `https://x`\n\n## Frase: ALGO "{b}"\n- navego a `https://y`\n',
+      '## Frase: algo "{a}"\n- navego a `https://{a}`\n\n## Frase: ALGO "{b}"\n- navego a `https://{b}`\n',
       ['CUS-E017@10:11'],
     ],
     [
       'patrón igual a una frase base',
-      '## Frase: veo el texto "{t}"\n- navego a `https://x`\n',
+      '## Frase: veo el texto "{t}"\n- navego a `https://{t}`\n',
       ['CUS-E017@7:11'],
     ],
     ['paso con fase', '## Frase: algo\n- DADO navego a `https://x`\n', ['CUS-E005@8:3']],
@@ -583,5 +599,67 @@ describe('vocabularios (especificación §10)', () => {
       'h.historia.md CUS-E009',
       'v.vocabulario.md CUS-E006',
     ]);
+  });
+});
+
+describe('mejoras de la revisión del PR #19', () => {
+  const valida = historia('- CUANDO navego a `https://x.test`');
+
+  it('#22: una frase de un vocabulario que la historia no importa sugiere importarlo', () => {
+    const otro = {
+      ruta: 'otro.vocabulario.md',
+      texto:
+        '---\nvocabulario: otro\ndsl: 0.1.0\nproducto: x\n---\n\n## Frase: hago algo\n- navego a `https://x`\n',
+    };
+    const { diagnosticos } = analizarTexto(historia('- CUANDO hago algo'), [VOCABULARIO, otro]);
+    expect(codigos(diagnosticos)).toEqual(['CUS-E006@19:10']);
+    expect(diagnosticos[0]?.sugerencia).toBe(
+      'La frase está en el vocabulario «otro»: agrégalo a `vocabularios:`.',
+    );
+  });
+
+  it.each([
+    [
+      'debajo de ## Historia',
+      valida.replace('**Para** comprobar', '**Para** comprobar\n- CUANDO navego a `https://x`'),
+      'CUS-W008@17:3',
+    ],
+    ['en una nota', `${valida}\n## Notas\n- ENTONCES veo el texto "x"\n`, 'CUS-W008@22:3'],
+  ])('#23: un paso con fase %s es CUS-W008', (_, texto, esperado) => {
+    const { diagnosticos } = analizarTexto(texto);
+    expect(codigos(diagnosticos)).toEqual([esperado]);
+    expect(diagnosticos[0]?.sugerencia).toBe('Ponlo debajo de un `## Escenario: …`.');
+  });
+
+  it('#23: una lista normal en una nota no avisa', () => {
+    expect(analizarTexto(`${valida}\n## Notas\n- un punto cualquiera\n`).diagnosticos).toEqual([]);
+  });
+
+  it('#24: dos espacios después del guion dicen eso, y no que falta la fase', () => {
+    const { diagnosticos } = analizarTexto(valida.replace('- CUANDO', '-  CUANDO'));
+    expect(codigos(diagnosticos)).toEqual(['CUS-E005@19:3']);
+    expect(diagnosticos[0]?.mensaje).toBe('Sobra un espacio después del guion: `- CUANDO …`.');
+  });
+
+  it('#24: un vocabulario importado dos veces es CUS-W009', () => {
+    const texto = valida.replace('[acutis-suite]', '[acutis-suite, acutis-suite]');
+    const resultado = analizarTexto(texto);
+    expect(codigos(resultado.diagnosticos)).toEqual(['CUS-W009@8:15']);
+    expect(resultado.historias[0]?.historias[0]?.vocabularios).toEqual(['acutis-suite']);
+  });
+
+  it('#24: un parámetro que ningún paso de la frase usa es CUS-W010', () => {
+    const vocabulario = {
+      ruta: 'v.vocabulario.md',
+      texto:
+        '---\nvocabulario: v\ndsl: 0.1.0\nproducto: x\n---\n\n## Frase: entro a "{sitio}" como "{rol}"\n- navego a `https://{sitio}`\n',
+    };
+    expect(codigos(analizar({ historias: [], vocabularios: [vocabulario] }).diagnosticos)).toEqual([
+      'CUS-W010@7:34',
+    ]);
+  });
+
+  it('#24: el origen de un paso es donde empieza su texto, no su oración', () => {
+    expect(paso('navego a `https://x`').paso?.origen).toEqual({ linea: 19, columna: 3 });
   });
 });

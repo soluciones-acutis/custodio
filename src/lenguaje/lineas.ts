@@ -16,5 +16,8 @@ export function claseDeLinea(texto: string): ClaseDeLinea {
   return 'texto';
 }
 
+/** La columna donde empieza el texto de un paso, después de `- `. */
+export const COLUMNA_DEL_PASO = '- '.length + 1;
+
 /** Una línea `clave: valor`, como la primera de un frontmatter. */
 export const pareceCampo = (texto: string): boolean => /^[A-Za-z_][\w-]*:/.test(texto);

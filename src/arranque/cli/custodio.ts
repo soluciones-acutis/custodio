@@ -6,20 +6,19 @@
  * sintaxis que Node no sepa quitar (`erasableSyntaxOnly` en tsconfig.json).
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import {
-  USO_DE_VALIDAR,
-  validar,
-  SALIDA,
-  type Consola,
-  type SistemaDeArchivos,
-} from './validar.ts';
+import { compilar } from './compilar.ts';
+import { SALIDA, type Consola, type SistemaDeArchivos } from './proyecto.ts';
+import { validar } from './validar.ts';
 
-const USO = `Uso: custodio <comando>
+const USO = `Uso: custodio <comando> [opciones]
 
 Comandos:
-  validar   Valida historias y vocabularios.
+  validar    Valida historias y vocabularios: la sintaxis y la semántica.
+  compilar   Escribe en JSON el plan de ejecución de cada historia.
 
-${USO_DE_VALIDAR}`;
+Con custodio <comando> --help, la ayuda de cada comando.`;
+
+const COMANDOS = { validar, compilar } as const;
 
 const sistema: SistemaDeArchivos = {
   tipo(ruta) {
@@ -38,8 +37,8 @@ const consola: Consola = {
 };
 
 const [comando, ...argumentos] = process.argv.slice(2);
-if (comando === 'validar') {
-  process.exitCode = validar(argumentos, sistema, consola);
+if (comando === 'validar' || comando === 'compilar') {
+  process.exitCode = COMANDOS[comando](argumentos, sistema, consola);
 } else if (comando === 'ayuda' || comando === '--help' || comando === '-h') {
   consola.escribir(`${USO}\n`);
 } else {
